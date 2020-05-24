@@ -1,4 +1,4 @@
-name: "90122Lab"
+name: "cars"
 output_dir: "docs"
 navbar:
   title: "Cars"
