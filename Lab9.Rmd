@@ -1,5 +1,5 @@
 ---
-title: "Median House Price Example: Lab 9"
+title: "Melbourne Median House Price Example: Lab 9"
 author: "MAST90122, Tingjin Chu"
 date: "Semester 1"
 output:
