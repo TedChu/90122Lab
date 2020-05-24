@@ -1,0 +1,178 @@
+---
+title: "Median House Price Example: Lab 9"
+author: "MAST90122, Tingjin Chu"
+date: "Semester 1"
+output:
+  html_document:
+    toc: yes
+    number_sections: true
+  pdf_document:
+    toc: yes
+---
+
+
+
+# Combining Data (Optional)
+
+*If you find this part difficult, you can skip this part and move to the second part directly. It is optional, and will not be tested in exam.*
+
+
+The shapefile is available in folder *Mel* in Canvas, and it is downloaded from https://www.igismap.com/australia-shapefile-download/ (This website also has shapefile of other Australia regions and cities). You can download all LGA in Victoria through  https://data.gov.au/dataset/ds-dga-bdf92691-c6fe-42b9-a0e2-a4cd716fa811/details (However, it does not indicate which LGA belongs to Greater Melbourne). 
+
+The shapefile here is named *Aus-Melbourne02*, which records information from all LGA in Greater Melbourne. In readOGR, for more details, see help file using *?readOGR* 
+
+*The package "rgdal" can be installed in my Windows and Mac OS system. For Mac, you also need to install Xcode and XQuartz. If you are using Ubuntu 16.04, Rstudio may have trouble to install this package. (I am sorry that I cannot fix this problem since I am not very familiar with Linux system. There is some informaiton on Internet, which may help. If it does not work, you need to find a Windows/Mac system, such as in G69.) *
+
+```{r, echo=TRUE, fig.width=6, fig.align="center", message = FALSE}
+library(rgdal)
+library(sp)
+```
+
+```{r, echo=TRUE, fig.width=6, fig.align="center"}
+setwd("C:/Users/tingjinc/Dropbox/1_MAST90122/2_Spatial_Lab/1_Visualisation_Lab23679/1_sp")
+gmel = readOGR(dsn = "Mel/Aus-Melbourne02.shp", "Aus-Melbourne02")
+class(gmel) 
+gmel = gmel[-1,]  # the first element is greater melbourne, not LGA
+```
+
+
+In https://discover.data.vic.gov.au/dataset/2015-local-government-area-profiles, many statistics for each LGA in Victoria is recorded on 2015, and it is available in *LGAData.csv*. It includes around 400 variables. 
+
+* Here, we choose
+  + name: LGA name
+  + price: median house price
+  + dis: distance to Melbourne (in km)
+  + off: totoal offences per 1000 population
+  + inc: median household income weekly
+
+
+```{r, echo=TRUE, fig.width=6, fig.align="center"}
+setwd("C:/Users/tingjinc/Dropbox/1_MAST90122/2_Spatial_Lab/1_Visualisation_Lab23679/1_sp")
+LGAData = read.csv("LGAData.csv")
+LGAsub = subset(LGAData, select = c("LGA.Name","Median.house.price", "Distance.to.Melbourne", "Total.offences.per.1.000.population", "Median.household.income"))
+colnames(LGAsub) = c("name","price", "dis", "off", "inc")
+```
+
+We want to combine the data in *LGAsub* and *gmel* together. However, the use different names. For example, in *LGAsub*, it says "City of Banyule", while it says "Banyule (C)" in *gmel*. We want to add a new variable *name2*, and for the above LGA, it will be named "Banyule".  Therefore, *LGAsub* and *gmel* will be matched and joined. 
+```{r, echo=TRUE, fig.width=6, fig.align="center"}
+# Add name2 for gmel
+gmel$name2 = NA
+for (i in 1:length(gmel$name)){
+  lganame = as.character(gmel$name[i])
+  gmel$name2[i] = (strsplit(lganame," of ")[[1]])[2]
+}
+
+LGAsub$price = as.numeric(gsub('[$,]', '', LGAsub$price))  # Change price from dollar form to numbers
+LGAsub$inc = as.numeric(gsub('[$,]', '', LGAsub$inc))       # Change income from dollar form to numbers
+LGAsub$dis = as.numeric(gsub(" km", "", LGAsub$dis))       # distance to numeric
+
+# Add name2 for LGAsub
+LGAsub$name2 = NA
+for (i in 1:dim(LGAsub)[1]){
+  lganame = as.character(LGAsub$name[i])
+  LGAsub$name2[i] = substr(lganame, 1, nchar(lganame)-4)
+}
+
+temdata = subset(gmel@data, select = "name2") 
+library(plyr) 
+meldata = plyr::join(temdata, LGAsub, by = "name2", type="left")
+gmel2 = gmel
+gmel2@data = meldata
+#crs0 = CRS("+init=epsg:4326")
+#gmel2 = spTransform(gmel2, crs0)
+save(gmel2, file = "gmel2.Rdata")   
+```
+Here, *plyr::join* means the *join* function in package *plyr*, since another package *dplyr* also has a function called *join*. 
+
+
+
+# SpatialPolygonsDataFrame versus sf class
+
+* For polygons
++ In package *sp* (spplot), SpatialPolygonsDataFrame is used
++ In packages *ggplot2* and *sf*, sf class is used
+
+Here, we show how to transform them
+
+
+From SpatialPolygonsDataFrame to sf class: sf::st_as_sf
+```{r, echo=TRUE, fig.width=6, fig.align="center", message = FALSE}
+library(sp)
+library(sf)
+library(ggplot2)
+```
+
+
+```{r, echo=TRUE, fig.width=6, fig.align="center"}
+load("gmel2.RData")          # Load gmel2 data from Lab 3
+class(gmel2)                 # SpatialPolygonsDataFrame
+gmel2.sf = st_as_sf(gmel2)   # to sf class
+class(gmel2.sf)
+
+ggplot()+geom_sf(data=gmel2.sf, aes(fill = price))
+
+```
+From sf class to SpatialPolygonsDataFrame: sp::as
+```{r, echo=TRUE, fig.width=6, fig.align="center"}
+class(gmel2.sf)
+gmel2.sp = as(gmel2.sf, "Spatial")
+spplot(gmel2.sp, "price")
+```
+* In summary, we focus on three ways to visulization
+  + spplot:    work for SpatialPolygonsDataFrame
+  + geom_sf:   work for sf class
+  + mapView:   work for both SpatialPolygonsDataFrame and sf class
+
+```{r, echo=TRUE, fig.width=6, fig.align="center"}
+library(mapview)
+mapView(gmel2.sf, zcol = "price")
+mapView(gmel2.sp, zcol = "price")
+```
+
+
+# Spatial Lag Model
+
+Before 2020, function lagsarlm is in "spdep". Now it has been moved to spatialreg package, and I suggest you to use *spatialreg::lagsarlm* to make sure you are using *lagsarlm* function from *spatialreg* package
+
+```{r, echo=TRUE, fig.width=6, fig.align="center", message = FALSE}
+library(spdep)
+library(spatialreg)
+```
+
+
+```{r, echo=TRUE, fig.width=6, fig.align="center"}
+swpoly = poly2nb(gmel2)
+## row sum standarize to 1
+colw = nb2listw(swpoly, style = "W")
+
+## This is a demonstration on how to use function "lagsarlm"
+## Not really about how to analyze melbourne housing in depth. 
+mlag = spatialreg::lagsarlm(log(price)~dis+off + inc, data=gmel2@data, 
+                listw=colw) 
+
+```
+
+
+The output
+
+```{r, echo=TRUE, fig.width=6, fig.align="center"}
+summary(mlag)
+# Just like lm output. distance and income are significant, while 
+
+
+## beta estiamtes and asymptotic standard error
+mlag$coefficients
+mlag$rest.se
+
+## rho estimates and asymptotic standard error
+mlag$rho
+mlag$rho.se
+
+## sigma^2 estimates
+mlag$s2
+
+```
+
+
+
+
