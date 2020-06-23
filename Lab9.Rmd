@@ -1,11 +1,11 @@
 ---
-title: 'Melbourne Median House Price Example: Lab 9A'
+title: 'Melbourne Median House Price Example: Lab 9'
 ---
 
 
 
 
-# Combining Data (Optional)
+# Combining Data (Optional-A)
 
 *If you find this part difficult, you can skip this part and move to the second part directly. It is optional, and will not be tested in exam.*
 
