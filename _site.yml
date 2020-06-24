@@ -6,8 +6,8 @@ navbar:
       href: index.html
     - text: "Week 2"
       href: Week2.html
-    - text: "Week 3"
-      href: Week2.html
+    - text: "Lab 9"
+      href: Lab9.html
 output:
   html_document:
     theme: cosmo
