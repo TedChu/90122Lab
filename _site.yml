@@ -1,5 +1,4 @@
 name: "MAST90122 Lab"
-output_dir: "docs"
 navbar:
   title: "MAST90122 Lab"
   left:
