@@ -2,24 +2,7 @@
 title: "Week 2: Visualisation of Spatial Data--sp"
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
-options(width = 150)
-colorize <- function(x, color) {
-  if (knitr::is_latex_output()) {
-    sprintf("\\textcolor{%s}{%s}", color, x)
-  } else if (knitr::is_html_output()) {
-    sprintf("<span style='color: %s;'>%s</span>", color, 
-      x)
-  } else x
-}
 
-# Useful 
-# $\mathbf X$
-# `r colorize("red", "red")`
-# echo=TRUE, message=FALSE, warning=FALSE, hold=TRUE
-#options(digits = 3)
-```
 
 # SpatialPointsDataFrame Class 
 

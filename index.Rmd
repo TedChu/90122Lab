@@ -2,6 +2,6 @@
 title: "MAST90122 Lab"
 ---
 
-There are Labs between week 2 -- 11. 
+There are labs between week 2 -- 11. 
 
 There is no lab for Week 1. However, if you do not know R, please study *An Introduction to R* at https://cran.r-project.org/doc/manuals/R-intro.pdf
