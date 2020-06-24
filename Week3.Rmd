@@ -1,5 +1,5 @@
 ---
-title: "Week 2: Visualisation of Spatial Data--sp"
+title: "Week 3: Visualisation of Spatial Data--sp1"
 ---
 
 
@@ -9,14 +9,7 @@ title: "Week 2: Visualisation of Spatial Data--sp"
 
 *Information of spatial class can be found in class notes: Chpater 1--Visualisation.*
 
-The diagram will help
-```{r, echo=FALSE, fig.width=8, fig.align="center"}
-setwd("C:/Users/tingjinc/OneDrive - The University of Melbourne/Documents/GitFile/90122Lab")
-#setwd("~/Dropbox/1_MAST90122/2_Spatial_Lab/1_Visualisation_Lab23679/1_sp")
-#setwd("~/Dropbox/1-MAST90122/2_Spatial_Lab/1_Visualisation_Lab2367/1_sp")
-#setwd("/home/unimelb.edu.au/tingjinc/Dropbox/1_MAST90122/Spatial_Lab/2_Chapter1")
-knitr::include_graphics("pics/SpPtDF.png")
-```
+
 
 ## Create Spatial Class
 ```{r, echo=TRUE, fig.width=8, fig.align="center"}
@@ -75,13 +68,6 @@ class(SPDF2)
 # SpatialPolygonsDataFrame
 
 Due to time constrain, I will not talk about spatiallines class. Instead, I will focus on SpatialPolygonsDataFrame. 
-
-First, the diagram
-```{r, echo=FALSE, fig.width=8, fig.align="center"}
-#setwd("~/Dropbox/1-MAST90122/Spatial Lab/2-Chapter1")
-#setwd("/home/unimelb.edu.au/tingjinc/Dropbox/1_MAST90122/Spatial_Lab/2_Chapter1")
-knitr::include_graphics("pics/SpPnDF.png")
-```
 
 ## Create Polygon
 ```{r, echo=TRUE, fig.width=8, fig.align="center"}

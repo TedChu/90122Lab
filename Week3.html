@@ -11,7 +11,7 @@
 
 
 
-<title>Week 2: Visualisation of Spatial Data–sp</title>
+<title>Week 3: Visualisation of Spatial Data–sp1</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -292,7 +292,7 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Week 2: Visualisation of Spatial Data–sp</h1>
+<h1 class="title toc-ignore">Week 3: Visualisation of Spatial Data–sp1</h1>
 
 </div>
 
@@ -300,7 +300,6 @@ $(document).ready(function () {
 <div id="spatialpointsdataframe-class" class="section level1">
 <h1>SpatialPointsDataFrame Class</h1>
 <p><em>Information of spatial class can be found in class notes: Chpater 1–Visualisation.</em></p>
-<p>The diagram will help <img src="pics/SpPtDF.png" width="268" style="display: block; margin: auto;" /></p>
 <div id="create-spatial-class" class="section level2">
 <h2>Create Spatial Class</h2>
 <pre class="r"><code>library(sp)
@@ -335,7 +334,7 @@ bbox(SP)</code></pre>
 <pre><code>## CRS arguments: +proj=longlat +ellps=WGS84</code></pre>
 <pre class="r"><code>## plot
 plot(SP)</code></pre>
-<p><img src="Week3_files/figure-html/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="Week3_files/figure-html/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
 <ul>
 <li>Question: There are supposed to be four points.
 <ul>
@@ -362,7 +361,7 @@ SPDF@data</code></pre>
 ## d   2.1</code></pre>
 <pre class="r"><code>## Plot: location with value
 spplot(SPDF,zcol=&quot;xvals&quot;)</code></pre>
-<p><img src="Week3_files/figure-html/unnamed-chunk-5-1.png" width="288" style="display: block; margin: auto;" /></p>
+<p><img src="Week3_files/figure-html/unnamed-chunk-4-1.png" width="288" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>## Another way to create SpatialPointsDataFrame (directly from a data.frame)
 SPDF2 = data.frame(name = names, x = lcoords[,1], y = lcoords[,2], value = df )
 coordinates(SPDF2) = ~x+y
@@ -375,7 +374,6 @@ class(SPDF2)</code></pre>
 <div id="spatialpolygonsdataframe" class="section level1">
 <h1>SpatialPolygonsDataFrame</h1>
 <p>Due to time constrain, I will not talk about spatiallines class. Instead, I will focus on SpatialPolygonsDataFrame.</p>
-<p>First, the diagram <img src="pics/SpPnDF.png" width="590" style="display: block; margin: auto;" /></p>
 <div id="create-polygon" class="section level2">
 <h2>Create Polygon</h2>
 <pre class="r"><code>#getClass(&quot;Polygon&quot;)
@@ -397,7 +395,7 @@ Srs3 = Polygons(list(Sr3, Sr4), &quot;s3/4&quot;)</code></pre>
 <pre class="r"><code>#getClass(&quot;SpatialPolygons&quot;)
 SpP = SpatialPolygons(list(Srs1,Srs2,Srs3), 1:3)
 plot(SpP, col = 1:3, bg=&quot;yellow&quot;)</code></pre>
-<p><img src="Week3_files/figure-html/unnamed-chunk-9-1.png" width="576" style="display: block; margin: auto;" /> Note that there is a hole in one of Polygons</p>
+<p><img src="Week3_files/figure-html/unnamed-chunk-7-1.png" width="576" style="display: block; margin: auto;" /> Note that there is a hole in one of Polygons</p>
 </div>
 <div id="create-spatialpolygonsdataframe" class="section level2">
 <h2>Create SpatialPolygonsDataFrame</h2>
@@ -405,7 +403,7 @@ plot(SpP, col = 1:3, bg=&quot;yellow&quot;)</code></pre>
 df = data.frame(xval = c(1.2,1.3,1.6), yval = c(2.2,2.8,3.9), row.names = row.names(SpP))
 SpPDF = SpatialPolygonsDataFrame(Sr = SpP, data = df)
 spplot(SpPDF, zcol = &quot;xval&quot;)</code></pre>
-<p><img src="Week3_files/figure-html/unnamed-chunk-10-1.png" width="576" style="display: block; margin: auto;" /> The argument “row.names = row.names(SpP)” is needed.</p>
+<p><img src="Week3_files/figure-html/unnamed-chunk-8-1.png" width="576" style="display: block; margin: auto;" /> The argument “row.names = row.names(SpP)” is needed.</p>
 </div>
 </div>
 <div id="further-study" class="section level1">

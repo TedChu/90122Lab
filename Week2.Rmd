@@ -1,5 +1,5 @@
 ---
-title: "Week 2: Visualisation of Spatial Data--sp"
+title: 'Week 2: Visualisation of Spatial Data--sp'
 ---
 
 
