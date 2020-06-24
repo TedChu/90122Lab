@@ -6,7 +6,7 @@ navbar:
       href: index.html
     - text: "Week 2"
       href: Week2.html
-    - text: "Lab 9"
+    - text: "Lab 9A"
       href: Week3.html
 output_dir: "."
 output:
