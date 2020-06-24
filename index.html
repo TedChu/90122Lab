@@ -11,7 +11,7 @@
 
 
 
-<title>Week 2: Visualisation of Spatial Data–sp</title>
+<title>MAST90122 Lab</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -278,7 +278,7 @@ $(document).ready(function () {
   <a href="Week2.html">Week 2</a>
 </li>
 <li>
-  <a href="Week2.html">Week 3</a>
+  <a href="Week3.html">Lab 9</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -292,137 +292,13 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Week 2: Visualisation of Spatial Data–sp</h1>
+<h1 class="title toc-ignore">MAST90122 Lab</h1>
 
 </div>
 
 
-<div id="spatialpointsdataframe-class" class="section level1">
-<h1>SpatialPointsDataFrame Class</h1>
-<p><em>Information of spatial class can be found in class notes: Chpater 1–Visualisation.</em></p>
-<p>The diagram will help <img src="pics/SpPtDF.png" width="268" style="display: block; margin: auto;" /></p>
-<div id="create-spatial-class" class="section level2">
-<h2>Create Spatial Class</h2>
-<pre class="r"><code>library(sp)
-m=matrix(c(0,0,1,1),ncol=2, dimnames=list(NULL, c(&quot;min&quot;,&quot;max&quot;)))  
-crs=CRS(projargs=&quot;+proj=longlat +ellps=WGS84&quot;)    
-S=Spatial(bbox=m, proj4string=crs)</code></pre>
-</div>
-<div id="create-spatialpoints-class" class="section level2">
-<h2>Create SpatialPoints Class</h2>
-<p>Recall SpatialPoints = Spatial + coords</p>
-<pre class="r"><code>lcoords=matrix(rep(1:4,each=2),ncol=2,byrow=T)    ## coords
-SP=SpatialPoints(lcoords,bbox = m, proj4string = crs)
-
-## Access the elements
-bbox(SP)</code></pre>
-<pre><code>##      min max
-## [1,]   0   1
-## [2,]   0   1</code></pre>
-<pre class="r"><code>proj4string(SP)</code></pre>
-<pre><code>## [1] &quot;+proj=longlat +ellps=WGS84&quot;</code></pre>
-<pre class="r"><code>SP@coords</code></pre>
-<pre><code>##      coords.x1 coords.x2
-## [1,]         1         1
-## [2,]         2         2
-## [3,]         3         3
-## [4,]         4         4</code></pre>
-<pre class="r"><code>SP@bbox</code></pre>
-<pre><code>##      min max
-## [1,]   0   1
-## [2,]   0   1</code></pre>
-<pre class="r"><code>SP@proj4string</code></pre>
-<pre><code>## CRS arguments: +proj=longlat +ellps=WGS84</code></pre>
-<pre class="r"><code>## plot
-plot(SP)</code></pre>
-<p><img src="Week2_files/figure-html/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
-<ul>
-<li>Question: There are supposed to be four points.
-<ul>
-<li>Why are you only seeing one?</li>
-<li>Do you know how to fix it (hint: adjust bbox)</li>
-</ul></li>
-</ul>
-</div>
-<div id="create-spatialpointsdataframe-class" class="section level2">
-<h2>Create SpatialPointsDataFrame Class</h2>
-<p>Recall SpatialPointsDataFrame = SpatialPoints + data.frame</p>
-<pre class="r"><code>names=c(&quot;a&quot;,&quot;b&quot;,&quot;c&quot;,&quot;d&quot;)
-df = data.frame(xvals=c(1.1,1.2,1.6,2.1), row.names=names)
-m = matrix(c(0,0,5,5),ncol=2, dimnames=list(NULL, c(&quot;min&quot;,&quot;max&quot;)))  
-SP@bbox = m
-SPDF = SpatialPointsDataFrame(SP,data=df)
-
-## Access the elements
-SPDF@data</code></pre>
-<pre><code>##   xvals
-## a   1.1
-## b   1.2
-## c   1.6
-## d   2.1</code></pre>
-<pre class="r"><code>## Plot: location with value
-spplot(SPDF,zcol=&quot;xvals&quot;)</code></pre>
-<p><img src="Week2_files/figure-html/unnamed-chunk-5-1.png" width="288" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>## Another way to create SpatialPointsDataFrame (directly from a data.frame)
-SPDF2 = data.frame(name = names, x = lcoords[,1], y = lcoords[,2], value = df )
-coordinates(SPDF2) = ~x+y
-class(SPDF2)</code></pre>
-<pre><code>## [1] &quot;SpatialPointsDataFrame&quot;
-## attr(,&quot;package&quot;)
-## [1] &quot;sp&quot;</code></pre>
-</div>
-</div>
-<div id="spatialpolygonsdataframe" class="section level1">
-<h1>SpatialPolygonsDataFrame</h1>
-<p>Due to time constrain, I will not talk about spatiallines class. Instead, I will focus on SpatialPolygonsDataFrame.</p>
-<p>First, the diagram <img src="pics/SpPnDF.png" width="590" style="display: block; margin: auto;" /></p>
-<div id="create-polygon" class="section level2">
-<h2>Create Polygon</h2>
-<pre class="r"><code>#getClass(&quot;Polygon&quot;)
-Sr1 = Polygon(cbind(c(2,4,4,1,2),c(2,3,5,4,2)))
-Sr2 = Polygon(cbind(c(5,4,2,5),c(2,3,2,2)))
-Sr3 = Polygon(cbind(c(4,4,5,10,4),c(5,3,2,5,5)))
-Sr4 = Polygon(cbind(c(5,6,6,5,5),c(4,4,3,3,4)), hole = TRUE)</code></pre>
-</div>
-<div id="create-polygons" class="section level2">
-<h2>Create Polygons</h2>
-<p>Note the difference between the previous subsection: Polygon vs Polygons</p>
-<pre class="r"><code>#getClass(&quot;Polygons&quot;)
-Srs1 = Polygons(list(Sr1), &quot;s1&quot;)
-Srs2 = Polygons(list(Sr2), &quot;s2&quot;)
-Srs3 = Polygons(list(Sr3, Sr4), &quot;s3/4&quot;)</code></pre>
-</div>
-<div id="create-spatialpolygons" class="section level2">
-<h2>Create SpatialPolygons</h2>
-<pre class="r"><code>#getClass(&quot;SpatialPolygons&quot;)
-SpP = SpatialPolygons(list(Srs1,Srs2,Srs3), 1:3)
-plot(SpP, col = 1:3, bg=&quot;yellow&quot;)</code></pre>
-<p><img src="Week2_files/figure-html/unnamed-chunk-9-1.png" width="576" style="display: block; margin: auto;" /> Note that there is a hole in one of Polygons</p>
-</div>
-<div id="create-spatialpolygonsdataframe" class="section level2">
-<h2>Create SpatialPolygonsDataFrame</h2>
-<pre class="r"><code>#getClass(&quot;SpatialPolygons&quot;)
-df = data.frame(xval = c(1.2,1.3,1.6), yval = c(2.2,2.8,3.9), row.names = row.names(SpP))
-SpPDF = SpatialPolygonsDataFrame(Sr = SpP, data = df)
-spplot(SpPDF, zcol = &quot;xval&quot;)</code></pre>
-<p><img src="Week2_files/figure-html/unnamed-chunk-10-1.png" width="576" style="display: block; margin: auto;" /> The argument “row.names = row.names(SpP)” is needed.</p>
-</div>
-</div>
-<div id="further-study" class="section level1">
-<h1>Further Study</h1>
-<p>Study vector data manipulation(<a href="https://rspatial.org/raster/spatial/7-vectmanip.html" class="uri">https://rspatial.org/raster/spatial/7-vectmanip.html</a>). Here, vector data is referring to SpatialPolygonsDataFrame.</p>
-</div>
-<div id="references" class="section level1">
-<h1>References</h1>
-<ul>
-<li>For more information, please see (Not required to read, and treat the following materials as reference. )
-<ul>
-<li>Classes and Methods for Spatial Data: the sp Package (<a href="https://cran.r-project.org/web/packages/sp/vignettes/intro_sp.pdf" class="uri">https://cran.r-project.org/web/packages/sp/vignettes/intro_sp.pdf</a>)</li>
-<li>Introduction to visualising spatial data in R (<a href="https://cran.r-project.org/doc/contrib/intro-spatial-rl.pdf" class="uri">https://cran.r-project.org/doc/contrib/intro-spatial-rl.pdf</a>)</li>
-<li>Spatial data manipulation (<a href="https://rspatial.org/raster/spatial/index.html" class="uri">https://rspatial.org/raster/spatial/index.html</a>)</li>
-</ul></li>
-</ul>
-</div>
+<p>There are labs between week 2 – 11.</p>
+<p>There is no lab for Week 1. However, if you do not know R, please study <em>An Introduction to R</em> at <a href="https://cran.r-project.org/doc/manuals/R-intro.pdf" class="uri">https://cran.r-project.org/doc/manuals/R-intro.pdf</a></p>
 
 
 
