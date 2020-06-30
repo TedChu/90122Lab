@@ -2,6 +2,11 @@
 title: 'Week 2: Visualisation of Spatial Data--sp'
 ---
 
+<div style="margin-bottom:50px;">
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+</div>
 
 
 # SpatialPointsDataFrame Class 
