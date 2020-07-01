@@ -19,7 +19,7 @@ knitr::opts_chunk$set(echo = TRUE)
 # Create Weight Matrix
 
 We will load the dataset *gmel2* from Week 3 Lab. 
-```{r, echo=TRUE, fig.width=8, fig.align="center"}
+```{r, echo=TRUE, fig.width=8, fig.align="center", message = FALSE}
 library(rgdal)
 library(spdep)
 load("datasets/gmel2.Rdata")
@@ -82,3 +82,4 @@ brks=c(0.00,0.05,0.10,0.5,0.8,1.00)
 pal=brewer.pal(5, "OrRd") # we select 5 colors from the palette
 spplot(gmellisa, "pvalue", col.regions=pal, at = brks,  main = "p value")
 ```
+
