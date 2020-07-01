@@ -19,7 +19,7 @@ knitr::opts_chunk$set(echo = TRUE)
 # Create Weight Matrix
 
 We will load the dataset *gmel2* from Week 3 Lab. 
-```{r, echo=TRUE, fig.width=8, fig.align="center", message = FALSE}
+```{r, echo=TRUE, fig.width=10, fig.align="center", message = FALSE}
 library(rgdal)
 library(spdep)
 load("datasets/gmel2.Rdata")

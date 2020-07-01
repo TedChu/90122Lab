@@ -350,7 +350,7 @@ plot(data1, pch=46, cex =3)                           </code></pre>
 ##  Pearson X2 statistic
 ## 
 ## data:  data1
-## X2 = 20.376, df = 15, p-value = 0.3159
+## X2 = 14.271, df = 15, p-value = 0.9898
 ## alternative hypothesis: two.sided
 ## 
 ## Quadrats: 4 by 4 grid of tiles</code></pre>
@@ -358,7 +358,7 @@ plot(data1, pch=46, cex =3)                           </code></pre>
 <li>Argument:
 <ul>
 <li>pp: the dataset must be a “ppp” class.</li>
-<li>nx=4, ny =4: number of block on x-axis and y-axis. Here, we have 4*4=16 blocks.</li>
+<li><span style="color: red;">nx=4, ny =4</span>: number of block on x-axis and y-axis. Here, we have 4*4=16 blocks.</li>
 <li>alternative: alternative hypothesis. You can choose one of “two.sided”, “regular”, “clustered”</li>
 <li>method: the method used to compute p-value. “Chisq” (analytical way), “MonteCarlo”</li>
 </ul></li>
@@ -381,7 +381,7 @@ Gtest=envelope(data1,fun=Gest,
 <ul>
 <li>nsim: the number of simulated datasets</li>
 <li>nrank: similar to deciding the significant level</li>
-<li>Note that (2+2+1)/(99+1) = 0.05, and therefore, it is a similar to test at “significant level” = 0.05</li>
+<li>Note that (2+2+1)/(99+1) = 0.05, and therefore, it is a similar to test at <span style="color: red;">“significant level”</span> = 0.05</li>
 <li>fun: Gest</li>
 </ul></li>
 </ul>
@@ -393,8 +393,9 @@ Gtest=envelope(data1,fun=Gest,
 <h2><span class="header-section-number">2.4</span> ppp class</h2>
 <p>As mentioned earlier, package <em>spatstat</em> uses ppp class. We can tranform between <em>SpatialPoints</em> class in <em>sp</em> package and <em>ppp</em> class using the function <em>as</em> in package <em>maptools</em></p>
 <pre class="r"><code>library(sp)
-library(maptools)
-# from ppp class to SpatialPoints class 
+library(maptools)</code></pre>
+<pre><code>## Checking rgeos availability: TRUE</code></pre>
+<pre class="r"><code># from ppp class to SpatialPoints class 
 spdata1=as(data1, &quot;SpatialPoints&quot;)
 class(spdata1)  </code></pre>
 <pre><code>## [1] &quot;SpatialPoints&quot;
