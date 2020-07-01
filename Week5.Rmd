@@ -1,0 +1,77 @@
+---
+title: 'Week 5: Spatial Point Process -- spatstat'
+---
+
+<div style="margin-bottom:50px;">
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+</div>
+
+# Goal
+
+
+
+# Test of CSR
+
+
+## Generate Poisson Process: HPP
+
+
+```{r echo=TRUE, results="hold", message=FALSE}
+library(spatstat)
+pp = rpoispp(lambda=100, win=owin(c(0,1),c(0,1)))
+plot(pp, pch=46, cex =3)                           
+```
+
+* Argument: 
+  + lambda=100: intensity function 
+  + win=owin(c(0,1),c(0,1)): spatial point process data will be generated in the region (0,1)*(0,1).
+
+
+
+
+## Quadrat test
+
+Here, we will use R package *spatstat*
+
+```{r echo=TRUE, warning=FALSE, message = FALSE}
+quadrat.test(pp, nx = 4, ny= 4, alternative = "two.sided", method = "Chisq")
+```
+* Argument: 
+  + pp: the dataset must be a "ppp" class.
+  + nx=4, ny =4: number of block on x-axis and y-axis. Here, we have 4*4=16 blocks. 
+  + alternative: alternative hypothesis. You can choose one of "two.sided", "regular", "clustered"
+  + method: the method used to compute p-value. "Chisq" (analytical way), "MonteCarlo"
+  
+Since p-value is bigger than 0.05, we fail to reject $H_0$ (It follows a random pattern). 
+
+  
+## Test: G Function
+
+```{r echo=TRUE, warning=FALSE, message = FALSE}
+r=seq(0,sqrt(2)/3, by=0.005)
+Gtest=envelope(pp,fun=Gest, 
+                  r=r, nrank=2, nsim=99)
+```
+* Argument: 
+  + nsim: the number of simulated datasets
+  + nrank: similar to deciding the significant level
+  + Note that (2+2+1)/(99+1) = 0.05, and therefore, it is a similar to test at "significant level" = 0.05 
+  + fun: Gest
+
+
+
+```{r echo=TRUE, warning=FALSE, message = FALSE}
+plot(Gtest)
+```
+What do you conclude from the above plot?
+
+
+
+# ppp class
+
+As mentioned earlier, package *spatstat* uses ppp class. 
+
+
