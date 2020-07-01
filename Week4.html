@@ -386,6 +386,23 @@ pal=brewer.pal(5, &quot;OrRd&quot;) # we select 5 colors from the palette
 spplot(gmellisa, &quot;pvalue&quot;, col.regions=pal, at = brks,  main = &quot;p value&quot;)</code></pre>
 <p><img src="Week4_files/figure-html/unnamed-chunk-5-3.png" width="288" style="display: block; margin: auto;" /></p>
 </div>
+<div id="columbus-data" class="section level1">
+<h1>Columbus Data</h1>
+<p>If you have time, you can analyze the following Columbus data</p>
+<p>The dataset is about 49 neighbourhoods in Columbus, OH in Year 1980, more informaiton can be found in R by <em>?columbus</em>.</p>
+<p>It is essential a shapefile, and the difference from olinda data is columbus data is already stored in R. Thus, to read the colubus data, you use <em>system.file</em> instead.</p>
+<p>After read the shapefile, you will get a SpatialPolygonsDataFrame object <em>columbus</em>.</p>
+<pre class="r"><code>columbus &lt;- readOGR(system.file(&quot;shapes/columbus.shp&quot;, package=&quot;spData&quot;)[1])</code></pre>
+<pre><code>## OGR data source with driver: ESRI Shapefile 
+## Source: &quot;C:\Users\tingjinc\Documents\R\R-3.5.3\library\spData\shapes\columbus.shp&quot;, layer: &quot;columbus&quot;
+## with 49 features
+## It has 20 fields
+## Integer64 fields read as strings:  COLUMBUS_ COLUMBUS_I POLYID</code></pre>
+<pre class="r"><code>plot(columbus, border=&quot;black&quot;,main=&quot;Neigbhoods of Columbus City&quot;)</code></pre>
+<p><img src="Week4_files/figure-html/unnamed-chunk-6-1.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>spplot(columbus, &quot;CRIME&quot;, col.regions = rev(heat.colors(20,alpha=0.8)))</code></pre>
+<p><img src="Week4_files/figure-html/unnamed-chunk-6-2.png" width="768" style="display: block; margin: auto;" /></p>
+</div>
 
 
 

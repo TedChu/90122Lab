@@ -83,3 +83,20 @@ pal=brewer.pal(5, "OrRd") # we select 5 colors from the palette
 spplot(gmellisa, "pvalue", col.regions=pal, at = brks,  main = "p value")
 ```
 
+
+# Columbus Data
+If you have time, you can analyze the following Columbus data
+
+
+The dataset is about 49 neighbourhoods in Columbus, OH in Year 1980, more informaiton can be found in R by *?columbus*.
+
+It is essential a shapefile, and the difference from olinda data is columbus data is already stored in R. Thus, to read the colubus data, you use *system.file* instead. 
+
+After read the shapefile, you will get a SpatialPolygonsDataFrame object *columbus*. 
+```{r, echo=TRUE, fig.width=8, fig.align="center"}
+columbus <- readOGR(system.file("shapes/columbus.shp", package="spData")[1])
+plot(columbus, border="black",main="Neigbhoods of Columbus City")
+spplot(columbus, "CRIME", col.regions = rev(heat.colors(20,alpha=0.8)))
+```
+
+
