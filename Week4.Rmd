@@ -5,14 +5,6 @@ title: 'Week 4: Moran''s I, LISA'
 <div style="margin-bottom:50px;">
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-colorize <- function(x, color) {
-  if (knitr::is_latex_output()) {
-    sprintf("\\textcolor{%s}{%s}", color, x)
-  } else if (knitr::is_html_output()) {
-    sprintf("<span style='color: %s;'>%s</span>", color, 
-      x)
-  } else x
-}
 ```
 
 </div>
