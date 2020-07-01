@@ -138,3 +138,7 @@ plot(matII, main="", pch=46, cex =3)
 * kappa: Intensity of the Poisson process of proposal points
 * r: Inhibition distance.
 
+
+## Further Study
+
+If you have time, can you test *rNS* data whether it follow clustered point pattern?
