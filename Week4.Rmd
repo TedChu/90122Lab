@@ -13,12 +13,6 @@ colorize <- function(x, color) {
       x)
   } else x
 }
-
-# Useful 
-# $\mathbf X$
-# `r colorize("red", "red")`
-# echo=TRUE, message=FALSE, warning=FALSE, hold=TRUE
-#options(digits = 3)
 ```
 
 </div>
