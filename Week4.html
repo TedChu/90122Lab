@@ -11,7 +11,7 @@
 
 
 
-<title>MAST90122 Lab</title>
+<title>Week 4: Moran’s I, LISA</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -295,13 +295,97 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">MAST90122 Lab</h1>
+<h1 class="title toc-ignore">Week 4: Moran’s I, LISA</h1>
 
 </div>
 
 
-<p>There are labs between week 2–11.</p>
-<p>There is no lab for Week 1. However, if you do not know R, please study <em>An Introduction to R</em> at <a href="https://cran.r-project.org/doc/manuals/R-intro.pdf" class="uri">https://cran.r-project.org/doc/manuals/R-intro.pdf</a></p>
+<div style="margin-bottom:50px;">
+
+</div>
+<div id="goal" class="section level1">
+<h1>Goal</h1>
+<ul>
+<li>In this lab, you will learn
+<ul>
+<li>Creating weight matrix</li>
+<li>Conducting Moran’s I and LISA</li>
+</ul></li>
+</ul>
+</div>
+<div id="create-weight-matrix" class="section level1">
+<h1>Create Weight Matrix</h1>
+<p>We will load the dataset <em>gmel2</em> from Week 3 Lab.</p>
+<pre class="r"><code>library(rgdal)
+library(spdep)
+load(&quot;datasets/gmel2.Rdata&quot;)</code></pre>
+<p>R function <em>poly2nb</em> produces a spatial weight matrix from a SpatialPolygons(DataFrame) object.</p>
+<pre class="r"><code>Wqueen = poly2nb(gmel2)
+Wrook = poly2nb(gmel2, queen=FALSE)
+plot(gmel2,border=&quot;grey60&quot;, axes=TRUE)
+plot(Wqueen, coordinates(gmel2), pch=19, cex=0.6, add=TRUE,col=&quot;red&quot;)
+plot(Wrook, coordinates(gmel2), pch=19, cex=0.6, add=TRUE)</code></pre>
+<p><img src="Week4_files/figure-html/unnamed-chunk-2-1.png" width="288" style="display: block; margin: auto;" /></p>
+<p>Can you see the difference between <em>queen</em> rule and <em>rook</em> rule?</p>
+</div>
+<div id="morans-i-test" class="section level1">
+<h1>Moran’s I test</h1>
+<p>A Moran’s I test is performed on the variable <em>price</em>.</p>
+<pre class="r"><code>## plot
+moran.test(x=gmel2$price, nb2listw(Wqueen), alternative=&quot;two.sided&quot;)</code></pre>
+<pre><code>## 
+##  Moran I test under randomisation
+## 
+## data:  gmel2$price  
+## weights: nb2listw(Wqueen)    
+## 
+## Moran I statistic standard deviate = 5.8942, p-value = 3.765e-09
+## alternative hypothesis: two.sided
+## sample estimates:
+## Moran I statistic       Expectation          Variance 
+##        0.62112582       -0.03448276        0.01237199</code></pre>
+<ul>
+<li>Comments
+<ul>
+<li>The function requires <em>listw</em> form for spatial weight matrix</li>
+<li>Argument <em>alternative</em></li>
+<li>The above test is <em>Moran I test under randomisation</em>.
+<ul>
+<li>What does this mean?</li>
+<li>If you want to take analytical approach mentioned in lectures, what should you do?</li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+<div id="lisa" class="section level1">
+<h1>LISA</h1>
+<p>LISA is performed on <em>price</em> variable.</p>
+<pre class="r"><code>resI = localmoran(gmel2$price, nb2listw(Wqueen), alternative=&quot;two.sided&quot;)
+round(head(resI),3)</code></pre>
+<pre><code>##      Ii   E.Ii Var.Ii  Z.Ii Pr(z != 0)
+## 2 1.343 -0.034  0.286 2.575      0.010
+## 3 2.347 -0.034  0.160 5.959      0.000
+## 4 0.494 -0.034  0.106 1.628      0.104
+## 5 0.728 -0.034  0.128 2.130      0.033
+## 6 0.659 -0.034  0.160 1.735      0.083
+## 7 0.005 -0.034  0.207 0.087      0.931</code></pre>
+<p>Visualisation</p>
+<pre class="r"><code>gmellisa = gmel2
+gmellisa@data = data.frame(gmellisa@data, lisa=resI[,1], pvalue=resI[,5])
+### Spatial plots with LISA value
+### rev function is used to assign darker color to higher values. 
+spplot(gmellisa, &quot;lisa&quot;, col.regions = rev(heat.colors(16,alpha=0.8)),main=&quot;LISA value&quot;)</code></pre>
+<p><img src="Week4_files/figure-html/unnamed-chunk-5-1.png" width="288" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>### Spatial plots with p values
+spplot(gmellisa, &quot;pvalue&quot;, col.regions = heat.colors(16,alpha=0.8),main=&quot;p value&quot;)</code></pre>
+<p><img src="Week4_files/figure-html/unnamed-chunk-5-2.png" width="288" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>### Wants to see threshold 0.05, 0.10 for p vlaues
+library(RColorBrewer)     # for function brew.pal
+brks=c(0.00,0.05,0.10,0.5,0.8,1.00)
+pal=brewer.pal(5, &quot;OrRd&quot;) # we select 5 colors from the palette
+spplot(gmellisa, &quot;pvalue&quot;, col.regions=pal, at = brks,  main = &quot;p value&quot;)</code></pre>
+<p><img src="Week4_files/figure-html/unnamed-chunk-5-3.png" width="288" style="display: block; margin: auto;" /></p>
+</div>
 
 
 

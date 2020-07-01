@@ -1,5 +1,5 @@
 ---
-title: 'Week 2: Visualisation of Spatial Data--sp'
+title: 'Week 2: Spatial Data Classes -- package sp'
 ---
 
 <div style="margin-bottom:50px;">
@@ -7,6 +7,15 @@ title: 'Week 2: Visualisation of Spatial Data--sp'
 knitr::opts_chunk$set(echo = TRUE)
 ```
 </div>
+
+
+# Goal
+
+
+* In this lab, you will learn 
+  + Creat different type of spatial objects
+  + Some basic property and manipulation of these spatial objects
+
 
 
 # SpatialPointsDataFrame Class 

@@ -1,5 +1,5 @@
 ---
-title: 'Week 3: Visualisation of Spatial Data--sp'
+title: 'Week 3: Visualisation of Spatial Data -- Melbourne Example'
 ---
 
 <div style="margin-bottom:50px;">
@@ -12,10 +12,11 @@ knitr::opts_chunk$set(echo = TRUE)
 # Goal
 
 
-* In this lab, you will learn through 
+* In this lab, you will learn 
   + Reading a map (and data) through shapefile. The example map is about all local government areas (LGA) within  Metropolitan Melbourne Area. 
   + The shapefile will be stored as SpatialPolygonsDataFrame in R. Some manipulation of SpatialPolygonsDataFrame will be presented. 
   + The visualisation of SpatialPolygonsDataFrame.
+
 
 
 # Shapefile

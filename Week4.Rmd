@@ -1,0 +1,98 @@
+---
+title: 'Week 4: Moran''s I, LISA'
+---
+
+<div style="margin-bottom:50px;">
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+colorize <- function(x, color) {
+  if (knitr::is_latex_output()) {
+    sprintf("\\textcolor{%s}{%s}", color, x)
+  } else if (knitr::is_html_output()) {
+    sprintf("<span style='color: %s;'>%s</span>", color, 
+      x)
+  } else x
+}
+
+# Useful 
+# $\mathbf X$
+# `r colorize("red", "red")`
+# echo=TRUE, message=FALSE, warning=FALSE, hold=TRUE
+#options(digits = 3)
+```
+
+</div>
+
+# Goal
+
+* In this lab, you will learn 
+  + Creating weight matrix
+  + Conducting Moran's I and LISA
+
+
+# Create Weight Matrix
+
+We will load the dataset *gmel2* from Week 3 Lab. 
+```{r, echo=TRUE, fig.width=8, fig.align="center"}
+library(rgdal)
+library(spdep)
+load("datasets/gmel2.Rdata")
+```
+
+
+
+
+
+R function *poly2nb* produces a spatial weight matrix from a SpatialPolygons(DataFrame) object. 
+```{r, echo=TRUE, fig.width=3, fig.height =3, fig.align="center"}
+Wqueen = poly2nb(gmel2)
+Wrook = poly2nb(gmel2, queen=FALSE)
+plot(gmel2,border="grey60", axes=TRUE)
+plot(Wqueen, coordinates(gmel2), pch=19, cex=0.6, add=TRUE,col="red")
+plot(Wrook, coordinates(gmel2), pch=19, cex=0.6, add=TRUE)
+```
+
+Can you see the difference between *queen* rule and *rook* rule?
+
+
+# Moran's I test
+A Moran's I test is performed on the variable *price*. 
+
+
+```{r, echo=TRUE, fig.align="center"}
+## plot
+moran.test(x=gmel2$price, nb2listw(Wqueen), alternative="two.sided")
+```
+
+* Comments
+  + The function requires *listw* form for spatial weight matrix
+  + Argument *alternative*
+  + The above test is *Moran I test under randomisation*. 
+    + What does this mean?
+    + If you want to take analytical approach mentioned in lectures, what should you do?
+    
+    
+# LISA
+
+LISA is performed on *price* variable. 
+```{r, echo=TRUE, fig.width=3, fig.height =3, fig.align="center"}
+resI = localmoran(gmel2$price, nb2listw(Wqueen), alternative="two.sided")
+round(head(resI),3)
+```
+
+Visualisation
+```{r, echo=TRUE, fig.width=3, fig.height =3, fig.align="center"}
+gmellisa = gmel2
+gmellisa@data = data.frame(gmellisa@data, lisa=resI[,1], pvalue=resI[,5])
+### Spatial plots with LISA value
+### rev function is used to assign darker color to higher values. 
+spplot(gmellisa, "lisa", col.regions = rev(heat.colors(16,alpha=0.8)),main="LISA value")
+### Spatial plots with p values
+spplot(gmellisa, "pvalue", col.regions = heat.colors(16,alpha=0.8),main="p value")
+
+### Wants to see threshold 0.05, 0.10 for p vlaues
+library(RColorBrewer)     # for function brew.pal
+brks=c(0.00,0.05,0.10,0.5,0.8,1.00)
+pal=brewer.pal(5, "OrRd") # we select 5 colors from the palette
+spplot(gmellisa, "pvalue", col.regions=pal, at = brks,  main = "p value")
+```
