@@ -283,6 +283,9 @@ $(document).ready(function () {
 <li>
   <a href="Week4.html">Week 4</a>
 </li>
+<li>
+  <a href="Week5.html">Week 5</a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         
@@ -299,12 +302,21 @@ $(document).ready(function () {
 
 </div>
 
+<div id="TOC">
+<ul>
+<li><a href="#goal"><span class="toc-section-number">1</span> Goal</a></li>
+<li><a href="#create-weight-matrix"><span class="toc-section-number">2</span> Create Weight Matrix</a></li>
+<li><a href="#morans-i-test"><span class="toc-section-number">3</span> Moran’s I test</a></li>
+<li><a href="#lisa"><span class="toc-section-number">4</span> LISA</a></li>
+<li><a href="#columbus-data"><span class="toc-section-number">5</span> Columbus Data</a></li>
+</ul>
+</div>
 
 <div style="margin-bottom:50px;">
 
 </div>
 <div id="goal" class="section level1">
-<h1>Goal</h1>
+<h1><span class="header-section-number">1</span> Goal</h1>
 <ul>
 <li>In this lab, you will learn
 <ul>
@@ -314,7 +326,7 @@ $(document).ready(function () {
 </ul>
 </div>
 <div id="create-weight-matrix" class="section level1">
-<h1>Create Weight Matrix</h1>
+<h1><span class="header-section-number">2</span> Create Weight Matrix</h1>
 <p>We will load the dataset <em>gmel2</em> from Week 3 Lab.</p>
 <pre class="r"><code>library(rgdal)
 library(spdep)
@@ -329,7 +341,7 @@ plot(Wrook, coordinates(gmel2), pch=19, cex=0.6, add=TRUE)</code></pre>
 <p>Can you see the difference between <em>queen</em> rule and <em>rook</em> rule?</p>
 </div>
 <div id="morans-i-test" class="section level1">
-<h1>Moran’s I test</h1>
+<h1><span class="header-section-number">3</span> Moran’s I test</h1>
 <p>A Moran’s I test is performed on the variable <em>price</em>.</p>
 <pre class="r"><code>## plot
 moran.test(x=gmel2$price, nb2listw(Wqueen), alternative=&quot;two.sided&quot;)</code></pre>
@@ -358,7 +370,7 @@ moran.test(x=gmel2$price, nb2listw(Wqueen), alternative=&quot;two.sided&quot;)</
 </ul>
 </div>
 <div id="lisa" class="section level1">
-<h1>LISA</h1>
+<h1><span class="header-section-number">4</span> LISA</h1>
 <p>LISA is performed on <em>price</em> variable.</p>
 <pre class="r"><code>resI = localmoran(gmel2$price, nb2listw(Wqueen), alternative=&quot;two.sided&quot;)
 round(head(resI),3)</code></pre>
@@ -387,7 +399,7 @@ spplot(gmellisa, &quot;pvalue&quot;, col.regions=pal, at = brks,  main = &quot;p
 <p><img src="Week4_files/figure-html/unnamed-chunk-5-3.png" width="288" style="display: block; margin: auto;" /></p>
 </div>
 <div id="columbus-data" class="section level1">
-<h1>Columbus Data</h1>
+<h1><span class="header-section-number">5</span> Columbus Data</h1>
 <p>If you have time, you can analyze the following Columbus data</p>
 <p>The dataset is about 49 neighbourhoods in Columbus, OH in Year 1980, more informaiton can be found in R by <em>?columbus</em>.</p>
 <p>It is essential a shapefile, and the difference from olinda data is columbus data is already stored in R. Thus, to read the colubus data, you use <em>system.file</em> instead.</p>
