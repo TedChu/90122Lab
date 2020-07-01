@@ -283,6 +283,9 @@ $(document).ready(function () {
 <li>
   <a href="Week4.html">Week 4</a>
 </li>
+<li>
+  <a href="Week5.html">Week 5</a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         
@@ -299,12 +302,30 @@ $(document).ready(function () {
 
 </div>
 
+<div id="TOC">
+<ul>
+<li><a href="#goal"><span class="toc-section-number">1</span> Goal</a></li>
+<li><a href="#spatialpointsdataframe-class"><span class="toc-section-number">2</span> SpatialPointsDataFrame Class</a><ul>
+<li><a href="#create-spatial-class"><span class="toc-section-number">2.1</span> Create Spatial Class</a></li>
+<li><a href="#create-spatialpoints-class"><span class="toc-section-number">2.2</span> Create SpatialPoints Class</a></li>
+<li><a href="#create-spatialpointsdataframe-class"><span class="toc-section-number">2.3</span> Create SpatialPointsDataFrame Class</a></li>
+</ul></li>
+<li><a href="#spatialpolygonsdataframe"><span class="toc-section-number">3</span> SpatialPolygonsDataFrame</a><ul>
+<li><a href="#create-polygon"><span class="toc-section-number">3.1</span> Create Polygon</a></li>
+<li><a href="#create-polygons"><span class="toc-section-number">3.2</span> Create Polygons</a></li>
+<li><a href="#create-spatialpolygons"><span class="toc-section-number">3.3</span> Create SpatialPolygons</a></li>
+<li><a href="#create-spatialpolygonsdataframe"><span class="toc-section-number">3.4</span> Create SpatialPolygonsDataFrame</a></li>
+</ul></li>
+<li><a href="#further-study"><span class="toc-section-number">4</span> Further Study</a></li>
+<li><a href="#references"><span class="toc-section-number">5</span> References</a></li>
+</ul>
+</div>
 
 <div style="margin-bottom:50px;">
 
 </div>
 <div id="goal" class="section level1">
-<h1>Goal</h1>
+<h1><span class="header-section-number">1</span> Goal</h1>
 <ul>
 <li>In this lab, you will learn
 <ul>
@@ -314,18 +335,18 @@ $(document).ready(function () {
 </ul>
 </div>
 <div id="spatialpointsdataframe-class" class="section level1">
-<h1>SpatialPointsDataFrame Class</h1>
+<h1><span class="header-section-number">2</span> SpatialPointsDataFrame Class</h1>
 <p><em>Information of spatial class can be found in class notes: Chpater 1–Visualisation.</em></p>
 <p>The diagram will help <img src="pics/SpPtDF.png" width="268" style="display: block; margin: auto;" /></p>
 <div id="create-spatial-class" class="section level2">
-<h2>Create Spatial Class</h2>
+<h2><span class="header-section-number">2.1</span> Create Spatial Class</h2>
 <pre class="r"><code>library(sp)
 m=matrix(c(0,0,1,1),ncol=2, dimnames=list(NULL, c(&quot;min&quot;,&quot;max&quot;)))  
 crs=CRS(projargs=&quot;+proj=longlat +ellps=WGS84&quot;)    
 S=Spatial(bbox=m, proj4string=crs)</code></pre>
 </div>
 <div id="create-spatialpoints-class" class="section level2">
-<h2>Create SpatialPoints Class</h2>
+<h2><span class="header-section-number">2.2</span> Create SpatialPoints Class</h2>
 <p>Recall SpatialPoints = Spatial + coords</p>
 <pre class="r"><code>lcoords=matrix(rep(1:4,each=2),ncol=2,byrow=T)    ## coords
 SP=SpatialPoints(lcoords,bbox = m, proj4string = crs)
@@ -361,7 +382,7 @@ plot(SP)</code></pre>
 </ul>
 </div>
 <div id="create-spatialpointsdataframe-class" class="section level2">
-<h2>Create SpatialPointsDataFrame Class</h2>
+<h2><span class="header-section-number">2.3</span> Create SpatialPointsDataFrame Class</h2>
 <p>Recall SpatialPointsDataFrame = SpatialPoints + data.frame</p>
 <pre class="r"><code>names=c(&quot;a&quot;,&quot;b&quot;,&quot;c&quot;,&quot;d&quot;)
 df = data.frame(xvals=c(1.1,1.2,1.6,2.1), row.names=names)
@@ -389,11 +410,11 @@ class(SPDF2)</code></pre>
 </div>
 </div>
 <div id="spatialpolygonsdataframe" class="section level1">
-<h1>SpatialPolygonsDataFrame</h1>
+<h1><span class="header-section-number">3</span> SpatialPolygonsDataFrame</h1>
 <p>Due to time constrain, I will not talk about spatiallines class. Instead, I will focus on SpatialPolygonsDataFrame.</p>
 <p>First, the diagram <img src="pics/SpPnDF.png" width="590" style="display: block; margin: auto;" /></p>
 <div id="create-polygon" class="section level2">
-<h2>Create Polygon</h2>
+<h2><span class="header-section-number">3.1</span> Create Polygon</h2>
 <pre class="r"><code>#getClass(&quot;Polygon&quot;)
 Sr1 = Polygon(cbind(c(2,4,4,1,2),c(2,3,5,4,2)))
 Sr2 = Polygon(cbind(c(5,4,2,5),c(2,3,2,2)))
@@ -401,7 +422,7 @@ Sr3 = Polygon(cbind(c(4,4,5,10,4),c(5,3,2,5,5)))
 Sr4 = Polygon(cbind(c(5,6,6,5,5),c(4,4,3,3,4)), hole = TRUE)</code></pre>
 </div>
 <div id="create-polygons" class="section level2">
-<h2>Create Polygons</h2>
+<h2><span class="header-section-number">3.2</span> Create Polygons</h2>
 <p>Note the difference between the previous subsection: Polygon vs Polygons</p>
 <pre class="r"><code>#getClass(&quot;Polygons&quot;)
 Srs1 = Polygons(list(Sr1), &quot;s1&quot;)
@@ -409,14 +430,14 @@ Srs2 = Polygons(list(Sr2), &quot;s2&quot;)
 Srs3 = Polygons(list(Sr3, Sr4), &quot;s3/4&quot;)</code></pre>
 </div>
 <div id="create-spatialpolygons" class="section level2">
-<h2>Create SpatialPolygons</h2>
+<h2><span class="header-section-number">3.3</span> Create SpatialPolygons</h2>
 <pre class="r"><code>#getClass(&quot;SpatialPolygons&quot;)
 SpP = SpatialPolygons(list(Srs1,Srs2,Srs3), 1:3)
 plot(SpP, col = 1:3, bg=&quot;yellow&quot;)</code></pre>
 <p><img src="Week2_files/figure-html/unnamed-chunk-9-1.png" width="576" style="display: block; margin: auto;" /> Note that there is a hole in one of Polygons</p>
 </div>
 <div id="create-spatialpolygonsdataframe" class="section level2">
-<h2>Create SpatialPolygonsDataFrame</h2>
+<h2><span class="header-section-number">3.4</span> Create SpatialPolygonsDataFrame</h2>
 <pre class="r"><code>#getClass(&quot;SpatialPolygons&quot;)
 df = data.frame(xval = c(1.2,1.3,1.6), yval = c(2.2,2.8,3.9), row.names = row.names(SpP))
 SpPDF = SpatialPolygonsDataFrame(Sr = SpP, data = df)
@@ -425,11 +446,11 @@ spplot(SpPDF, zcol = &quot;xval&quot;)</code></pre>
 </div>
 </div>
 <div id="further-study" class="section level1">
-<h1>Further Study</h1>
+<h1><span class="header-section-number">4</span> Further Study</h1>
 <p>Study vector data manipulation(<a href="https://rspatial.org/raster/spatial/7-vectmanip.html" class="uri">https://rspatial.org/raster/spatial/7-vectmanip.html</a>). Here, vector data is referring to SpatialPolygonsDataFrame.</p>
 </div>
 <div id="references" class="section level1">
-<h1>References</h1>
+<h1><span class="header-section-number">5</span> References</h1>
 <ul>
 <li>For more information, please see (Not required to read, and treat the following materials as reference. )
 <ul>
