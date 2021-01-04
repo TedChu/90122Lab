@@ -92,11 +92,11 @@ MELLGA@proj4string
 ## Task 1
 GMEL = MELLGA[1, ]   # Greater Melbourne
 GMELSub = crop(VICSub, GMEL)
-#mapView(GMELSub)      
+mapView(GMELSub)      
 
 ## Task 2: this code takes a while to run. 
-#i = which(MELLGA$name == "City of Melbourne")
-#CMEL = MELLGA[i, ]
+i = which(MELLGA$name == "City of Melbourne")
+CMEL = MELLGA[i, ]
 #CMELSub = crop(VICSub, CMEL)      
 #mapView(CMELSub) 
 ```
@@ -108,8 +108,7 @@ GMELSub = crop(VICSub, GMEL)
 + It is quite useful. 
 + The following gives *regions of victoria* and *CBD*
   
-  ```{r, echo=TRUE, fig.width=6, fig.align="center"}
-#setwd("C:/Users/tingjinc/Dropbox/1_MAST90122/2_Spatial_Lab/1_Visualisation_Lab2367")
+```{r, echo=TRUE, fig.width=6, fig.align="center"}
 #SReg = readOGR(dsn="2_ggplot/PlanMelbourne/Administrative/State Regions_region.shp", "State Regions_region")
 
 #library(mapview)

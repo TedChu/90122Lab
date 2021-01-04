@@ -54,7 +54,7 @@ The shapefile you just read into is stored in *gmel*, which is a SpatialPolygons
 
 ## Manuplation of SpatialXXXDF
 
-R package *mapview* provides functions to create interactive visualisation of spatial data. 
+R package *mapview* provides functions to create interactive visualisation of spatial data.(For more detailed tutorial, please look at "https://r-spatial.github.io/mapview/index.html").  
 A simple interactive map can generated as
 ```{r, echo=TRUE, fig.width=10, fig.align="center"}
 library(mapview)

@@ -204,9 +204,9 @@ ggplot()+geom_sf(data=gmel2.sf, aes(fill = price))
 ```
 From sf class to SpatialPolygonsDataFrame: sp::as
 ```{r, echo=TRUE, fig.width=6, fig.align="center"}
-#class(gmel2.sf)
-#gmel2.sp = as(gmel2.sf, "Spatial")
-#spplot(gmel2.sp, "price")
+class(gmel2.sf)
+gmel2.sp = as(gmel2.sf, "Spatial")
+spplot(gmel2.sp, "price")
 ```
 * In summary, we focus on three ways to visulization
   + spplot:    work for SpatialPolygonsDataFrame
@@ -215,6 +215,6 @@ From sf class to SpatialPolygonsDataFrame: sp::as
 
 ```{r, echo=TRUE, fig.width=6, fig.align="center"}
 library(mapview)
-#mapView(gmel2.sf, zcol = "price")
-#mapView(gmel2.sp, zcol = "price")   
+mapView(gmel2.sf, zcol = "price")
+mapView(gmel2.sp, zcol = "price")   
 ```
