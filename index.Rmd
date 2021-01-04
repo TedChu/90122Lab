@@ -5,3 +5,19 @@ title: "MAST90122 Lab"
 There are labs between week 2--11. 
 
 There is no lab for Week 1. However, if you do not know R, please study *An Introduction to R* at https://cran.r-project.org/doc/manuals/R-intro.pdf
+
+
+The code is constructed using 
+```{r, echo=TRUE, fig.width=6, fig.align="center", message = FALSE}
+sessionInfo()
+```
+
+
+
+The version of some packages
+```{r, echo=TRUE, fig.width=6, fig.align="center", message = FALSE}
+packageVersion("mapview")
+packageVersion("sp")
+packageVersion("raster")
+packageVersion("rgdal")
+```
