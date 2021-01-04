@@ -154,3 +154,67 @@ ggplot(data = west_coast) +
 
 Can you tell the difference between *color* and *fill* argument? 
 
+
+# SpatialPolygonsDataFrame versus sf class
+
+* For polygons
++ In package *sp* (spplot), SpatialPolygonsDataFrame is used
++ In packages *ggplot2* and *sf*, sf class is used
+
+## Package sf
+
+The following example is from "https://eriqande.github.io/rep-res-eeb-2017/plotting-spatial-data-with-ggplot.html".
+
+An alternative (and better) way for visulatization of spatial objects in ggplot2 is to use *geom_sf* function. 
+
+
+## sf class
+Here, *sf*(simple feature) is a type of data class. First, we use package *sf* to read shapefiles
+
+```{r, echo=TRUE, fig.width=10, fig.align="center", message = FALSE}
+library(tidyverse)
+library(sf)
+library(raster)
+```
+
+
+## SpatialPolygonsDataFrame versus sf class
+
+
+Here, we show how to transform them
+
+
+From SpatialPolygonsDataFrame to sf class: sf::st_as_sf
+```{r, echo=TRUE, fig.width=6, fig.align="center", message = FALSE}
+library(sp)
+library(sf)
+library(ggplot2)
+library(maps)
+```
+
+
+```{r, echo=TRUE, fig.width=6, fig.align="center"}
+load("datasets/gmel2.RData")          # Load gmel2 data from Lab 3
+class(gmel2)                 # SpatialPolygonsDataFrame
+gmel2.sf = st_as_sf(gmel2)   # to sf class
+class(gmel2.sf)
+
+ggplot()+geom_sf(data=gmel2.sf, aes(fill = price))
+
+```
+From sf class to SpatialPolygonsDataFrame: sp::as
+```{r, echo=TRUE, fig.width=6, fig.align="center"}
+#class(gmel2.sf)
+#gmel2.sp = as(gmel2.sf, "Spatial")
+#spplot(gmel2.sp, "price")
+```
+* In summary, we focus on three ways to visulization
+  + spplot:    work for SpatialPolygonsDataFrame
+  + geom_sf:   work for sf class
+  + mapView:   work for both SpatialPolygonsDataFrame and sf class
+
+```{r, echo=TRUE, fig.width=6, fig.align="center"}
+library(mapview)
+#mapView(gmel2.sf, zcol = "price")
+#mapView(gmel2.sp, zcol = "price")
+```

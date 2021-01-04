@@ -296,6 +296,9 @@ $(document).ready(function () {
 <li>
   <a href="Week5.html">Week 5</a>
 </li>
+<li>
+  <a href="Week6.html">Week 6</a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         
@@ -322,13 +325,18 @@ $(document).ready(function () {
 <li><a href="#usa-map"><span class="toc-section-number">3.1</span> USA map</a></li>
 <li><a href="#us-state"><span class="toc-section-number">3.2</span> US state</a></li>
 </ul></li>
+<li><a href="#spatialpolygonsdataframe-versus-sf-class"><span class="toc-section-number">4</span> SpatialPolygonsDataFrame versus sf class</a><ul>
+<li><a href="#package-sf"><span class="toc-section-number">4.1</span> Package sf</a></li>
+<li><a href="#sf-class"><span class="toc-section-number">4.2</span> sf class</a></li>
+<li><a href="#spatialpolygonsdataframe-versus-sf-class-1"><span class="toc-section-number">4.3</span> SpatialPolygonsDataFrame versus sf class</a></li>
+</ul></li>
 </ul>
 </div>
 
 <div style="margin-bottom:50px;">
 
 </div>
-<pre><code>The following materials are based on &quot;https://eriqande.github.io/rep-res-eeb-2017/&quot; 
+<pre><code>The following materials are partly based on &quot;https://eriqande.github.io/rep-res-eeb-2017/&quot; 
 by Eric C. Anderson, Kristen C. Ruegg, Tina Cheng.</code></pre>
 <div id="overview" class="section level1">
 <h1><span class="header-section-number">1</span> Overview</h1>
@@ -353,11 +361,7 @@ by Eric C. Anderson, Kristen C. Ruegg, Tina Cheng.</code></pre>
 <p>The following example is from “<a href="https://eriqande.github.io/rep-res-eeb-2017/ggplot2-intro-lecture.html" class="uri">https://eriqande.github.io/rep-res-eeb-2017/ggplot2-intro-lecture.html</a>”.</p>
 <p>The pv dataset includes information of the history of pole-vaulting world record “<a href="http://en.wikipedia.org/wiki/Men&#39;s_pole_vault_world_record_progression" class="uri">http://en.wikipedia.org/wiki/Men's_pole_vault_world_record_progression</a>”. Here, the data is already stored in .</p>
 <p>First, read the RData set. Remember to set the right working directory.</p>
-<pre class="r"><code>#setwd(&quot;C:/Users/tingjinc/Dropbox/1-MAST90122/Spatial Lab/LabUpdates&quot;)
-#setwd(&quot;~/Dropbox/1-MAST90122/Spatial Lab/LabUpdates&quot;)
-#setwd(&quot;C:/Users/tingjinc/Dropbox/1_MAST90122/2_Spatial_Lab/1_Visualisation_Lab23679/2_ggplot&quot;)
-
-library(ggplot2)
+<pre class="r"><code>library(ggplot2)
 load(&quot;datasets/pv.RData&quot;)</code></pre>
 <p>Now, we start to plot</p>
 <pre class="r"><code>## plot points
@@ -473,6 +477,59 @@ ggplot(data = west_coast) +
   coord_fixed(1.3)</code></pre>
 <p><img src="Week6_files/figure-html/unnamed-chunk-7-2.png" width="960" style="display: block; margin: auto;" /></p>
 <p>Can you tell the difference between <em>color</em> and <em>fill</em> argument?</p>
+</div>
+</div>
+<div id="spatialpolygonsdataframe-versus-sf-class" class="section level1">
+<h1><span class="header-section-number">4</span> SpatialPolygonsDataFrame versus sf class</h1>
+<ul>
+<li>For polygons</li>
+<li>In package <em>sp</em> (spplot), SpatialPolygonsDataFrame is used</li>
+<li>In packages <em>ggplot2</em> and <em>sf</em>, sf class is used</li>
+</ul>
+<div id="package-sf" class="section level2">
+<h2><span class="header-section-number">4.1</span> Package sf</h2>
+<p>The following example is from “<a href="https://eriqande.github.io/rep-res-eeb-2017/plotting-spatial-data-with-ggplot.html" class="uri">https://eriqande.github.io/rep-res-eeb-2017/plotting-spatial-data-with-ggplot.html</a>”.</p>
+<p>An alternative (and better) way for visulatization of spatial objects in ggplot2 is to use <em>geom_sf</em> function.</p>
+</div>
+<div id="sf-class" class="section level2">
+<h2><span class="header-section-number">4.2</span> sf class</h2>
+<p>Here, <em>sf</em>(simple feature) is a type of data class. First, we use package <em>sf</em> to read shapefiles</p>
+<pre class="r"><code>library(tidyverse)
+library(sf)
+library(raster)</code></pre>
+</div>
+<div id="spatialpolygonsdataframe-versus-sf-class-1" class="section level2">
+<h2><span class="header-section-number">4.3</span> SpatialPolygonsDataFrame versus sf class</h2>
+<p>Here, we show how to transform them</p>
+<p>From SpatialPolygonsDataFrame to sf class: sf::st_as_sf</p>
+<pre class="r"><code>library(sp)
+library(sf)
+library(ggplot2)
+library(maps)</code></pre>
+<pre class="r"><code>load(&quot;datasets/gmel2.RData&quot;)          # Load gmel2 data from Lab 3
+class(gmel2)                 # SpatialPolygonsDataFrame</code></pre>
+<pre><code>## [1] &quot;SpatialPolygonsDataFrame&quot;
+## attr(,&quot;package&quot;)
+## [1] &quot;sp&quot;</code></pre>
+<pre class="r"><code>gmel2.sf = st_as_sf(gmel2)   # to sf class
+class(gmel2.sf)</code></pre>
+<pre><code>## [1] &quot;sf&quot;         &quot;data.frame&quot;</code></pre>
+<pre class="r"><code>ggplot()+geom_sf(data=gmel2.sf, aes(fill = price))</code></pre>
+<p><img src="Week6_files/figure-html/unnamed-chunk-10-1.png" width="576" style="display: block; margin: auto;" /> From sf class to SpatialPolygonsDataFrame: sp::as</p>
+<pre class="r"><code>#class(gmel2.sf)
+#gmel2.sp = as(gmel2.sf, &quot;Spatial&quot;)
+#spplot(gmel2.sp, &quot;price&quot;)</code></pre>
+<ul>
+<li>In summary, we focus on three ways to visulization
+<ul>
+<li>spplot: work for SpatialPolygonsDataFrame</li>
+<li>geom_sf: work for sf class</li>
+<li>mapView: work for both SpatialPolygonsDataFrame and sf class</li>
+</ul></li>
+</ul>
+<pre class="r"><code>library(mapview)
+#mapView(gmel2.sf, zcol = &quot;price&quot;)
+#mapView(gmel2.sp, zcol = &quot;price&quot;)</code></pre>
 </div>
 </div>
 
