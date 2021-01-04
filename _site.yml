@@ -12,6 +12,8 @@ navbar:
       href: Week4.html
     - text: "Week 5"
       href: Week5.html
+    - text: "Week 6"
+      href: Week5.html
 output_dir: "."
 output:
   html_document:

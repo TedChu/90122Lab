@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Week 6: Visualisation of Spatial Data–ggplot</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">MAST90122 Lab</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="Week2.html">Week 2</a>
+</li>
+<li>
+  <a href="Week3.html">Week 3</a>
+</li>
+<li>
+  <a href="Week4.html">Week 4</a>
+</li>
+<li>
+  <a href="Week5.html">Week 5</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Week 6: Visualisation of Spatial Data–ggplot</h1>
+
+</div>
+
+<div id="TOC">
+<ul>
+<li><a href="#overview"><span class="toc-section-number">1</span> Overview</a></li>
+<li><a href="#introductoin-of-ggplot2"><span class="toc-section-number">2</span> Introductoin of ggplot2</a><ul>
+<li><a href="#pv-dataset"><span class="toc-section-number">2.1</span> pv dataset</a></li>
+</ul></li>
+<li><a href="#ggplot-for-spatial-data"><span class="toc-section-number">3</span> ggplot for spatial data</a><ul>
+<li><a href="#usa-map"><span class="toc-section-number">3.1</span> USA map</a></li>
+<li><a href="#us-state"><span class="toc-section-number">3.2</span> US state</a></li>
+</ul></li>
+</ul>
+</div>
+
+<div style="margin-bottom:50px;">
+
+</div>
+<pre><code>The following materials are based on &quot;https://eriqande.github.io/rep-res-eeb-2017/&quot; 
+by Eric C. Anderson, Kristen C. Ruegg, Tina Cheng.</code></pre>
+<div id="overview" class="section level1">
+<h1><span class="header-section-number">1</span> Overview</h1>
+<ul>
+<li>In this Lab, we will learn the following functions in ggplot2.
+<ul>
+<li>ggplot</li>
+<li>geom_point: draw points</li>
+<li>geom_line: draw lines</li>
+<li>geom_polygon: draw polygons</li>
+<li>geom_sf: draw sf class</li>
+</ul></li>
+</ul>
+</div>
+<div id="introductoin-of-ggplot2" class="section level1">
+<h1><span class="header-section-number">2</span> Introductoin of ggplot2</h1>
+<p>According to wikipedia and R-project website (<a href="https://cran.r-project.org/web/packages/ggplot2/index.html" class="uri">https://cran.r-project.org/web/packages/ggplot2/index.html</a>).</p>
+<p><em>ggplot2 is a data visualization package for the statistical programming language R. Created by Hadley Wickham in 2005, ggplot2 is an implementation of Leland Wilkinson’s Gurky Gang—a general scheme for data visualization which breaks up graphs into semantic components such as scales and layers. ggplot2 can serve as a replacement for the base graphics in R and contains a number of defaults for web and print display of common scales. Since 2005, ggplot2 has grown in use to become one of the most popular R packages.</em></p>
+<p>It is a general framework for data visualisation, and in this class, we will use it to visualise spatial data and spatio-temporal data.</p>
+<div id="pv-dataset" class="section level2">
+<h2><span class="header-section-number">2.1</span> pv dataset</h2>
+<p>The following example is from “<a href="https://eriqande.github.io/rep-res-eeb-2017/ggplot2-intro-lecture.html" class="uri">https://eriqande.github.io/rep-res-eeb-2017/ggplot2-intro-lecture.html</a>”.</p>
+<p>The pv dataset includes information of the history of pole-vaulting world record “<a href="http://en.wikipedia.org/wiki/Men&#39;s_pole_vault_world_record_progression" class="uri">http://en.wikipedia.org/wiki/Men's_pole_vault_world_record_progression</a>”. Here, the data is already stored in .</p>
+<p>First, read the RData set. Remember to set the right working directory.</p>
+<pre class="r"><code>#setwd(&quot;C:/Users/tingjinc/Dropbox/1-MAST90122/Spatial Lab/LabUpdates&quot;)
+#setwd(&quot;~/Dropbox/1-MAST90122/Spatial Lab/LabUpdates&quot;)
+#setwd(&quot;C:/Users/tingjinc/Dropbox/1_MAST90122/2_Spatial_Lab/1_Visualisation_Lab23679/2_ggplot&quot;)
+
+library(ggplot2)
+load(&quot;datasets/pv.RData&quot;)</code></pre>
+<p>Now, we start to plot</p>
+<pre class="r"><code>## plot points
+par(mfrow=c(1,3))
+g &lt;- ggplot(data = pv, aes(x = Date, y = Meters))
+g2 = g + geom_point()
+g2</code></pre>
+<p><img src="Week6_files/figure-html/unnamed-chunk-2-1.png" width="288" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>## plot lines
+g3 &lt;- g2 + geom_line()
+g3</code></pre>
+<p><img src="Week6_files/figure-html/unnamed-chunk-2-2.png" width="288" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>## Change the color of a point by adding a more layer
+g4 &lt;- g3 + geom_point(data = pv[4,], color=&quot;red&quot;, fill = &quot;blue&quot;, shape = 21, size = 4, stroke =2) 
+g4  </code></pre>
+<p><img src="Week6_files/figure-html/unnamed-chunk-2-3.png" width="288" style="display: block; margin: auto;" /></p>
+<ul>
+<li>The best way to learn trying different codes and see what it plots. Here are some suggestions
+<ul>
+<li>ggplot()</li>
+<li>ggplot(data = pv, aes(x = Date, y = Meters))</li>
+<li>ggplot()+geom_point(data = pv, mapping = aes(x = Date, y = Meters),col=2)</li>
+<li>For more details on specification, type <em>vignette(“ggplot2-specs”)</em></li>
+</ul></li>
+</ul>
+<p>This part is to provide some interesting plots</p>
+<pre class="r"><code>library(gridExtra)    # for the function grid.arrange
+d &lt;- ggplot(data = pv, aes(x = Date, y = Meters))
+d2 &lt;- d + geom_ribbon(aes(ymax = Meters), ymin = min(pv$Meters), alpha = 0.4, fill = &quot;turquoise&quot;)
+d3 &lt;- d2 + geom_line(color = &quot;blue&quot;)
+d4 &lt;- d3 + geom_point(color = &quot;orange&quot;)
+grid.arrange(d2, d3, d4, nrow = 1)</code></pre>
+<p><img src="Week6_files/figure-html/unnamed-chunk-3-1.png" width="864" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>d5 &lt;- d4 + geom_rug(sides = &quot;bl&quot;, mapping = aes(color = Nation))
+d5</code></pre>
+<p><img src="Week6_files/figure-html/unnamed-chunk-3-2.png" width="864" style="display: block; margin: auto;" /></p>
+<p>For, <em>geom_ribbon</em>, try to see</p>
+<pre class="r"><code>dr1 = d + geom_ribbon(aes(ymax = Meters), ymin = min(pv$Meters), fill = &quot;grey70&quot;) + geom_line(aes(y = Meters))
+dr2 = d + geom_ribbon(aes(ymin = Meters - 0.5, ymax = Meters + 0.5), fill = &quot;grey70&quot;) + geom_line(aes(y = Meters))+ geom_point()
+dr3 = d + geom_ribbon(aes(ymin = Meters), ymax = max(pv$Meters), fill = &quot;grey70&quot;) + geom_line(aes(y = Meters))
+grid.arrange(dr1, dr2, dr3, nrow = 1)</code></pre>
+<p><img src="Week6_files/figure-html/unnamed-chunk-4-1.png" width="864" style="display: block; margin: auto;" /></p>
+<div style="page-break-after: always;"></div>
+</div>
+</div>
+<div id="ggplot-for-spatial-data" class="section level1">
+<h1><span class="header-section-number">3</span> ggplot for spatial data</h1>
+<p>R package <em>maps</em> and <em>mapdata</em> provide some maps.</p>
+<div id="usa-map" class="section level2">
+<h2><span class="header-section-number">3.1</span> USA map</h2>
+<p>We will use the USA map</p>
+<pre class="r"><code>library(maps)
+library(mapdata)
+library(sp)
+usa &lt;- map_data(&quot;usa&quot;)
+dim(usa)</code></pre>
+<pre><code>## [1] 7243    6</code></pre>
+<pre class="r"><code>head(usa)</code></pre>
+<pre><code>##        long      lat group order region subregion
+## 1 -101.4078 29.74224     1     1   main      &lt;NA&gt;
+## 2 -101.3906 29.74224     1     2   main      &lt;NA&gt;
+## 3 -101.3620 29.65056     1     3   main      &lt;NA&gt;
+## 4 -101.3505 29.63911     1     4   main      &lt;NA&gt;
+## 5 -101.3219 29.63338     1     5   main      &lt;NA&gt;
+## 6 -101.3047 29.64484     1     6   main      &lt;NA&gt;</code></pre>
+<pre class="r"><code>tail(usa)</code></pre>
+<pre><code>##           long      lat group order         region subregion
+## 7247 -122.6187 48.37482    10  7247 whidbey island      &lt;NA&gt;
+## 7248 -122.6359 48.35764    10  7248 whidbey island      &lt;NA&gt;
+## 7249 -122.6703 48.31180    10  7249 whidbey island      &lt;NA&gt;
+## 7250 -122.7218 48.23732    10  7250 whidbey island      &lt;NA&gt;
+## 7251 -122.7104 48.21440    10  7251 whidbey island      &lt;NA&gt;
+## 7252 -122.6703 48.17429    10  7252 whidbey island      &lt;NA&gt;</code></pre>
+<p>First, we plot usa map</p>
+<pre class="r"><code>gg0 = ggplot() + geom_polygon(data = usa, aes(x=long, y = lat, group = group)) + 
+  coord_fixed(1.3)
+gg1 &lt;- ggplot() + 
+  geom_polygon(data = usa, aes(x=long, y = lat, group = group), fill = &quot;violet&quot;, color = &quot;blue&quot;) + 
+  coord_fixed(1.3)
+labs &lt;- data.frame(
+  long = c(-122.064873, -122.306417),
+  lat = c(36.951968, 47.644855),
+  names = c(&quot;SWFSC-FED&quot;, &quot;NWFSC&quot;),
+  stringsAsFactors = FALSE
+)  
+gg2 = gg1 + 
+  geom_point(data = labs, aes(x = long, y = lat), color = &quot;yellow&quot;, size = 2)
+
+grid.arrange(gg0, gg1, gg2, nrow = 1)</code></pre>
+<p><img src="Week6_files/figure-html/unnamed-chunk-6-1.png" width="960" style="display: block; margin: auto;" /></p>
+<ul>
+<li>Key points
+<ul>
+<li>“group = group” is essential, you can try code without the group argument</li>
+<li>coord_fixed(): It fixes the relationship between one unit in the y direction and one unit in the x direction.</li>
+</ul></li>
+</ul>
+</div>
+<div id="us-state" class="section level2">
+<h2><span class="header-section-number">3.2</span> US state</h2>
+<pre class="r"><code>### Draw plots for all USA States
+states &lt;- map_data(&quot;state&quot;)
+ggplot(data = states) + 
+  geom_polygon(aes(x = long, y = lat, fill = region, group = group), color = &quot;white&quot;) + 
+  coord_fixed(1.3) +
+  guides(fill=FALSE) </code></pre>
+<p><img src="Week6_files/figure-html/unnamed-chunk-7-1.png" width="960" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>### Draw a subset of USA states
+### Use function subset to select states. 
+west_coast &lt;- subset(states, region %in% c(&quot;california&quot;, &quot;oregon&quot;, &quot;washington&quot;))
+ggplot(data = west_coast) + 
+  geom_polygon(aes(x = long, y = lat, group = group), fill = &quot;palegreen&quot;, color = &quot;black&quot;) + 
+  coord_fixed(1.3)</code></pre>
+<p><img src="Week6_files/figure-html/unnamed-chunk-7-2.png" width="960" style="display: block; margin: auto;" /></p>
+<p>Can you tell the difference between <em>color</em> and <em>fill</em> argument?</p>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
