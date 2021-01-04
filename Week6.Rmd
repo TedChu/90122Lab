@@ -216,5 +216,5 @@ From sf class to SpatialPolygonsDataFrame: sp::as
 ```{r, echo=TRUE, fig.width=6, fig.align="center"}
 library(mapview)
 #mapView(gmel2.sf, zcol = "price")
-#mapView(gmel2.sp, zcol = "price")
+#mapView(gmel2.sp, zcol = "price")   
 ```

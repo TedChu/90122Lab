@@ -1,0 +1,119 @@
+---
+title: 'Week 7: Visualisation of Spatial Data--Australian maps'
+---
+
+<div style="margin-bottom:50px;">
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+</div>
+
+
+
+
+
+
+
+# Australia maps
+
+
+
+
+## Package ozmaps  
+* It provide the following map (all in form of sf class):
+  + ozmaps::ozmap_states : tate boundary
+  + ozmaps::abs_ced: Commonwealth Electoral Divisions
+  + ozmaps::abs_lga: Local Government Areas
+```{r, echo=TRUE, fig.width=6, fig.align="center"}
+library(sp)
+library(sf)
+library(ggplot2)
+
+oz_states = ozmaps::ozmap_states
+ggplot(oz_states) + 
+  geom_sf() + 
+  coord_sf()
+
+oz_votes = ozmaps::abs_ced
+ggplot() + 
+  geom_sf(data = oz_votes) + 
+  coord_sf()
+
+lga = ozmaps::abs_lga
+ggplot() + 
+  geom_sf(data = oz_states, mapping = aes(fill = NAME), show.legend = FALSE) +
+  geom_sf(data = lga, fill = NA) + 
+  coord_sf() 
+```
+ 
+## Victoria maps
+
+* Most shapefile can found in https://data.gov.au. 
++ All LGA: VICLGA folder -- 92 elements
++ All suburb: VICSub folder  -- 2973 elements
++ LGA in Greater Melbourne: Mel folder in Lab 3 -- 32 element (1st element is greater melbourne)
+
+All datasets are read into as SpatialPolygonsDataFrame
+```{r, echo=TRUE, fig.width=6, fig.align="center", message = FALSE}
+library(rgdal)
+library(sp)
+VICLGA = readOGR(dsn = "datasets/VICLGA/VIC_LOCALITY_POLYGON_shp.shp", "VIC_LOCALITY_POLYGON_shp")
+VICSub = readOGR(dsn="datasets/VICSub/VIC_LOCALITY_POLYGON_shp.shp", "VIC_LOCALITY_POLYGON_shp")
+MELLGA = readOGR(dsn = "datasets/Mel/Aus-Melbourne02.shp", "Aus-Melbourne02")
+```
+
+
+
+
+* You will cut SpatialPolygons you wants -- Essentially manipulation of SpatialPolygons.
+* One useful funciton in *crop* in package *raster*
+  + crop(x, y)
++ crop returns a geographic subset of an object *x* as specified by an Extent object *y*
+  + ?crop for more details
+
+* Here we will create
++ Task 1: all surburbs in Greater Melbourne
++ Task 2: all surburbs in City of Melbourne
+
+```{r, echo=TRUE, fig.width=6, fig.align="center", message = FALSE}
+library(raster)
+library(mapview)
+# Before crop, first check CRS
+VICLGA@proj4string
+VICSub@proj4string
+MELLGA@proj4string
+
+# Making all CRS the same
+crs0 = VICLGA@proj4string
+MELLGA = spTransform(MELLGA, crs0)
+MELLGA@proj4string
+
+## Task 1
+GMEL = MELLGA[1, ]   # Greater Melbourne
+GMELSub = crop(VICSub, GMEL)
+#mapView(GMELSub)      
+
+## Task 2: this code takes a while to run. 
+#i = which(MELLGA$name == "City of Melbourne")
+#CMEL = MELLGA[i, ]
+#CMELSub = crop(VICSub, CMEL)      
+#mapView(CMELSub) 
+```
+
+
+
+* There are more shapefiles in *PlanMelbourne* Folder, which can be downloaded from https://www.planmelbourne.vic.gov.au/maps/spatial-data
++ I have not explore all of shapefiles
++ It is quite useful. 
++ The following gives *regions of victoria* and *CBD*
+  
+  ```{r, echo=TRUE, fig.width=6, fig.align="center"}
+#setwd("C:/Users/tingjinc/Dropbox/1_MAST90122/2_Spatial_Lab/1_Visualisation_Lab2367")
+#SReg = readOGR(dsn="2_ggplot/PlanMelbourne/Administrative/State Regions_region.shp", "State Regions_region")
+
+#library(mapview)
+#mapView(SReg)
+#CBD = readOGR(dsn="2_ggplot/PlanMelbourne/Central City Urban Renewal and Precincts/Central Business District_region.shp", "Central Business District_region")
+#mapView(CBD)
+```
