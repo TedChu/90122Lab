@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Week 8: Geostatistics</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">MAST90122 Lab</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="Week2.html">Week 2</a>
+</li>
+<li>
+  <a href="Week3.html">Week 3</a>
+</li>
+<li>
+  <a href="Week4.html">Week 4</a>
+</li>
+<li>
+  <a href="Week5.html">Week 5</a>
+</li>
+<li>
+  <a href="Week6.html">Week 6</a>
+</li>
+<li>
+  <a href="Week7.html">Week 7</a>
+</li>
+<li>
+  <a href="Week8.html">Week 8</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Week 8: Geostatistics</h1>
+
+</div>
+
+<div id="TOC">
+<ul>
+<li><a href="#soil-data-variogram"><span class="toc-section-number">1</span> Soil Data &amp; Variogram</a><ul>
+<li><a href="#soil-example"><span class="toc-section-number">1.1</span> Soil Example</a></li>
+<li><a href="#variogram"><span class="toc-section-number">1.2</span> Variogram</a></li>
+</ul></li>
+<li><a href="#mle"><span class="toc-section-number">2</span> MLE</a><ul>
+<li><a href="#mle-initial-value"><span class="toc-section-number">2.1</span> MLE: Initial Value</a></li>
+<li><a href="#mle-function"><span class="toc-section-number">2.2</span> MLE: Function</a></li>
+<li><a href="#spatial-trend"><span class="toc-section-number">2.3</span> Spatial Trend</a><ul>
+<li><a href="#two-ways"><span class="toc-section-number">2.3.1</span> Two ways</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#geodata-format"><span class="toc-section-number">3</span> Geodata format</a><ul>
+<li><a href="#create-geodata"><span class="toc-section-number">3.1</span> Create geodata</a></li>
+</ul></li>
+<li><a href="#kriging"><span class="toc-section-number">4</span> Kriging</a><ul>
+<li><a href="#two-key-functions"><span class="toc-section-number">4.1</span> Two key functions:</a></li>
+<li><a href="#ordinary-kriging"><span class="toc-section-number">4.2</span> Ordinary Kriging</a></li>
+<li><a href="#universal-kriging"><span class="toc-section-number">4.3</span> Universal Kriging</a><ul>
+<li><a href="#universal-kriging-polynomial-of-coordinates"><span class="toc-section-number">4.3.1</span> Universal Kriging: Polynomial of coordinates</a></li>
+<li><a href="#universal-kriging-covariates"><span class="toc-section-number">4.3.2</span> Universal Kriging: covariates</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+
+<div style="margin-bottom:50px;">
+
+</div>
+<div id="soil-data-variogram" class="section level1">
+<h1><span class="header-section-number">1</span> Soil Data &amp; Variogram</h1>
+<div id="soil-example" class="section level2">
+<h2><span class="header-section-number">1.1</span> Soil Example</h2>
+<ul>
+<li>Background details: Example 1.4 of MBG 1.1
+<ul>
+<li>calcium content in soil</li>
+<li>three sub-regions: different soil management regimes.</li>
+</ul></li>
+</ul>
+<pre class="r"><code>library(geoR)
+data(ca20)
+points(ca20,cex.min = 0.2, cex.max = 1.5, pch = 21)</code></pre>
+<p><img src="Week8_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+</div>
+<div id="variogram" class="section level2">
+<h2><span class="header-section-number">1.2</span> Variogram</h2>
+<pre class="r"><code>plot(variog(ca20, option=&quot;bin&quot;, max.dist=510), 
+     xlab = &quot;h&quot;, ylab = &quot;gamma(h)&quot;)</code></pre>
+<pre><code>## variog: computing omnidirectional variogram</code></pre>
+<p><img src="Week8_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p>Variogram argument</p>
+<ul>
+<li>Function: variog
+<ul>
+<li>argument</li>
+<li>opition: “bin”</li>
+<li>max.dist: maximum distance for the variogram</li>
+</ul></li>
+</ul>
+</div>
+</div>
+<div id="mle" class="section level1">
+<h1><span class="header-section-number">2</span> MLE</h1>
+<div id="mle-initial-value" class="section level2">
+<h2><span class="header-section-number">2.1</span> MLE: Initial Value</h2>
+<p><span style="color: red;">“Eye-fit”</span></p>
+<pre class="r"><code>plot(variog(ca20, option=&quot;bin&quot;, max.dist=510), 
+     xlab = &quot;h&quot;, ylab = &quot;gamma(h)&quot;)
+lines.variomodel(seq(0, 510, l = 100), 
+                 cov.pars = c(100, 120),           
+                 cov.model = &quot;mat&quot;, kap = 0.5, nug = 30)</code></pre>
+<p><img src="Week8_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+</div>
+<div id="mle-function" class="section level2">
+<h2><span class="header-section-number">2.2</span> MLE: Function</h2>
+<pre class="r"><code># trend - constant mean
+m1 = likfit(ca20, ini = c(100, 120), nug = 30)
+summary(m1)</code></pre>
+<ul>
+<li>Results of output
+<ul>
+<li>Spatial-dependence parameter estiamtes: <span class="math inline">\((\sigma^2, \phi, \tau^2)\)</span></li>
+<li>no standard error is provided.</li>
+<li>cov.pars: <span class="math inline">\((\sigma^2, \phi)\)</span></li>
+<li>nugget: <span class="math inline">\(\tau^2\)</span></li>
+<li>kappa</li>
+</ul></li>
+</ul>
+<p>The output of MLE</p>
+<pre class="r"><code># cov.pars
+m1$cov.pars
+# partial sill 
+m1$sigmasq
+m1$phi
+# nugget
+m1$nugget</code></pre>
+<pre><code>## [1] 135.1726 159.4883
+## [1] 135.1726
+## [1] 159.4883
+## [1] 16.76523</code></pre>
+<ul>
+<li><span style="color: red;">The arguments of function</span> <em>likfit</em>
+<ul>
+<li>argument</li>
+<li>cov.model: “exp” (default), more options see cov.pars</li>
+<li>Fixed or Estimated: fix.nugget = FALSE, fix.kappa = TRUE, kappa =0.5</li>
+<li>Initial value: ini.cov.pars, nugget = 0</li>
+</ul></li>
+</ul>
+
+<ul>
+<li>Remarks: we have 4 parameters: nugget <span class="math inline">\(\tau^2\)</span>, partial sill <span class="math inline">\(\sigma^2\)</span>, range parameter <span class="math inline">\(\phi\)</span>, smooth parameter <span class="math inline">\(\kappa\)</span> ( <span class="math inline">\(\nu\)</span> in our slide. )
+<ul>
+<li>Function allow us either to pre-specify (fix) or estiamte it</li>
+<li>PS: most of the time, <span class="math inline">\(\kappa\)</span> is fixed.</li>
+</ul></li>
+</ul>
+<p>Here are some exmaple:</p>
+<ul>
+<li>Example 1: no specification. “likfit(ca20, ini = c(100, 200), nug = 50)”
+<ul>
+<li>Exp model (<span class="math inline">\(\kappa\)</span> = 0.5 fixed).</li>
+<li>To estimate: <span class="math inline">\(\tau^2\)</span>, <span class="math inline">\(\sigma^2\)</span>, <span class="math inline">\(\phi\)</span></li>
+</ul></li>
+</ul>
+
+<ul>
+<li>Example 2: no specification. “likfit(ca20, ini = c(100, 200), nug = 50, fix.nugget=TRUE)”
+<ul>
+<li>Fixed: <span class="math inline">\(\kappa\)</span> = 0.5, nugget <span class="math inline">\(\tau^2 = 50\)</span></li>
+<li>To estiamte: <span class="math inline">\(\sigma^2\)</span>, <span class="math inline">\(\phi\)</span></li>
+</ul></li>
+</ul>
+</div>
+<div id="spatial-trend" class="section level2">
+<h2><span class="header-section-number">2.3</span> Spatial Trend</h2>
+<div id="two-ways" class="section level3">
+<h3><span class="header-section-number">2.3.1</span> Two ways</h3>
+<ul>
+<li>Specify directly in function like “likfit”: <code>fit = likfit(ca20, ini = c(100, 60), trend = ~altitude)</code></li>
+<li>Specify it through function “trend.spatial”: See below</li>
+</ul>
+
+<ul>
+<li>Usage: only to specify, not computing involved in this function.
+<ul>
+<li><code>trend.spatial(trend, geodata)</code></li>
+</ul></li>
+</ul>
+
+<ul>
+<li>Argument <em>trend</em>
+<ul>
+<li>trend = “cte”: constant mean</li>
+<li>trend = ~altitude: <span class="math inline">\(\mu(s)=\beta_0+\beta_1 altitude\)</span></li>
+<li>Other options: “1st”, “2nd”, see help files for more details</li>
+</ul></li>
+</ul>
+</div>
+</div>
+</div>
+<div id="geodata-format" class="section level1">
+<h1><span class="header-section-number">3</span> Geodata format</h1>
+<p>The package <em>geoR</em> requires <em>geodata</em> object, and in this part, we show how to create geodata object</p>
+<ul>
+<li>geodata object: a list with two obligatory components
+<ul>
+<li>coords: a matrix with the two-dimensional coordinates of the sampling locations</li>
+<li>data: a vector (vectors) giving the corresponding measured value(s) at each of sampling location.</li>
+</ul></li>
+</ul>
+<div id="create-geodata" class="section level2">
+<h2><span class="header-section-number">3.1</span> Create geodata</h2>
+<ul>
+<li><span style="color: red;">convert a data.frame to geodata</span></li>
+<li><em>as.geodata(obj, coords.col = 1:2, data.col = 3, covar.col = NULL, covar.names = “obj.names”)</em></li>
+</ul>
+<pre class="r"><code>library(geoR)
+data(camg)     # data.frame format
+# geodata format
+geocamg = as.geodata(camg, data.col=5, covar.col=c(3,6), 
+                     covar.names = c(&quot;elevation&quot;, &quot;mg20&quot;))    </code></pre>
+
+<ul>
+<li>Argument
+<ul>
+<li>obj: data.frame</li>
+<li>Z: data.col=3</li>
+<li>X: covar.col</li>
+<li>covar.names =</li>
+<li>Many functions in geoR requires geodata format</li>
+</ul></li>
+</ul>
+</div>
+</div>
+<div id="kriging" class="section level1">
+<h1><span class="header-section-number">4</span> Kriging</h1>
+<div id="two-key-functions" class="section level2">
+<h2><span class="header-section-number">4.1</span> Two key functions:</h2>
+<ul>
+<li>krige.control: specify the parameter for kriging, no computing involved.</li>
+<li>krige.conv: to compute</li>
+</ul>
+
+<ul>
+<li>Usage
+<ul>
+<li>krige.control(type.krige = “ok”, obj.model = NULL)</li>
+<li>Type of krige: “sk”, “ok” (default)</li>
+<li>obj.model: typically an output of <em>likefit</em></li>
+</ul></li>
+</ul>
+
+<ul>
+<li>Usage
+<ul>
+<li>krige.conv(geodata, locations, krige)</li>
+<li>geodata</li>
+<li>locations: <span class="math inline">\(\mathbf s_0\)</span>, data.frame, multiple locations.</li>
+<li>krige: output of krige.control.</li>
+</ul></li>
+</ul>
+</div>
+<div id="ordinary-kriging" class="section level2">
+<h2><span class="header-section-number">4.2</span> Ordinary Kriging</h2>
+<pre class="r"><code>fit = likfit(ca20, ini = c(100, 60), trend = &quot;cte&quot;)
+gr = pred_grid(ca20$borders, by = 10)   # new locations s_0 created. 
+KC = krige.control(obj.model = fit)
+ca20pred = krige.conv(ca20, loc = gr, krige = KC)</code></pre>
+<p>Kriging Estimates</p>
+<pre class="r"><code>ca20pred$predict[1:3]   
+color = function(x)rev(heat.colors(x)) 
+image(ca20pred, loc = gr, x.leg = c(4930, 5350)
+      , y.leg = c(4790, 4840), col=color(15))</code></pre>
+<p><img src="Week8_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<pre><code>## [1] 55.01889 54.80726 54.58205</code></pre>
+<p>Kriging Variances</p>
+<pre class="r"><code>ca20pred$krige.var[1:3]      
+image(ca20pred, loc = gr, val=sqrt(ca20pred$krige.var)
+      , x.leg = c(4930, 5350), y.leg = c(4790, 4840)
+      , col=color(15))</code></pre>
+<p><img src="Week8_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<pre><code>## [1] 111.9307 109.3888 106.5897</code></pre>
+<p>Kriging weights</p>
+<pre class="r"><code>coords = cbind(c(0.2, 0.25, 0.6, 0.7), 
+               c(0.1, 0.8, 0.9, 0.3))   # data
+KC = krige.control(ty = &quot;ok&quot;, cov.model = &quot;mat&quot;, 
+                   kap = 1.5, nug = 0.1, 
+                   cov.pars = c(1, 0.1))    # model parameter
+# Weights
+krweights(coords, c(0.5, 0.5), KC)                              </code></pre>
+<pre><code>## [1] 0.1935404 0.2301559 0.2125838 0.3637199</code></pre>
+<p>Convert to SpatialPointsDataFrame</p>
+<pre class="r"><code>library(sp)
+gr0 = polygrid(gr, borders = ca20$border, bound = T)
+capred = data.frame(gr0, ypred=ca20pred$predict)
+coordinates(capred) = ~ Var1 + Var2
+class(capred)                            </code></pre>
+<pre><code>## [1] &quot;SpatialPointsDataFrame&quot;
+## attr(,&quot;package&quot;)
+## [1] &quot;sp&quot;</code></pre>
+<p>We can visualize using all functions related to SpatialPoints.</p>
+</div>
+<div id="universal-kriging" class="section level2">
+<h2><span class="header-section-number">4.3</span> Universal Kriging</h2>
+<p><span style="color: red;">Both ordinary kriging and universal kriging</span> using setting <em>type.krige = “ok”</em>. Once you put the trend in, the function will distinguish two types of kriging.</p>
+<div id="universal-kriging-polynomial-of-coordinates" class="section level3">
+<h3><span class="header-section-number">4.3.1</span> Universal Kriging: Polynomial of coordinates</h3>
+<ul>
+<li>We need to provide <span class="math inline">\(x_1(\mathbf s_0), \ldots, x_p(\mathbf s_0)\)</span> for the function
+<ul>
+<li>in function <em>krige.control</em></li>
+<li>trend.d: specify data trend</li>
+<li>trend.l: specify prediction trend</li>
+</ul></li>
+</ul>
+
+<p>Work with polynomial.</p>
+<pre class="r"><code>fit = likfit(ca20, ini = c(100, 60), trend = &quot;1st&quot;)
+gr = pred_grid(ca20$borders, by = 10)
+KC = krige.control(obj.model = fit, trend.l=&quot;1st&quot;, 
+                   trend.d=&quot;1st&quot;)
+ca20pred = krige.conv(ca20, loc = gr, krige = KC)</code></pre>
+</div>
+<div id="universal-kriging-covariates" class="section level3">
+<h3><span class="header-section-number">4.3.2</span> Universal Kriging: covariates</h3>
+<pre class="r"><code>fit2 = likfit(ca20, ini = c(100, 60), trend = ~altitude)
+gr = pred_grid(ca20$borders, by = 10)
+graltitude = rnorm(10908,mean=5.5)
+KC2 = krige.control(type.krige = &quot;ok&quot;, obj.model=fit2, 
+                    trend.d=~altitude, trend.l=~graltitude)
+ca20pred2 = krige.conv(ca20, loc = gr, krige = KC2)</code></pre>
+<p>In universal kriging, we need to know <span class="math inline">\(x(\mathbf s_0)\)</span>. In the above code, I randomly generated <span class="math inline">\(x(\mathbf s_0)\)</span> from <em>graltitude = rnorm(10908,mean=5.5)</em>. In practice, you shall know <span class="math inline">\(x(\mathbf s_0)\)</span> in advance.</p>
+</div>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
