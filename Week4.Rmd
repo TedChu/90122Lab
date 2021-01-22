@@ -65,7 +65,7 @@ round(head(resI),3)
 ```
 
 Visualisation
-```{r, echo=TRUE, fig.width=3, fig.height =3, fig.align="center"}
+```{r, echo=TRUE, fig.width=3, fig.height =3, fig.align="center",warning = F}
 gmellisa = gmel2
 gmellisa@data = data.frame(gmellisa@data, lisa=resI[,1], pvalue=resI[,5])
 ### Spatial plots with LISA value
@@ -82,7 +82,7 @@ spplot(gmellisa, "pvalue", col.regions=pal, at = brks,  main = "p value")
 ```
 
 
-# Columbus Data
+# Practice: Columbus Data
 If you have time, you can analyze the following Columbus data
 
 
