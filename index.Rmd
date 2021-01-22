@@ -6,20 +6,3 @@ There are labs between week 2--11.
 
 There is no lab for Week 1. However, if you do not know R, please study *An Introduction to R* at https://cran.r-project.org/doc/manuals/R-intro.pdf
 
-
-The code is tested under R version
-```{r, echo=TRUE, fig.width=6, fig.align="center", message = FALSE}
-R.version.string
-```
-and the following packages (not a complete list)
-```{r, echo=TRUE, fig.width=6, fig.align="center", message = FALSE}
-packageVersion("ggplot2")
-packageVersion("mapdata")
-packageVersion("maps")
-packageVersion("mapview")
-packageVersion("plyr")
-packageVersion("sf")
-packageVersion("sp")
-packageVersion("raster")
-packageVersion("rgdal")
-```
