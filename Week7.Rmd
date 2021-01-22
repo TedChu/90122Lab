@@ -12,9 +12,6 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 
-
-
-
 # Australia maps
 
 
@@ -52,7 +49,7 @@ ggplot() +
 * Most shapefile can found in https://data.gov.au. 
 + All LGA: VICLGA folder -- 92 elements
 + All suburb: VICSub folder  -- 2973 elements
-+ LGA in Greater Melbourne: Mel folder in Lab 3 -- 32 element (1st element is greater melbourne)
++ LGA in Greater Melbourne -- 32 element (1st element is greater melbourne)
 
 All datasets are read into as SpatialPolygonsDataFrame
 ```{r, echo=TRUE, fig.width=6, fig.align="center", message = FALSE}
