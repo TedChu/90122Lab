@@ -148,7 +148,7 @@ load("datasets/gmel2.Rdata")
 ```
 
 The visualisation can be achieved using *spplot*.
-```{r, echo=TRUE, fig.width=6, fig.align="center"}
+```{r, echo=TRUE, fig.width=6, fig.align="center",warning = F}
 spplot(gmel2, "price", col.regions = grey.colors(20, 0.9, 0.3))
 ```
 
