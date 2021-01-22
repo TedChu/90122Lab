@@ -67,6 +67,7 @@ g4
 
 
 
+
 This part is to provide some interesting plots
 ```{r, echo=TRUE, fig.width=9, fig.height=3, fig.align="center"}
 library(gridExtra)    # for the function grid.arrange
