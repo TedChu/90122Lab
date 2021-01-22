@@ -23,6 +23,15 @@
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
   pre:not([class]) {
@@ -67,6 +76,7 @@ h6 {
   text-align: left;
 }
 </style>
+
 
 
 
@@ -286,6 +296,12 @@ $(document).ready(function () {
 <li>
   <a href="Week5.html">Week 5</a>
 </li>
+<li>
+  <a href="Week6.html">Week 6</a>
+</li>
+<li>
+  <a href="Week7.html">Week 7</a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         
@@ -342,8 +358,10 @@ $(document).ready(function () {
 <h2><span class="header-section-number">2.1</span> Create Spatial Class</h2>
 <pre class="r"><code>library(sp)
 m=matrix(c(0,0,1,1),ncol=2, dimnames=list(NULL, c(&quot;min&quot;,&quot;max&quot;)))  
-crs=CRS(projargs=&quot;+proj=longlat +ellps=WGS84&quot;)    
-S=Spatial(bbox=m, proj4string=crs)</code></pre>
+crs=CRS(projargs=&quot;+proj=longlat +ellps=WGS84&quot;)    </code></pre>
+<pre><code>## Warning in showSRID(uprojargs, format = &quot;PROJ&quot;, multiline = &quot;NO&quot;, prefer_proj =
+## prefer_proj): Discarded datum Unknown based on WGS84 ellipsoid in CRS definition</code></pre>
+<pre class="r"><code>S=Spatial(bbox=m, proj4string=crs)</code></pre>
 </div>
 <div id="create-spatialpoints-class" class="section level2">
 <h2><span class="header-section-number">2.2</span> Create SpatialPoints Class</h2>
@@ -357,7 +375,8 @@ bbox(SP)</code></pre>
 ## [1,]   0   1
 ## [2,]   0   1</code></pre>
 <pre class="r"><code>proj4string(SP)</code></pre>
-<pre><code>## [1] &quot;+proj=longlat +ellps=WGS84&quot;</code></pre>
+<pre><code>## Warning in proj4string(SP): CRS object has comment, which is lost in output</code></pre>
+<pre><code>## [1] &quot;+proj=longlat +ellps=WGS84 +no_defs&quot;</code></pre>
 <pre class="r"><code>SP@coords</code></pre>
 <pre><code>##      coords.x1 coords.x2
 ## [1,]         1         1
@@ -369,7 +388,7 @@ bbox(SP)</code></pre>
 ## [1,]   0   1
 ## [2,]   0   1</code></pre>
 <pre class="r"><code>SP@proj4string</code></pre>
-<pre><code>## CRS arguments: +proj=longlat +ellps=WGS84</code></pre>
+<pre><code>## CRS arguments: +proj=longlat +ellps=WGS84 +no_defs</code></pre>
 <pre class="r"><code>## plot
 plot(SP)</code></pre>
 <p><img src="Week2_files/figure-html/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
@@ -470,7 +489,7 @@ spplot(SpPDF, zcol = &quot;xval&quot;)</code></pre>
 
 // add bootstrap table styles to pandoc tables
 function bootstrapStylePandocTables() {
-  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
 }
 $(document).ready(function () {
   bootstrapStylePandocTables();
