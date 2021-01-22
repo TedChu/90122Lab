@@ -296,6 +296,21 @@ $(document).ready(function () {
 <li>
   <a href="Week5.html">Week 5</a>
 </li>
+<li>
+  <a href="Week6.html">Week 6</a>
+</li>
+<li>
+  <a href="Week7.html">Week 7</a>
+</li>
+<li>
+  <a href="Week8.html">Week 8</a>
+</li>
+<li>
+  <a href="Week9.html">Week 9</a>
+</li>
+<li>
+  <a href="Versions.html">Versions</a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         
@@ -356,7 +371,7 @@ plot(data1, pch=46, cex =3)                           </code></pre>
 ##  Chi-squared test of CSR using quadrat counts
 ## 
 ## data:  data1
-## X2 = 16.767, df = 15, p-value = 0.666
+## X2 = 20, df = 15, p-value = 0.3439
 ## alternative hypothesis: two.sided
 ## 
 ## Quadrats: 4 by 4 grid of tiles</code></pre>
@@ -400,10 +415,7 @@ Gtest=envelope(data1,fun=Gest,
 <p>As mentioned earlier, package <em>spatstat</em> uses ppp class. We can tranform between <em>SpatialPoints</em> class in <em>sp</em> package and <em>ppp</em> class using the function <em>as</em> in package <em>maptools</em></p>
 <pre class="r"><code>library(sp)
 library(maptools)</code></pre>
-<pre><code>## Checking rgeos availability: FALSE
-##      Note: when rgeos is not available, polygon geometry     computations in maptools depend on gpclib,
-##      which has a restricted licence. It is disabled by default;
-##      to enable gpclib, type gpclibPermit()</code></pre>
+<pre><code>## Checking rgeos availability: TRUE</code></pre>
 <pre class="r"><code># from ppp class to SpatialPoints class 
 spdata1=as(data1, &quot;SpatialPoints&quot;)
 class(spdata1)  </code></pre>
