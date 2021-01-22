@@ -34,16 +34,16 @@ It is a general framework for data visualisation, and in this class, we will use
 ## pv dataset
 The following example is from "https://eriqande.github.io/rep-res-eeb-2017/ggplot2-intro-lecture.html". 
 
-The pv dataset includes information of  the history of pole-vaulting world record "http://en.wikipedia.org/wiki/Men's_pole_vault_world_record_progression". Here, the data is already stored in \textsf{pv.RData}. 
+The pv dataset includes information of  the history of pole-vaulting world record "http://en.wikipedia.org/wiki/Men's_pole_vault_world_record_progression". Here, the data is already stored in *pv.RData*. 
 
-First, read the RData set. Remember to set the right working directory. 
+First, read the RData set. 
 ```{r, echo=TRUE, fig.width=6, fig.align="center"}
 
 library(ggplot2)
 load("datasets/pv.RData")
 ```
 
-Now, we start to plot
+Here are some plots
 ```{r, echo=TRUE, fig.width=3, fig.height =3, fig.align="center"}
 ## plot points
 par(mfrow=c(1,3))
