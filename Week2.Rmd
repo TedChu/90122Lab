@@ -135,6 +135,16 @@ spplot(SpPDF, zcol = "xval")
 The argument "row.names = row.names(SpP)" is needed.  
 
 
+
+# Review: Key Functions
+* Create spatial objects
+  + Spatial
+  + SpatialPoints, SpatialPointsDataFrame
+  + SpatialPolygons, SpatialPolygonsDataFrame
+* Visualization
+  + spplot
+
+
 # Further Study
 
 Study vector data manipulation(https://rspatial.org/raster/spatial/7-vectmanip.html). Here, vector data is referring to SpatialPolygonsDataFrame. 

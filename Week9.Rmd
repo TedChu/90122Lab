@@ -94,7 +94,6 @@ class(capred)
 We can visualize using all functions related to SpatialPoints. 
 
 
-
 # Universal Kriging
 
 
