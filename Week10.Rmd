@@ -1,0 +1,98 @@
+---
+title: 'Week 10: Spatial Lag Model'
+---
+
+<div style="margin-bottom:50px;">
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+</div>
+
+
+
+
+# Median House Price Example
+
+* The data sets is collected on all LGA in great Melbourne on 2015 by Government. Here, I will show you
+  + name: LGA name
+  + price: median house price
+  + dis: distance to Melbourne (in km)
+  + off: totoal offences per 1000 population
+  + inc: median household income weekly
+
+*The goal of this example is not to analyze Melbourne housing price. The goal is to show you an example using spatial lag model. I prefer to use (if possible) some example close to Melbourne/Victoria rather than Crime data in ohio, USA.*
+
+*All the code (and more) will be provided in Lab 9.*
+
+
+```{r, echo=TRUE, fig.width=6, fig.align="center", message = FALSE}
+library(sp)
+library(sf)
+library(ggplot2)
+```
+
+Here is some data the data
+```{r, echo=TRUE, fig.width=6, fig.align="center"}
+load("datasets/gmel2.Rdata")
+head(gmel2@data)
+```
+
+
+```{r, echo=TRUE, fig.width=6, fig.align="center"}
+class(gmel2)                 # SpatialPolygonsDataFrame
+gmel2.sf = st_as_sf(gmel2)   # to sf class
+library(mapview)
+mapView(gmel2, zcol = "price")
+
+```
+
+
+
+
+# Spatial Lag Model
+
+Before 2020, function lagsarlm is in *spdep*. Now it is moved to *spatialreg* package, and I suggest you to use *spatialreg::lagsarlm* to make sure you are using *lagsarlm* function from *spatialreg* package
+
+```{r, echo=TRUE, fig.width=6, fig.align="center", message = FALSE}
+library(spdep)
+library(spatialreg)
+```
+
+
+```{r, echo=TRUE, fig.width=6, fig.align="center"}
+swpoly = poly2nb(gmel2)
+## row sum standarize to 1
+colw = nb2listw(swpoly, style = "W")
+
+## This is a demonstration on how to use function "lagsarlm"
+## Not really about how to analyze melbourne housing in depth. 
+mlag = spatialreg::lagsarlm(log(price)~dis+off + inc, data=gmel2@data, 
+                listw=colw) 
+
+```
+
+
+The output
+
+```{r, echo=TRUE, fig.width=6, fig.align="center"}
+summary(mlag)
+# Just like lm output. distance and income are significant, while 
+
+
+## beta estiamtes and asymptotic standard error
+mlag$coefficients
+mlag$rest.se
+
+## rho estimates and asymptotic standard error
+mlag$rho
+mlag$rho.se
+
+## sigma^2 estimates
+mlag$s2
+
+```
+
+
+
+

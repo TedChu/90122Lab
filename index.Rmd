@@ -6,4 +6,4 @@ There are labs between week 2--11.
 
 There is no lab for Week 1. However, if you do not know R, please study *An Introduction to R* at https://cran.r-project.org/doc/manuals/R-intro.pdf
 
-For Week 10--11, please study lab materials of the book *Spatio-Temporal Statistics with R*. More details will be provided during the lab. 
+For Week 11, please study lab materials of the book *Spatio-Temporal Statistics with R*. More details will be provided during the lab. 
