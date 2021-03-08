@@ -161,7 +161,10 @@ spplot(gmel2, "price", col.regions = grey.colors(20, 0.9, 0.3))
     + *spplot(gmel2, "price", col.regions = rev(heat.colors(20,alpha=0.8)))*
 
 
-
+# Key Functions
+* Read shapefile: 
+  + readOGR
+* 2.2 Manuplation of SpatialXXXDF
 
 \newpage
 
