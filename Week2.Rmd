@@ -46,7 +46,7 @@ S=Spatial(bbox=m, proj4string=crs)
 At this stage, nothing is plotted yet. Next, we will add points through SpatialPoints class
 
 ## Create SpatialPoints Class
-Recall SpatialPoints = Spatial + coords. We would like to add 4 points:  $(1,1), (2,2), (3,3), (4,4)$. It can achieved through *coords = loccords*, where *loccords* is a matrix containing locations (you can use other names if you want.)
+Recall SpatialPoints = Spatial + coords. We would like to add 4 points:  $(1,1), (2,2), (3,3), (4,4)$. It can be achieved through *coords = loccords*, where *loccords* is a matrix containing locations (you can use other names if you want.)
 ```{r, echo=TRUE, fig.width=3, fig.height =3, fig.align="center"}
 lcoords=matrix(rep(1:4,each=2),ncol=2,byrow=T)    ## coords
 SP=SpatialPoints(coords = lcoords,bbox = m, proj4string = crs)
@@ -71,7 +71,7 @@ plot(SP)
 ## Create SpatialPointsDataFrame Class
 Recall SpatialPointsDataFrame = SpatialPoints + data.frame
 
-Imagine we would like to add attribute to SpatialPoints. The way to achive this is through data.frame. For example, we would like to assign attribute $Z(s_1)=1.1$, $Z(s_2)=1.2$, $Z(s_3)=1.6$ and $Z(s_4)=2.1$. 
+Imagine we would like to add attribute to SpatialPoints. The way to achieve this is through data.frame. For example, we would like to assign attribute $Z(s_1)=1.1$, $Z(s_2)=1.2$, $Z(s_3)=1.6$ and $Z(s_4)=2.1$. 
 
 The argument *coords.nrs* is optional, and will not be used in this subject. 
 ```{r, echo=TRUE, fig.width=3, fig.height =3, fig.align="center"}
@@ -110,7 +110,7 @@ knitr::include_graphics("pics/SpPnDF.png")
 
 ## Create Polygon
 
-Here, we will create Polygon class. For example, *Sr1* has the vertices $(2,2)$, $(4,3)$, $(4,5)$ and $(1,4)$. However, $(2,2)$ needs to be write twice, since it is both the starting vertex and ending vertex. 
+Here, we will create Polygon class. For example, *Sr1* has the vertices $(2,2)$, $(4,3)$, $(4,5)$ and $(1,4)$. Note that $(2,2)$ needs to be written twice, since it is both the starting vertex and the ending vertex. 
 ```{r, echo=TRUE, fig.width=8, fig.align="center"}
 #getClass("Polygon")
 Sr1 = Polygon(cbind(c(2,4,4,1,2),c(2,3,5,4,2)))
@@ -121,9 +121,9 @@ Sr4 = Polygon(cbind(c(5,6,6,5,5),c(4,4,3,3,4)), hole = TRUE)
 
 
 ## Create Polygons
-Note the difference between the previous subsection: Polygon vs Polygons. A Polygons can contain any number of Polygon (including only 1 Polygon). 
+A Polygons can contain any number of Polygon (including only 1 Polygon). 
 
-Why do we need polygons? Imagine you want to draw a country, which has more than 1 island (e.g. New Zealand). 
+Why do we need polygons? Imagine you want to draw world map. Each Polygons can represent a country, while a Polygon cannot. For example, New Zealand comprises two major islands, and you need two polygons, which is a Polygons. 
 ```{r, echo=TRUE, fig.width=8, fig.align="center"}
 #getClass("Polygons")
 Srs1 = Polygons(list(Sr1), "s1")

@@ -386,7 +386,7 @@ crs=CRS(projargs=&quot;+proj=longlat +ellps=WGS84&quot;)    </code></pre>
 </div>
 <div id="create-spatialpoints-class" class="section level2">
 <h2><span class="header-section-number">2.2</span> Create SpatialPoints Class</h2>
-<p>Recall SpatialPoints = Spatial + coords. We would like to add 4 points: <span class="math inline">\((1,1), (2,2), (3,3), (4,4)\)</span>. It can achieved through <em>coords = loccords</em>, where <em>loccords</em> is a matrix containing locations (you can use other names if you want.)</p>
+<p>Recall SpatialPoints = Spatial + coords. We would like to add 4 points: <span class="math inline">\((1,1), (2,2), (3,3), (4,4)\)</span>. It can be achieved through <em>coords = loccords</em>, where <em>loccords</em> is a matrix containing locations (you can use other names if you want.)</p>
 <pre class="r"><code>lcoords=matrix(rep(1:4,each=2),ncol=2,byrow=T)    ## coords
 SP=SpatialPoints(coords = lcoords,bbox = m, proj4string = crs)
 
@@ -424,7 +424,7 @@ plot(SP)</code></pre>
 <div id="create-spatialpointsdataframe-class" class="section level2">
 <h2><span class="header-section-number">2.3</span> Create SpatialPointsDataFrame Class</h2>
 <p>Recall SpatialPointsDataFrame = SpatialPoints + data.frame</p>
-<p>Imagine we would like to add attribute to SpatialPoints. The way to achive this is through data.frame. For example, we would like to assign attribute <span class="math inline">\(Z(s_1)=1.1\)</span>, <span class="math inline">\(Z(s_2)=1.2\)</span>, <span class="math inline">\(Z(s_3)=1.6\)</span> and <span class="math inline">\(Z(s_4)=2.1\)</span>.</p>
+<p>Imagine we would like to add attribute to SpatialPoints. The way to achieve this is through data.frame. For example, we would like to assign attribute <span class="math inline">\(Z(s_1)=1.1\)</span>, <span class="math inline">\(Z(s_2)=1.2\)</span>, <span class="math inline">\(Z(s_3)=1.6\)</span> and <span class="math inline">\(Z(s_4)=2.1\)</span>.</p>
 <p>The argument <em>coords.nrs</em> is optional, and will not be used in this subject.</p>
 <pre class="r"><code>names=c(&quot;a&quot;,&quot;b&quot;,&quot;c&quot;,&quot;d&quot;)
 df = data.frame(z=c(1.1,1.2,1.6,2.1), row.names=names)
@@ -459,7 +459,7 @@ class(SPDF2)</code></pre>
 <p>First, the diagram <img src="pics/SpPnDF.png" width="590" style="display: block; margin: auto;" /></p>
 <div id="create-polygon" class="section level2">
 <h2><span class="header-section-number">3.1</span> Create Polygon</h2>
-<p>Here, we will create Polygon class. For example, <em>Sr1</em> has the vertices <span class="math inline">\((2,2)\)</span>, <span class="math inline">\((4,3)\)</span>, <span class="math inline">\((4,5)\)</span> and <span class="math inline">\((1,4)\)</span>. However, <span class="math inline">\((2,2)\)</span> needs to be write twice, since it is both the starting vertex and ending vertex.</p>
+<p>Here, we will create Polygon class. For example, <em>Sr1</em> has the vertices <span class="math inline">\((2,2)\)</span>, <span class="math inline">\((4,3)\)</span>, <span class="math inline">\((4,5)\)</span> and <span class="math inline">\((1,4)\)</span>. Note that <span class="math inline">\((2,2)\)</span> needs to be written twice, since it is both the starting vertex and the ending vertex.</p>
 <pre class="r"><code>#getClass(&quot;Polygon&quot;)
 Sr1 = Polygon(cbind(c(2,4,4,1,2),c(2,3,5,4,2)))
 Sr2 = Polygon(cbind(c(5,4,2,5),c(2,3,2,2)))
@@ -468,8 +468,8 @@ Sr4 = Polygon(cbind(c(5,6,6,5,5),c(4,4,3,3,4)), hole = TRUE)</code></pre>
 </div>
 <div id="create-polygons" class="section level2">
 <h2><span class="header-section-number">3.2</span> Create Polygons</h2>
-<p>Note the difference between the previous subsection: Polygon vs Polygons. A Polygons can contain any number of Polygon (including only 1 Polygon).</p>
-<p>Why do we need polygons? Imagine you want to draw a country, which has more than 1 island (e.g. New Zealand).</p>
+<p>A Polygons can contain any number of Polygon (including only 1 Polygon).</p>
+<p>Why do we need polygons? Imagine you want to draw world map. Each Polygons can represent a country, while a Polygon cannot. For example, New Zealand comprises two major islands, and you need two polygons, which is a Polygons.</p>
 <pre class="r"><code>#getClass(&quot;Polygons&quot;)
 Srs1 = Polygons(list(Sr1), &quot;s1&quot;)
 Srs2 = Polygons(list(Sr2), &quot;s2&quot;)
