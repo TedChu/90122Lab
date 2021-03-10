@@ -344,7 +344,7 @@ $(document).ready(function () {
 <li><a href="#create-spatialpolygons"><span class="toc-section-number">3.3</span> Create SpatialPolygons</a></li>
 <li><a href="#create-spatialpolygonsdataframe"><span class="toc-section-number">3.4</span> Create SpatialPolygonsDataFrame</a></li>
 </ul></li>
-<li><a href="#key-functions"><span class="toc-section-number">4</span> Key Functions</a></li>
+<li><a href="#review-key-functions"><span class="toc-section-number">4</span> Review: Key Functions</a></li>
 <li><a href="#further-study"><span class="toc-section-number">5</span> Further Study</a></li>
 <li><a href="#references"><span class="toc-section-number">6</span> References</a></li>
 </ul>
@@ -369,18 +369,26 @@ $(document).ready(function () {
 <p>The diagram will help <img src="pics/SpPtDF.png" width="268" style="display: block; margin: auto;" /></p>
 <div id="create-spatial-class" class="section level2">
 <h2><span class="header-section-number">2.1</span> Create Spatial Class</h2>
+<ul>
+<li>For Spatial class, we will need two components
+<ul>
+<li>bbox: it is the domain of spatial objects. In the following example, the domain is <span class="math inline">\([0,1]\times [0,1]\)</span>.</li>
+<li>CRS: coordinate reference sytem (See Cp1-4 for more details). In the following example, the CRS is WGS84.</li>
+</ul></li>
+</ul>
 <pre class="r"><code>library(sp)
 m=matrix(c(0,0,1,1),ncol=2, dimnames=list(NULL, c(&quot;min&quot;,&quot;max&quot;)))  
 crs=CRS(projargs=&quot;+proj=longlat +ellps=WGS84&quot;)    </code></pre>
 <pre><code>## Warning in showSRID(uprojargs, format = &quot;PROJ&quot;, multiline = &quot;NO&quot;, prefer_proj =
 ## prefer_proj): Discarded datum Unknown based on WGS84 ellipsoid in CRS definition</code></pre>
 <pre class="r"><code>S=Spatial(bbox=m, proj4string=crs)</code></pre>
+<p>At this stage, nothing is plotted yet. Next, we will add points through SpatialPoints class</p>
 </div>
 <div id="create-spatialpoints-class" class="section level2">
 <h2><span class="header-section-number">2.2</span> Create SpatialPoints Class</h2>
-<p>Recall SpatialPoints = Spatial + coords</p>
+<p>Recall SpatialPoints = Spatial + coords. We would like to add 4 points: <span class="math inline">\((1,1), (2,2), (3,3), (4,4)\)</span>. It can achieved through <em>coords = loccords</em>, where <em>loccords</em> is a matrix containing locations (you can use other names if you want.)</p>
 <pre class="r"><code>lcoords=matrix(rep(1:4,each=2),ncol=2,byrow=T)    ## coords
-SP=SpatialPoints(lcoords,bbox = m, proj4string = crs)
+SP=SpatialPoints(coords = lcoords,bbox = m, proj4string = crs)
 
 ## Access the elements
 bbox(SP)</code></pre>
@@ -416,21 +424,24 @@ plot(SP)</code></pre>
 <div id="create-spatialpointsdataframe-class" class="section level2">
 <h2><span class="header-section-number">2.3</span> Create SpatialPointsDataFrame Class</h2>
 <p>Recall SpatialPointsDataFrame = SpatialPoints + data.frame</p>
+<p>Imagine we would like to add attribute to SpatialPoints. The way to achive this is through data.frame. For example, we would like to assign attribute <span class="math inline">\(Z(s_1)=1.1\)</span>, <span class="math inline">\(Z(s_2)=1.2\)</span>, <span class="math inline">\(Z(s_3)=1.6\)</span> and <span class="math inline">\(Z(s_4)=2.1\)</span>.</p>
+<p>The argument <em>coords.nrs</em> is optional, and will not be used in this subject.</p>
 <pre class="r"><code>names=c(&quot;a&quot;,&quot;b&quot;,&quot;c&quot;,&quot;d&quot;)
-df = data.frame(xvals=c(1.1,1.2,1.6,2.1), row.names=names)
+df = data.frame(z=c(1.1,1.2,1.6,2.1), row.names=names)
 m = matrix(c(0,0,5,5),ncol=2, dimnames=list(NULL, c(&quot;min&quot;,&quot;max&quot;)))  
 SP@bbox = m
 SPDF = SpatialPointsDataFrame(SP,data=df)
 
 ## Access the elements
 SPDF@data</code></pre>
-<pre><code>##   xvals
-## a   1.1
-## b   1.2
-## c   1.6
-## d   2.1</code></pre>
+<pre><code>##     z
+## a 1.1
+## b 1.2
+## c 1.6
+## d 2.1</code></pre>
 <pre class="r"><code>## Plot: location with value
-spplot(SPDF,zcol=&quot;xvals&quot;)</code></pre>
+## Note here that you need to write &quot;z&quot; which is the same name you defined in df. 
+spplot(SPDF,zcol=&quot;z&quot;)</code></pre>
 <p><img src="Week2_files/figure-html/unnamed-chunk-5-1.png" width="288" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>## Another way to create SpatialPointsDataFrame (directly from a data.frame)
 SPDF2 = data.frame(name = names, x = lcoords[,1], y = lcoords[,2], value = df )
@@ -439,6 +450,7 @@ class(SPDF2)</code></pre>
 <pre><code>## [1] &quot;SpatialPointsDataFrame&quot;
 ## attr(,&quot;package&quot;)
 ## [1] &quot;sp&quot;</code></pre>
+<pre class="r"><code>proj4string(SPDF2) &lt;- CRS(&quot;+proj=longlat +datum=WGS84&quot;)    ## Add CRS</code></pre>
 </div>
 </div>
 <div id="spatialpolygonsdataframe" class="section level1">
@@ -447,6 +459,7 @@ class(SPDF2)</code></pre>
 <p>First, the diagram <img src="pics/SpPnDF.png" width="590" style="display: block; margin: auto;" /></p>
 <div id="create-polygon" class="section level2">
 <h2><span class="header-section-number">3.1</span> Create Polygon</h2>
+<p>Here, we will create Polygon class. For example, <em>Sr1</em> has the vertices <span class="math inline">\((2,2)\)</span>, <span class="math inline">\((4,3)\)</span>, <span class="math inline">\((4,5)\)</span> and <span class="math inline">\((1,4)\)</span>. However, <span class="math inline">\((2,2)\)</span> needs to be write twice, since it is both the starting vertex and ending vertex.</p>
 <pre class="r"><code>#getClass(&quot;Polygon&quot;)
 Sr1 = Polygon(cbind(c(2,4,4,1,2),c(2,3,5,4,2)))
 Sr2 = Polygon(cbind(c(5,4,2,5),c(2,3,2,2)))
@@ -455,7 +468,8 @@ Sr4 = Polygon(cbind(c(5,6,6,5,5),c(4,4,3,3,4)), hole = TRUE)</code></pre>
 </div>
 <div id="create-polygons" class="section level2">
 <h2><span class="header-section-number">3.2</span> Create Polygons</h2>
-<p>Note the difference between the previous subsection: Polygon vs Polygons</p>
+<p>Note the difference between the previous subsection: Polygon vs Polygons. A Polygons can contain any number of Polygon (including only 1 Polygon).</p>
+<p>Why do we need polygons? Imagine you want to draw a country, which has more than 1 island (e.g. New Zealand).</p>
 <pre class="r"><code>#getClass(&quot;Polygons&quot;)
 Srs1 = Polygons(list(Sr1), &quot;s1&quot;)
 Srs2 = Polygons(list(Sr2), &quot;s2&quot;)
@@ -471,14 +485,14 @@ plot(SpP, col = 1:3, bg=&quot;yellow&quot;)</code></pre>
 <div id="create-spatialpolygonsdataframe" class="section level2">
 <h2><span class="header-section-number">3.4</span> Create SpatialPolygonsDataFrame</h2>
 <pre class="r"><code>#getClass(&quot;SpatialPolygons&quot;)
-df = data.frame(xval = c(1.2,1.3,1.6), yval = c(2.2,2.8,3.9), row.names = row.names(SpP))
+df = data.frame(z1 = c(1.2,1.3,1.6), z2 = c(2.2,2.8,3.9), row.names = row.names(SpP))
 SpPDF = SpatialPolygonsDataFrame(Sr = SpP, data = df)
-spplot(SpPDF, zcol = &quot;xval&quot;)</code></pre>
+spplot(SpPDF, zcol = &quot;z1&quot;)</code></pre>
 <p><img src="Week2_files/figure-html/unnamed-chunk-10-1.png" width="576" style="display: block; margin: auto;" /> The argument “row.names = row.names(SpP)” is needed.</p>
 </div>
 </div>
-<div id="key-functions" class="section level1">
-<h1><span class="header-section-number">4</span> Key Functions</h1>
+<div id="review-key-functions" class="section level1">
+<h1><span class="header-section-number">4</span> Review: Key Functions</h1>
 <ul>
 <li>Create spatial objects
 <ul>

@@ -34,18 +34,22 @@ knitr::include_graphics("pics/SpPtDF.png")
 ```
 
 ## Create Spatial Class
+* For Spatial class, we will need two components
+  + bbox: it is the domain of spatial objects. In the following example, the domain is $[0,1]\times [0,1]$.
+  + CRS: coordinate reference sytem (See Cp1-4 for more details). In the following example, the CRS is WGS84. 
 ```{r, echo=TRUE, fig.width=8, fig.align="center"}
 library(sp)
 m=matrix(c(0,0,1,1),ncol=2, dimnames=list(NULL, c("min","max")))  
 crs=CRS(projargs="+proj=longlat +ellps=WGS84")    
 S=Spatial(bbox=m, proj4string=crs)
 ```
+At this stage, nothing is plotted yet. Next, we will add points through SpatialPoints class
 
 ## Create SpatialPoints Class
-Recall SpatialPoints = Spatial + coords
+Recall SpatialPoints = Spatial + coords. We would like to add 4 points:  $(1,1), (2,2), (3,3), (4,4)$. It can achieved through *coords = loccords*, where *loccords* is a matrix containing locations (you can use other names if you want.)
 ```{r, echo=TRUE, fig.width=3, fig.height =3, fig.align="center"}
 lcoords=matrix(rep(1:4,each=2),ncol=2,byrow=T)    ## coords
-SP=SpatialPoints(lcoords,bbox = m, proj4string = crs)
+SP=SpatialPoints(coords = lcoords,bbox = m, proj4string = crs)
 
 ## Access the elements
 bbox(SP)
@@ -66,9 +70,13 @@ plot(SP)
 
 ## Create SpatialPointsDataFrame Class
 Recall SpatialPointsDataFrame = SpatialPoints + data.frame
+
+Imagine we would like to add attribute to SpatialPoints. The way to achive this is through data.frame. For example, we would like to assign attribute $Z(s_1)=1.1$, $Z(s_2)=1.2$, $Z(s_3)=1.6$ and $Z(s_4)=2.1$. 
+
+The argument *coords.nrs* is optional, and will not be used in this subject. 
 ```{r, echo=TRUE, fig.width=3, fig.height =3, fig.align="center"}
 names=c("a","b","c","d")
-df = data.frame(xvals=c(1.1,1.2,1.6,2.1), row.names=names)
+df = data.frame(z=c(1.1,1.2,1.6,2.1), row.names=names)
 m = matrix(c(0,0,5,5),ncol=2, dimnames=list(NULL, c("min","max")))  
 SP@bbox = m
 SPDF = SpatialPointsDataFrame(SP,data=df)
@@ -77,13 +85,15 @@ SPDF = SpatialPointsDataFrame(SP,data=df)
 SPDF@data
 
 ## Plot: location with value
-spplot(SPDF,zcol="xvals")
+## Note here that you need to write "z" which is the same name you defined in df. 
+spplot(SPDF,zcol="z")
 
 
 ## Another way to create SpatialPointsDataFrame (directly from a data.frame)
 SPDF2 = data.frame(name = names, x = lcoords[,1], y = lcoords[,2], value = df )
 coordinates(SPDF2) = ~x+y
 class(SPDF2)
+proj4string(SPDF2) <- CRS("+proj=longlat +datum=WGS84")    ## Add CRS
 ```
 
 
@@ -99,6 +109,8 @@ knitr::include_graphics("pics/SpPnDF.png")
 ```
 
 ## Create Polygon
+
+Here, we will create Polygon class. For example, *Sr1* has the vertices $(2,2)$, $(4,3)$, $(4,5)$ and $(1,4)$. However, $(2,2)$ needs to be write twice, since it is both the starting vertex and ending vertex. 
 ```{r, echo=TRUE, fig.width=8, fig.align="center"}
 #getClass("Polygon")
 Sr1 = Polygon(cbind(c(2,4,4,1,2),c(2,3,5,4,2)))
@@ -109,7 +121,9 @@ Sr4 = Polygon(cbind(c(5,6,6,5,5),c(4,4,3,3,4)), hole = TRUE)
 
 
 ## Create Polygons
-Note the difference between the previous subsection: Polygon vs Polygons
+Note the difference between the previous subsection: Polygon vs Polygons. A Polygons can contain any number of Polygon (including only 1 Polygon). 
+
+Why do we need polygons? Imagine you want to draw a country, which has more than 1 island (e.g. New Zealand). 
 ```{r, echo=TRUE, fig.width=8, fig.align="center"}
 #getClass("Polygons")
 Srs1 = Polygons(list(Sr1), "s1")
@@ -128,9 +142,9 @@ Note that there is a hole in one of Polygons
 ## Create SpatialPolygonsDataFrame
 ```{r, echo=TRUE, fig.width=6, fig.align="center"}
 #getClass("SpatialPolygons")
-df = data.frame(xval = c(1.2,1.3,1.6), yval = c(2.2,2.8,3.9), row.names = row.names(SpP))
+df = data.frame(z1 = c(1.2,1.3,1.6), z2 = c(2.2,2.8,3.9), row.names = row.names(SpP))
 SpPDF = SpatialPolygonsDataFrame(Sr = SpP, data = df)
-spplot(SpPDF, zcol = "xval")
+spplot(SpPDF, zcol = "z1")
 ```
 The argument "row.names = row.names(SpP)" is needed.  
 
