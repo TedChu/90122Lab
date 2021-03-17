@@ -60,6 +60,13 @@ A simple interactive map can generated as
 library(mapview)
 mapView(gmel)
 ```
+
+* About no background map issue. There is some information from https://github.com/r-spatial/mapview/issues/153.
+  + From the above webpage, it really depends on the versions of R, Rstudio.
+  + In my computer, the viewer provides a background map. 
+  + If it does not work on your computer, click *Export*, then click *Save as Web Page*. In your saved html file, let me know whether you can see the background map. 
+
+
 I find out that by drawing SpatialPolygons directly on maps, it is easier to obtain a feeling of the dataset. Please click around the map, a lot of information will show up.  
 
 Variables
