@@ -37,11 +37,20 @@ The shapefile is available in folder *Mel* in Canvas, and it is downloaded from 
 
 The shapefile here is named *Aus-Melbourne02*, which records information from all LGA in Greater Melbourne. In readOGR, for more details, see help file using *?readOGR* 
 
+
 *The package "rgdal" can be installed in my Windows and Mac OS system. For Mac, you also need to install Xcode and XQuartz. If you are using Ubuntu 16.04, Rstudio may have trouble to install this package. (I am sorry that I cannot fix this problem since I am not very familiar with Linux system. There is some informaiton on Internet, which may help. If it does not work, you need to find a Windows/Mac system, such as in G69.) *
+
+* Here is some extra information: 
+  + All datasets can be downloaded at https://github.com/TedChu/90122Lab/tree/master/datasets. 
+  + First, set the working directory through *setwd*. Remember you need to use forward slash (/) or double slash (\\\\), but Not back slash (\\).
+  + I will not recommend you to have space between your folder titles. That is, to write *setwd("..../90122Lab")*, Not *setwd("..../90122 Lab")*
+  + As indicated below, all my files (*Aus-Melbourne02.shp*, *Aus-Melbourne02.dbf*, *Aus-Melbourne02.prj* and *Aus-Melbourne02.shx*) are stored at C:\\Users\\tingjinc\\OneDrive - The University of Melbourne\\Documents\\GitFile\\90122Lab\\datasets\\Mel
+  + Depending on where you store your files, you need to adjust directories in *setwd* and *dsn*. 
 
 ```{r, echo=TRUE, fig.width=6, fig.align="center", message = FALSE}
 library(rgdal)
 library(sp)
+setwd("C:/Users/tingjinc/OneDrive - The University of Melbourne/Documents/GitFile/90122Lab")
 gmel = readOGR(dsn = "datasets/Mel/Aus-Melbourne02.shp", "Aus-Melbourne02")
 ```
 
@@ -61,10 +70,12 @@ library(mapview)
 mapView(gmel)
 ```
 
-* About no background map issue. There is some information from https://github.com/r-spatial/mapview/issues/153.
+* About no background map issue. 
+  + First, you need to download Aus-Melbourne02.prj
+  + If the issue does not solve. There is some information from https://github.com/r-spatial/mapview/issues/153.
   + From the above webpage, it really depends on the versions of R, Rstudio.
-  + In my computer, the viewer provides a background map. 
-  + If it does not work on your computer, click *Export*, then click *Save as Web Page*. In your saved html file, let me know whether you can see the background map. 
+  + Try the following on R Viewer, click *Export*, then click *Save as Web Page*.  
+  
 
 
 I find out that by drawing SpatialPolygons directly on maps, it is easier to obtain a feeling of the dataset. Please click around the map, a lot of information will show up.  
