@@ -18,7 +18,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Create Weight Matrix
 
-We will load the dataset *gmel2* from Week 3 Lab. 
+The dataset *gmel2* is from Week 3 Lab, and it can be downloaded at https://github.com/TedChu/90122Lab/tree/master/datasets.
 ```{r, echo=TRUE, fig.width=10, fig.align="center", message = FALSE}
 library(rgdal)
 library(spdep)
@@ -36,11 +36,17 @@ plot(Wqueen, coordinates(gmel2), pch=19, cex=0.6, add=TRUE,col="red")
 plot(Wrook, coordinates(gmel2), pch=19, cex=0.6, add=TRUE)
 ```
 
+* There are three potential class for spatial weight matrix: *nb* (neighborhood) class, *mat* (matrix) class, and *listw* class.
+  + They all store the same information, but in different formats.
+  + Different functions may require different formats. For example, *moran.test* requires the  *listw* class. You can find these information in help files of these functions.
+  + Functions to transform between these three formats: *nb2listw*, *nb2mat*, *mat2nb*, etc. 
+
+
 Can you see the difference between *queen* rule and *rook* rule?
 
 
 # Moran's I test
-A Moran's I test is performed on the variable *price*. 
+A Moran's I test is performed on the variable *price*. More information about Moran's I codes can be found in Cp1C -- 8. 
 
 
 ```{r, echo=TRUE, fig.align="center"}
@@ -48,9 +54,13 @@ A Moran's I test is performed on the variable *price*.
 moran.test(x=gmel2$price, nb2listw(Wqueen), alternative="two.sided")
 ```
 
+Since the p-value < 0.05, we conclude that there is spatial autocorrelation for the house price in Greater Melbourne.  
+
+
 * Comments
   + The function requires *listw* form for spatial weight matrix
   + Argument *alternative*
+    + What will you do if the alternative test is "There is positive spatial autocorrelation".
   + The above test is *Moran I test under randomisation*. 
     + What does this mean?
     + If you want to take analytical approach mentioned in lectures, what should you do?
@@ -63,8 +73,16 @@ LISA is performed on *price* variable.
 resI = localmoran(gmel2$price, nb2listw(Wqueen), alternative="two.sided")
 round(head(resI),3)
 ```
+* For the lisa output
+  + First column: the value of local moran's I
+  + Second column: the expected value (which is $-1/(n-1)$)
+  + Third column: the variance of local moran's I
+  + Fourth column $=\frac{(Ii - E.Ii)}{\sqrt{Var.Ii}}$
+  + Fifth column: the p-value. 
 
-Visualisation
+&nbsp;
+
+Next, some visualisation for the above results. 
 ```{r, echo=TRUE, fig.width=3, fig.height =3, fig.align="center",warning = F}
 gmellisa = gmel2
 gmellisa@data = data.frame(gmellisa@data, lisa=resI[,1], pvalue=resI[,5])
@@ -80,6 +98,16 @@ brks=c(0.00,0.05,0.10,0.5,0.8,1.00)
 pal=brewer.pal(5, "OrRd") # we select 5 colors from the palette
 spplot(gmellisa, "pvalue", col.regions=pal, at = brks,  main = "p value")
 ```
+
+Suppose we want to know which LGAs have significant local spatial autocorrelation ($\alpha = 0.05$). 
+
+```{r, echo=TRUE, fig.width=3, fig.height =3, fig.align="center",warning = F}
+gmellisa@data[gmellisa$pvalue < 0.05, c(1,3,7,8)]
+```
+
+
+They all have positive LISA values. If you want to formally test whether there are positive local autocorrelation, you will need to change *alternative* to *greater*.
+
 
 
 # Practice: Columbus Data

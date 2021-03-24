@@ -33,7 +33,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Melbourne Example
 
-The shapefile is available in folder *Mel* in Canvas, and it is downloaded from https://www.igismap.com/australia-shapefile-download/ (This website also has shapefile of other Australia regions and cities). You can download all LGA in Victoria through  https://data.gov.au/dataset/ds-dga-bdf92691-c6fe-42b9-a0e2-a4cd716fa811/details (However, it does not indicate which LGA belongs to Greater Melbourne). 
+The shapefile is downloaded from https://www.igismap.com/australia-shapefile-download/ (This website also has shapefile of other Australia regions and cities). You can download all LGA in Victoria through  https://data.gov.au/dataset/ds-dga-bdf92691-c6fe-42b9-a0e2-a4cd716fa811/details (However, it does not indicate which LGA belongs to Greater Melbourne). 
 
 The shapefile here is named *Aus-Melbourne02*, which records information from all LGA in Greater Melbourne. In readOGR, for more details, see help file using *?readOGR* 
 

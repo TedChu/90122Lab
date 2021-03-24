@@ -309,6 +309,9 @@ $(document).ready(function () {
   <a href="Week9.html">Week 9</a>
 </li>
 <li>
+  <a href="Week10.html">Week 10</a>
+</li>
+<li>
   <a href="Versions.html">Versions</a>
 </li>
       </ul>
@@ -352,7 +355,7 @@ $(document).ready(function () {
 </div>
 <div id="create-weight-matrix" class="section level1">
 <h1><span class="header-section-number">2</span> Create Weight Matrix</h1>
-<p>We will load the dataset <em>gmel2</em> from Week 3 Lab.</p>
+<p>The dataset <em>gmel2</em> is from Week 3 Lab, and it can be downloaded at <a href="https://github.com/TedChu/90122Lab/tree/master/datasets" class="uri">https://github.com/TedChu/90122Lab/tree/master/datasets</a>.</p>
 <pre class="r"><code>library(rgdal)
 library(spdep)
 load(&quot;datasets/gmel2.Rdata&quot;)</code></pre>
@@ -363,11 +366,19 @@ plot(gmel2,border=&quot;grey60&quot;, axes=TRUE)
 plot(Wqueen, coordinates(gmel2), pch=19, cex=0.6, add=TRUE,col=&quot;red&quot;)
 plot(Wrook, coordinates(gmel2), pch=19, cex=0.6, add=TRUE)</code></pre>
 <p><img src="Week4_files/figure-html/unnamed-chunk-2-1.png" width="288" style="display: block; margin: auto;" /></p>
+<ul>
+<li>There are three potential class for spatial weight matrix: <em>nb</em> (neighborhood) class, <em>mat</em> (matrix) class, and <em>listw</em> class.
+<ul>
+<li>They all store the same information, but in different formats.</li>
+<li>Different functions may require different formats. For example, <em>moran.test</em> requires the <em>listw</em> class. You can find these information in help files of these functions.</li>
+<li>Functions to transform between these three formats: <em>nb2listw</em>, <em>nb2mat</em>, <em>mat2nb</em>, etc.</li>
+</ul></li>
+</ul>
 <p>Can you see the difference between <em>queen</em> rule and <em>rook</em> rule?</p>
 </div>
 <div id="morans-i-test" class="section level1">
 <h1><span class="header-section-number">3</span> Moran’s I test</h1>
-<p>A Moran’s I test is performed on the variable <em>price</em>.</p>
+<p>A Moran’s I test is performed on the variable <em>price</em>. More information about Moran’s I codes can be found in Cp1C – 8.</p>
 <pre class="r"><code>## plot
 moran.test(x=gmel2$price, nb2listw(Wqueen), alternative=&quot;two.sided&quot;)</code></pre>
 <pre><code>## 
@@ -381,11 +392,15 @@ moran.test(x=gmel2$price, nb2listw(Wqueen), alternative=&quot;two.sided&quot;)</
 ## sample estimates:
 ## Moran I statistic       Expectation          Variance 
 ##        0.62112582       -0.03448276        0.01237199</code></pre>
+<p>Since the p-value &lt; 0.05, we conclude that there is spatial autocorrelation for the house price in Greater Melbourne.</p>
 <ul>
 <li>Comments
 <ul>
 <li>The function requires <em>listw</em> form for spatial weight matrix</li>
-<li>Argument <em>alternative</em></li>
+<li>Argument <em>alternative</em>
+<ul>
+<li>What will you do if the alternative test is “There is positive spatial autocorrelation”.</li>
+</ul></li>
 <li>The above test is <em>Moran I test under randomisation</em>.
 <ul>
 <li>What does this mean?</li>
@@ -406,7 +421,18 @@ round(head(resI),3)</code></pre>
 ## 5 0.728 -0.034  0.128 2.130      0.033
 ## 6 0.659 -0.034  0.160 1.735      0.083
 ## 7 0.005 -0.034  0.207 0.087      0.931</code></pre>
-<p>Visualisation</p>
+<ul>
+<li>For the lisa output
+<ul>
+<li>First column: the value of local moran’s I</li>
+<li>Second column: the expected value (which is <span class="math inline">\(-1/(n-1)\)</span>)</li>
+<li>Third column: the variance of local moran’s I</li>
+<li>Fourth column <span class="math inline">\(=\frac{(Ii - E.Ii)}{\sqrt{Var.Ii}}\)</span></li>
+<li>Fifth column: the p-value.</li>
+</ul></li>
+</ul>
+<p> </p>
+<p>Next, some visualisation for the above results.</p>
 <pre class="r"><code>gmellisa = gmel2
 gmellisa@data = data.frame(gmellisa@data, lisa=resI[,1], pvalue=resI[,5])
 ### Spatial plots with LISA value
@@ -422,6 +448,18 @@ brks=c(0.00,0.05,0.10,0.5,0.8,1.00)
 pal=brewer.pal(5, &quot;OrRd&quot;) # we select 5 colors from the palette
 spplot(gmellisa, &quot;pvalue&quot;, col.regions=pal, at = brks,  main = &quot;p value&quot;)</code></pre>
 <p><img src="Week4_files/figure-html/unnamed-chunk-5-3.png" width="288" style="display: block; margin: auto;" /></p>
+<p>Suppose we want to know which LGAs have significant local spatial autocorrelation (<span class="math inline">\(\alpha = 0.05\)</span>).</p>
+<pre class="r"><code>gmellisa@data[gmellisa$pvalue &lt; 0.05, c(1,3,7,8)]</code></pre>
+<pre><code>##           name2   price      lisa       pvalue
+## 2       Bayside 1250000 1.3430029 1.002157e-02
+## 3    Boroondara 1550000 2.3470446 2.537627e-09
+## 5         Casey  401000 0.7279176 3.316967e-02
+## 9     Glen Eira 1021000 1.1520060 2.989545e-03
+## 18       Melton  372000 1.0375226 4.506830e-02
+## 22 Port Phillip 1182500 2.0689445 3.805522e-06
+## 23  Stonnington 1450000 2.6593532 5.226097e-14
+## 27        Yarra  950000 0.8046028 3.576890e-02</code></pre>
+<p>They all have positive LISA values. If you want to formally test whether there are positive local autocorrelation, you will need to change <em>alternative</em> to <em>greater</em>.</p>
 </div>
 <div id="practice-columbus-data" class="section level1">
 <h1><span class="header-section-number">5</span> Practice: Columbus Data</h1>
@@ -436,9 +474,9 @@ spplot(gmellisa, &quot;pvalue&quot;, col.regions=pal, at = brks,  main = &quot;p
 ## It has 20 fields
 ## Integer64 fields read as strings:  COLUMBUS_ COLUMBUS_I POLYID</code></pre>
 <pre class="r"><code>plot(columbus, border=&quot;black&quot;,main=&quot;Neigbhoods of Columbus City&quot;)</code></pre>
-<p><img src="Week4_files/figure-html/unnamed-chunk-6-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p><img src="Week4_files/figure-html/unnamed-chunk-7-1.png" width="768" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>spplot(columbus, &quot;CRIME&quot;, col.regions = rev(heat.colors(20,alpha=0.8)))</code></pre>
-<p><img src="Week4_files/figure-html/unnamed-chunk-6-2.png" width="768" style="display: block; margin: auto;" /></p>
+<p><img src="Week4_files/figure-html/unnamed-chunk-7-2.png" width="768" style="display: block; margin: auto;" /></p>
 </div>
 
 
