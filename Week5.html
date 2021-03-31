@@ -362,7 +362,7 @@ plot(data1, pch=46, cex =3)                           </code></pre>
 <li>Argument:
 <ul>
 <li>lambda=100: intensity function, <span style="color: red;">NOT number of points</span></li>
-<li>win=owin(c(0,2),c(0,2)): spatial point process data will be generated in the region [0,2]*[0,2].</li>
+<li>win=owin(c(0,2),c(0,2)): spatial point process data will be generated in the domain D = [0,2]*[0,2].</li>
 <li>Question: What is the expected number of events?</li>
 </ul></li>
 </ul>
@@ -375,7 +375,7 @@ plot(data1, pch=46, cex =3)                           </code></pre>
 ##  Chi-squared test of CSR using quadrat counts
 ## 
 ## data:  data1
-## X2 = 13.92, df = 15, p-value = 0.9368
+## X2 = 7.8138, df = 15, p-value = 0.1379
 ## alternative hypothesis: two.sided
 ## 
 ## Quadrats: 4 by 4 grid of tiles</code></pre>
@@ -407,9 +407,10 @@ Gtest=envelope(data1,fun=Gest, r=r, nrank=2, nsim=99)</code></pre>
 <li>nrank: similar to deciding the significant level
 <ul>
 <li>Note that (2+2+1)/(99+1) = 0.05, and therefore, it is a similar to test at <span style="color: red;">“significant level”</span> = 0.05</li>
+<li>That is, if you want to ensure <span class="math inline">\(\alpha\)</span> (significant level), you need to set <span class="math inline">\((2nrank+1)/(nsim+1) = \alpha\)</span>.</li>
 </ul></li>
 <li>fun: Gest</li>
-<li>r: where the G function will be evaluated.</li>
+<li>r: where the G function will be evaluated. (<span class="math inline">\(h\)</span> in our slides.)</li>
 </ul></li>
 </ul>
 <pre class="r"><code>plot(Gtest)</code></pre>
@@ -418,7 +419,7 @@ Gtest=envelope(data1,fun=Gest, r=r, nrank=2, nsim=99)</code></pre>
 </div>
 <div id="ppp-class" class="section level2">
 <h2><span class="header-section-number">1.4</span> ppp class</h2>
-<p>As mentioned earlier, package <em>spatstat</em> uses ppp class. We can tranform between <em>SpatialPoints</em> class in <em>sp</em> package and <em>ppp</em> class using the function <em>as</em> in package <em>maptools</em></p>
+<p>As mentioned earlier, package <em>spatstat</em> uses ppp class. We can transform between <em>SpatialPoints</em> class in <em>sp</em> package and <em>ppp</em> class using the function <em>as</em> in package <em>maptools</em></p>
 <pre class="r"><code>library(sp)
 library(maptools)</code></pre>
 <pre><code>## Checking rgeos availability: TRUE</code></pre>
@@ -439,12 +440,12 @@ class(pppdata1) </code></pre>
 <div id="create-ipp" class="section level2">
 <h2><span class="header-section-number">2.1</span> Create IPP</h2>
 <pre class="r"><code># inhomogeneous Poisson process in unit square
-# with intensity lambda(x,y) = min(10 * exp(3*x), 100)
+# with intensity lambda(x,y) = min(10 * exp(3*x), 100), where $s = (x, y)^T$
 lamb = function(x,y) { 10 * exp( 3 * x)}
 ipp = rpoispp(lambda=lamb, lmax=100) 
 plot(ipp, pch=46, cex =3)</code></pre>
 <p><img src="Week5_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
-<p>Here, <em>lmax</em> specified the largest possible intensity. For example, when <span class="math inline">\(x=2\)</span>, we have <span class="math inline">\(10\exp(3x)=201\)</span>. However, since <em>lmax = 100</em> is specified, the intensity will be 100. That is, we achieve "intensity lambda(x,y) = min(10 * exp(3*x), 100)".</p>
+<p>Here, <em>lmax</em> specifies the largest possible intensity. For example, when <span class="math inline">\(x=1\)</span>, we have <span class="math inline">\(10\exp(3x)=201\)</span>. However, since <em>lmax = 100</em> is specified, the intensity will be 100. That is, we achieve "intensity lambda(x,y) = min(10 * exp(3*x), 100)".</p>
 </div>
 <div id="create-neyman-scott-process-clustered-data-pattern" class="section level2">
 <h2><span class="header-section-number">2.2</span> Create Neyman-Scott Process: clustered data pattern</h2>
@@ -458,19 +459,19 @@ plot(rNS, pch=46, cex =3)</code></pre>
 <ul>
 <li>Argument:
 <ul>
-<li>kappa: Intensity of the Poisson process for parent points – step (i)</li>
-<li>expand: Size of the expansion of the simulation window for parent points.</li>
+<li>kappa: Intensity of the Poisson process for parent points (that is, <span class="math inline">\(\lambda\)</span> in our slides) – step (i)</li>
+<li>expand: Size of the expansion of the simulation window for parent points – step (i)</li>
 <li>rcluster: step <span class="math inline">\((ii^*)--(iii^*)\)</span>: here runifdisc function is used.</li>
 </ul></li>
 </ul>
 
 <ul>
-<li>About runifdisc function: runifdisc(n, radius, center)
+<li>About runifdisc function: runifdisc(n, radius)
 <ul>
-<li>Generate a random point pattern containing n independent uniform random points in a circular disc.</li>
-<li>n: Number of points. Here, n=5</li>
+<li>Generate a random point pattern containing <span class="math inline">\(n\)</span> independent uniform random points in a circular disc.</li>
+<li>n: Number of offspring. Here, n=5 – in step <span class="math inline">\((ii^*)\)</span>.</li>
 <li>radius: Radius of the circle. radius = 0.2</li>
-<li>center: Coordinates of the centre of the circle.</li>
+<li>center: Coordinates of the center of the circle (that is, the location of the parent).</li>
 </ul></li>
 </ul>
 </div>
@@ -483,8 +484,8 @@ plot(matI, main=&quot;&quot;, pch=46, cex =3)
 plot(matII, main=&quot;&quot;, pch=46, cex =3)</code></pre>
 <p><img src="Week5_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
 <ul>
-<li>kappa: Intensity of the Poisson process of proposal points</li>
-<li>r: Inhibition distance.</li>
+<li>kappa: the intensity of the Poisson process (that is, <span class="math inline">\(\lambda\)</span> in our slides).</li>
+<li>r: Inhibition distance. (<span class="math inline">\(\delta\)</span> in our slides)</li>
 </ul>
 </div>
 <div id="further-study" class="section level2">
