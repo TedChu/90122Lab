@@ -375,7 +375,7 @@ plot(data1, pch=46, cex =3)                           </code></pre>
 ##  Chi-squared test of CSR using quadrat counts
 ## 
 ## data:  data1
-## X2 = 31.01, df = 15, p-value = 0.01751
+## X2 = 13.92, df = 15, p-value = 0.9368
 ## alternative hypothesis: two.sided
 ## 
 ## Quadrats: 4 by 4 grid of tiles</code></pre>
@@ -443,7 +443,8 @@ class(pppdata1) </code></pre>
 lamb = function(x,y) { 10 * exp( 3 * x)}
 ipp = rpoispp(lambda=lamb, lmax=100) 
 plot(ipp, pch=46, cex =3)</code></pre>
-<p><img src="Week5_files/figure-html/unnamed-chunk-6-1.png" width="672" /> Here, <em>lmax</em> specified the largest possible intensity. For example, when <span class="math inline">\(x=2\)</span>, we have <span class="math inline">\(10\exp(3x)=201\)</span>. However, since <em>lmax = 100</em> is specified, the intensity will be 100. That is, we achieve "intensity lambda(x,y) = min(10 * exp(3*x), 100)".</p>
+<p><img src="Week5_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>Here, <em>lmax</em> specified the largest possible intensity. For example, when <span class="math inline">\(x=2\)</span>, we have <span class="math inline">\(10\exp(3x)=201\)</span>. However, since <em>lmax = 100</em> is specified, the intensity will be 100. That is, we achieve "intensity lambda(x,y) = min(10 * exp(3*x), 100)".</p>
 </div>
 <div id="create-neyman-scott-process-clustered-data-pattern" class="section level2">
 <h2><span class="header-section-number">2.2</span> Create Neyman-Scott Process: clustered data pattern</h2>

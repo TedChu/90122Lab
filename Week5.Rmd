@@ -101,6 +101,7 @@ lamb = function(x,y) { 10 * exp( 3 * x)}
 ipp = rpoispp(lambda=lamb, lmax=100) 
 plot(ipp, pch=46, cex =3)
 ```
+
 Here, *lmax* specified the largest possible intensity. For example, when $x=2$, we have  $10\exp(3x)=201$. However, since *lmax = 100* is specified, the intensity will be 100. That is, we achieve "intensity lambda(x,y) = min(10 * exp(3*x), 100)". 
 
 
