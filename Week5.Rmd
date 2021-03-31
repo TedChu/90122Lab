@@ -20,13 +20,14 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r echo=TRUE, results="hold", message=FALSE}
 library(spatstat)
-data1 = rpoispp(lambda=100, win=owin(c(0,1),c(0,1)))
+data1 = rpoispp(lambda=100, win=owin(c(0,2),c(0,2)))
 plot(data1, pch=46, cex =3)                           
 ```
 
 * Argument: 
   + lambda=100: intensity function, <span style="color: red;">NOT number of points</span>
-  + win=owin(c(0,1),c(0,1)): spatial point process data will be generated in the region [0,1]*[0,1].
+  + win=owin(c(0,2),c(0,2)): spatial point process data will be generated in the region [0,2]*[0,2].
+  + Question: What is the expected number of events?
 
 
 
@@ -51,7 +52,7 @@ Since p-value is bigger than 0.05, we fail to reject $H_0$.
 ## Test: G Function
 
 ```{r echo=TRUE, warning=FALSE, message = FALSE}
-r=seq(0,sqrt(2)/3, by=0.005)
+r=seq(0,sqrt(2), by=0.005)
 Gtest=envelope(data1,fun=Gest, r=r, nrank=2, nsim=99)
 ```
 * Argument: 
