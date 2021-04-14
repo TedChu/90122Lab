@@ -194,7 +194,7 @@ library(maps)
 ```
 
 
-```{r, echo=TRUE, fig.width=6, fig.align="center"}
+```{r, echo=TRUE, fig.width=6, fig.align="center", warning = FALSE}
 load("datasets/gmel2.RData")          # Load gmel2 data from Lab 3
 class(gmel2)                 # SpatialPolygonsDataFrame
 gmel2.sf = st_as_sf(gmel2)   # to sf class
@@ -204,11 +204,12 @@ ggplot()+geom_sf(data=gmel2.sf, aes(fill = price))
 
 ```
 From sf class to SpatialPolygonsDataFrame: sp::as
-```{r, echo=TRUE, fig.width=6, fig.align="center"}
+```{r, echo=TRUE, fig.width=6, fig.align="center", warning = FALSE}
 class(gmel2.sf)
 gmel2.sp = as(gmel2.sf, "Spatial")
 spplot(gmel2.sp, "price")
 ```
+
 * In summary, we focus on three ways to visulization
   + spplot:    work for SpatialPolygonsDataFrame
   + geom_sf:   work for sf class
