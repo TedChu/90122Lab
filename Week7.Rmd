@@ -19,7 +19,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Package ozmaps  
 * It provide the following map (all in form of sf class):
-  + ozmaps::ozmap_states : tate boundary
+  + ozmaps::ozmap_states: state boundary
   + ozmaps::abs_ced: Commonwealth Electoral Divisions
   + ozmaps::abs_lga: Local Government Areas
 ```{r, echo=TRUE, fig.width=6, fig.align="center"}
