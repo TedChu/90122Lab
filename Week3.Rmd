@@ -103,7 +103,7 @@ mapView(g)
 
 ```{r, echo=TRUE, fig.width=6, fig.align="center"}
 class(gmel) 
-gmel = gmel[-1,]  # the first element is greater melbourne, not LGA
+#gmel = gmel[-1,]  # the first element is greater melbourne, not LGA
 ```
 
 

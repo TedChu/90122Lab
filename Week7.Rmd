@@ -103,10 +103,10 @@ CMEL = MELLGA[i, ]
 * There are more shapefiles in *PlanMelbourne* Folder, which can be downloaded from https://www.planmelbourne.vic.gov.au/maps/spatial-data
 + I have not explore all of shapefiles
 + It is quite useful. 
-+ The following gives *regions of victoria* and *CBD*
++ The following gives *regions of Victoria* and *CBD*
   
 ```{r, echo=TRUE, fig.width=6, fig.align="center"}
-#SReg = readOGR(dsn="2_ggplot/PlanMelbourne/Administrative/State Regions_region.shp", "State Regions_region")
+#SReg = readOGR(dsn="datasets/PlanMelbourne/Administrative/State Regions_region.shp", "State Regions_region")
 
 #library(mapview)
 #mapView(SReg)
