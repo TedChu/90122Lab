@@ -15,9 +15,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Soil Example
 
-* Background details: Example 1.4 of MBG 1.1
-  + calcium content in soil
-  + three sub-regions: different soil management regimes.
+$Z(\mathbf{s})$: calcium content in soil at $\mathbf{s}$. 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 library(geoR)
 data(ca20)
@@ -57,6 +55,8 @@ lines.variomodel(seq(0, 510, l = 100),
                  cov.model = "mat", kap = 0.5, nug = 30)
 ```
 
+Based on the plot, the initial value $(\sigma^2, \phi, \tau^2) = (100, 120, 30)$.
+
 
 ## MLE: Function
 ```{r echo=TRUE, results='hide', message=FALSE, warning=FALSE, hold=TRUE}
@@ -92,13 +92,13 @@ m1$nugget
   + argument
   + cov.model: "exp" (default), more options see cov.pars
   + Fixed or Estimated: fix.nugget = FALSE, fix.kappa = TRUE, kappa =0.5
-  + Initial value: ini.cov.pars, nugget = 0
+  + Initial value: ini.cov.pars, nugget 
 
 \vspace{5pt}
 
 * Remarks: we have 4 parameters: nugget $\tau^2$, partial sill $\sigma^2$, range parameter $\phi$, smooth parameter $\kappa$ ( $\nu$ in our slide. )
-  + Function allow us either to pre-specify (fix) or estiamte it
-  + PS: most of the time, $\kappa$ is fixed.
+  + Function allow us either to pre-specify (fix) or estimate it
+  + Most of the time, $\kappa$ is fixed.
   
   
 Here are some exmaple: 
@@ -143,8 +143,12 @@ The package *geoR* requires *geodata* object, and in this part, we show how to c
   
 
 ## Create geodata
-  + <span style="color: red;">convert a data.frame to geodata</span> 
+
+* <span style="color: red;">Converting a data.frame to geodata</span>: many functions in geoR requires geodata format.
   + *as.geodata(obj, coords.col = 1:2, data.col = 3, covar.col = NULL, covar.names = "obj.names")*
+  + coords.col = 1:2 (default): the first two columns are x-axis and y-axis. 
+  + data.col = 3 (default): the column for the response ($Z(\mathbf{s})$). The default is the third column, but you can specify it. In the following example, the 5th column is for the response. 
+  + covar.col: columns for covariates. 
 ```{r message=TRUE, echo=TRUE, warning=FALSE}
 library(geoR)
 data(camg)     # data.frame format
@@ -152,12 +156,3 @@ data(camg)     # data.frame format
 geocamg = as.geodata(camg, data.col=5, covar.col=c(3,6), 
                      covar.names = c("elevation", "mg20"))    
 ```
-\vspace{-10pt}
-
-* Argument 
-  + obj: data.frame
-  + Z: data.col=3
-  + X: covar.col 
-  + covar.names = 
-  + Many functions in geoR requires geodata format
-  

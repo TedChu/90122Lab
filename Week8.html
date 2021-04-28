@@ -356,13 +356,7 @@ $(document).ready(function () {
 <h1><span class="header-section-number">1</span> Soil Data &amp; Variogram</h1>
 <div id="soil-example" class="section level2">
 <h2><span class="header-section-number">1.1</span> Soil Example</h2>
-<ul>
-<li>Background details: Example 1.4 of MBG 1.1
-<ul>
-<li>calcium content in soil</li>
-<li>three sub-regions: different soil management regimes.</li>
-</ul></li>
-</ul>
+<p><span class="math inline">\(Z(\mathbf{s})\)</span>: calcium content in soil at <span class="math inline">\(\mathbf{s}\)</span>.</p>
 <pre class="r"><code>library(geoR)
 data(ca20)
 points(ca20,cex.min = 0.2, cex.max = 1.5, pch = 21)</code></pre>
@@ -396,6 +390,7 @@ lines.variomodel(seq(0, 510, l = 100),
                  cov.pars = c(100, 120),           
                  cov.model = &quot;mat&quot;, kap = 0.5, nug = 30)</code></pre>
 <p><img src="Week8_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>Based on the plot, the initial value <span class="math inline">\((\sigma^2, \phi, \tau^2) = (100, 120, 30)\)</span>.</p>
 </div>
 <div id="mle-function" class="section level2">
 <h2><span class="header-section-number">2.2</span> MLE: Function</h2>
@@ -430,15 +425,15 @@ m1$nugget</code></pre>
 <li>argument</li>
 <li>cov.model: “exp” (default), more options see cov.pars</li>
 <li>Fixed or Estimated: fix.nugget = FALSE, fix.kappa = TRUE, kappa =0.5</li>
-<li>Initial value: ini.cov.pars, nugget = 0</li>
+<li>Initial value: ini.cov.pars, nugget</li>
 </ul></li>
 </ul>
 
 <ul>
 <li>Remarks: we have 4 parameters: nugget <span class="math inline">\(\tau^2\)</span>, partial sill <span class="math inline">\(\sigma^2\)</span>, range parameter <span class="math inline">\(\phi\)</span>, smooth parameter <span class="math inline">\(\kappa\)</span> ( <span class="math inline">\(\nu\)</span> in our slide. )
 <ul>
-<li>Function allow us either to pre-specify (fix) or estiamte it</li>
-<li>PS: most of the time, <span class="math inline">\(\kappa\)</span> is fixed.</li>
+<li>Function allow us either to pre-specify (fix) or estimate it</li>
+<li>Most of the time, <span class="math inline">\(\kappa\)</span> is fixed.</li>
 </ul></li>
 </ul>
 <p>Here are some exmaple:</p>
@@ -498,25 +493,19 @@ m1$nugget</code></pre>
 <div id="create-geodata" class="section level2">
 <h2><span class="header-section-number">3.1</span> Create geodata</h2>
 <ul>
-<li><span style="color: red;">convert a data.frame to geodata</span></li>
+<li><span style="color: red;">Converting a data.frame to geodata</span>: many functions in geoR requires geodata format.
+<ul>
 <li><em>as.geodata(obj, coords.col = 1:2, data.col = 3, covar.col = NULL, covar.names = “obj.names”)</em></li>
+<li>coords.col = 1:2 (default): the first two columns are x-axis and y-axis.</li>
+<li>data.col = 3 (default): the column for the response (<span class="math inline">\(Z(\mathbf{s})\)</span>). The default is the third column, but you can specify it. In the following example, the 5th column is for the response.</li>
+<li>covar.col: columns for covariates.</li>
+</ul></li>
 </ul>
 <pre class="r"><code>library(geoR)
 data(camg)     # data.frame format
 # geodata format
 geocamg = as.geodata(camg, data.col=5, covar.col=c(3,6), 
                      covar.names = c(&quot;elevation&quot;, &quot;mg20&quot;))    </code></pre>
-
-<ul>
-<li>Argument
-<ul>
-<li>obj: data.frame</li>
-<li>Z: data.col=3</li>
-<li>X: covar.col</li>
-<li>covar.names =</li>
-<li>Many functions in geoR requires geodata format</li>
-</ul></li>
-</ul>
 </div>
 </div>
 
