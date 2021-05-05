@@ -38,20 +38,33 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Ordinary Kriging
 
-
+First, we fit the model $$Z(\mathbf{s}) = \mu + U(\mathbf{s}) + \nu(\mathbf{s}).$$ Here *trend = "cte"* specifies that the trend $\mu(\mathbf{s})$ is a constant ($\mu(\mathbf{s})=\mu$). 
 ```{r echo=TRUE, results='hide', message=FALSE, warning=FALSE, hold=TRUE}
 library(geoR)
 data(ca20)
 fit = likfit(ca20, ini = c(100, 60), trend = "cte")
-gr = pred_grid(ca20$borders, by = 10)   # new locations s_0 created. 
-KC = krige.control(obj.model = fit)
-ca20pred = krige.conv(ca20, loc = gr, krige = KC)
 ```
 
-Kriging Estimates
+Secod, we setup the Ordinary Kriging. 
+```{r echo=TRUE, message=FALSE, warning=FALSE, hold=FALSE}
+gr = pred_grid(ca20$borders, by = 10)   # new locations s_0 created
+head(gr)     ## Here are the first six locations, where the first locations is (4920, 4800). 
+dim(gr)      ## There are a total of 10908 new locations to predict. 
+KC = krige.control(obj.model = fit)
+```
+
+Third, we make predictions on all locations on *gr*
+```{r echo=TRUE, results='hide', message=FALSE, warning=FALSE, hold=TRUE}
+ca20pred = krige.conv(ca20, loc = gr, krige = KC)
+```
+* The output includes
+  + ca20pred$predict: the kriging estimates for all locations specified at *loc*. 
+  + ca20pred$krige.var: the kriging variance for all locations specified at *loc*.
+
+
+Last, we visualise both Kriging estimates and Kriging variances. 
 
 ```{r echo=TRUE, results="hold", warning=FALSE}
-ca20pred$predict[1:3]   
 color = function(x)rev(heat.colors(x)) 
 image(ca20pred, loc = gr, x.leg = c(4930, 5350)
       , y.leg = c(4790, 4840), col=color(15))
@@ -60,7 +73,6 @@ image(ca20pred, loc = gr, x.leg = c(4930, 5350)
 Kriging Variances
 
 ```{r echo=TRUE, results="hold", warning=FALSE}
-ca20pred$krige.var[1:3]      
 image(ca20pred, loc = gr, val=sqrt(ca20pred$krige.var)
       , x.leg = c(4930, 5350), y.leg = c(4790, 4840)
       , col=color(15))
