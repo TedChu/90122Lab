@@ -75,22 +75,27 @@ mlag = spatialreg::lagsarlm(log(price)~dis+off + inc, data=gmel2@data,
 
 The output
 
-```{r, echo=TRUE, fig.width=6, fig.align="center"}
+```{r, echo=TRUE, fig.width=6, fig.align="center", hold=TRUE}
+# Just like lm output. distance and income are significant, while offense is not.
 summary(mlag)
-# Just like lm output. distance and income are significant, while 
+```
 
 
+```{r, echo=TRUE, fig.width=6, fig.align="center", results="hold"}
 ## beta estiamtes and asymptotic standard error
 mlag$coefficients
 mlag$rest.se
+```
 
+```{r, echo=TRUE, fig.width=6, fig.align="center", results="hold"}
 ## rho estimates and asymptotic standard error
 mlag$rho
 mlag$rho.se
+```
 
+```{r, echo=TRUE, fig.width=6, fig.align="center", results="hold"}
 ## sigma^2 estimates
 mlag$s2
-
 ```
 
 
