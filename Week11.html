@@ -11,7 +11,7 @@
 
 
 
-<title>MAST90122 Lab</title>
+<title>Week 11: Visulization of Spatio-Temporal Data (Optional)</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -312,9 +312,6 @@ $(document).ready(function () {
   <a href="Week10.html">Week 10</a>
 </li>
 <li>
-  <a href="Week11.html">Week 11</a>
-</li>
-<li>
   <a href="Versions.html">Versions</a>
 </li>
       </ul>
@@ -329,14 +326,96 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">MAST90122 Lab</h1>
+<h1 class="title toc-ignore">Week 11: Visulization of Spatio-Temporal Data (Optional)</h1>
 
 </div>
 
+<div id="TOC">
+<ul>
+<li><a href="#overview"><span class="toc-section-number">1</span> Overview</a></li>
+<li><a href="#spatial-plots"><span class="toc-section-number">2</span> Spatial Plots</a></li>
+</ul>
+</div>
 
-<p>There are labs between week 2–11.</p>
-<p>There is no lab for Week 1. However, if you do not know R, please study <em>An Introduction to R</em> at <a href="https://cran.r-project.org/doc/manuals/R-intro.pdf" class="uri">https://cran.r-project.org/doc/manuals/R-intro.pdf</a></p>
-<p>There is no lab for Week 12.</p>
+<div style="margin-bottom:50px;">
+
+</div>
+<div id="overview" class="section level1">
+<h1><span class="header-section-number">1</span> Overview</h1>
+<ul>
+<li>In Lab 11, we will follow Lab 2.2 of <em>Spatio-Temporal Statistics with R</em>. You can download the electronic pdf through <a href="https://spacetimewithr.org/" class="uri">https://spacetimewithr.org/</a>.
+<ul>
+<li>In this document, I will only highlight some important points; that is, the visulization of spatio-temporal data.<br />
+</li>
+<li>In Lab 2.1 – 2.2 of Spatio-Temporal Statistics with R, functions from package <em>dplyr</em> and <em>tidyr</em> are used for data cleaning. Please use help file to obtain more information. (These packages are widely used for data cleaning. However, this is not the focus of this subject.)</li>
+</ul></li>
+</ul>
+</div>
+<div id="spatial-plots" class="section level1">
+<h1><span class="header-section-number">2</span> Spatial Plots</h1>
+<ul>
+<li>First, we load the dataset.
+<ul>
+<li>z: temperature (F)</li>
+<li>id: weather station ID.</li>
+<li>t: time (1 = 1am, … )</li>
+<li>We do not really used column <em>julian</em> nor <em>proc</em></li>
+</ul></li>
+</ul>
+<pre class="r"><code>library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+
+load(&quot;datasets/Tmax.Rdata&quot;)
+head(Tmax)</code></pre>
+<pre><code>##   julian year month day   id  z proc   lat       lon       date t
+## 1 728050 1993     5   1 3804 82 Tmax 39.35 -81.43333 1993-05-01 1
+## 2 728051 1993     5   2 3804 84 Tmax 39.35 -81.43333 1993-05-02 2
+## 3 728052 1993     5   3 3804 79 Tmax 39.35 -81.43333 1993-05-03 3
+## 4 728053 1993     5   4 3804 72 Tmax 39.35 -81.43333 1993-05-04 4
+## 5 728054 1993     5   5 3804 73 Tmax 39.35 -81.43333 1993-05-05 5
+## 6 728055 1993     5   6 3804 78 Tmax 39.35 -81.43333 1993-05-06 6</code></pre>
+<ul>
+<li>The plot will be produced by package <em>ggplot2</em>. The new function here
+<ul>
+<li>geom_path: add US states map</li>
+</ul></li>
+</ul>
+<pre class="r"><code>Tmax_1 &lt;- subset(Tmax, t %in% c(1, 15, 30))  # extract data
+
+# Spatial Plots
+NOAA_plot &lt;- ggplot(Tmax_1) +                              # plot points
+  geom_point(aes(x = lon,y = lat,                          # lon and lat
+                 colour = z),                              # attribute color
+             size = 1.2) +                                 # point size
+  scale_colour_gradientn(name = &quot;degF&quot;,                    # attach color scale
+                        colours = terrain.colors(10)) +            
+  xlab(&quot;Longitude (deg)&quot;) +                                # x-axis label
+  ylab(&quot;Latitude (deg)&quot;) +                                 # y-axis label
+  geom_path(data = map_data(&quot;state&quot;),                      # add US states map
+            aes(x = long, y = lat, group = group)) +
+  facet_grid(~date) +                                      # facet by time
+  coord_fixed(xlim = c(-105, -75),
+              ylim = c(25, 50))  +                         # zoom in
+  theme_bw()  
+
+NOAA_plot</code></pre>
+<p><img src="Week11_files/figure-html/unnamed-chunk-2-1.png" width="576" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>## -----------------------------------------------------------
+UIDs &lt;- unique(Tmax$id)                     # extract IDs
+UIDs_sub &lt;- sample(UIDs, 10)                # sample 10 IDs
+Tmax_sub &lt;- filter(Tmax, id %in% UIDs_sub)  # subset data
+
+## ------------------------------------------------------------------------
+TmaxTS &lt;- ggplot(Tmax_sub) +
+    geom_line(aes(x = t, y = z)) + # line plot of z against t
+    facet_wrap(~id, ncol = 5) +    # facet by station
+    xlab(&quot;Day number (days)&quot;) +    # x label
+    ylab(&quot;Tmax (degF)&quot;) +          # y label
+    theme_bw() +                   # BW theme
+    theme(panel.spacing = unit(1, &quot;lines&quot;)) # facet spacing</code></pre>
+</div>
 
 
 

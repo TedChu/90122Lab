@@ -1,0 +1,82 @@
+---
+title: 'Week 11: Visulization of Spatio-Temporal Data (Optional)'
+---
+
+<div style="margin-bottom:50px;">
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+</div>
+
+
+# Overview
+
+* In Lab 11, we will follow Lab 2.2 of *Spatio-Temporal Statistics with R*. You can download the electronic pdf through https://spacetimewithr.org/. 
+  + In this document, I will only highlight some important points; that is, the visulization of spatio-temporal data.  
+  + In Lab 2.1 -- 2.2 of Spatio-Temporal Statistics with R, functions from package *dplyr* and *tidyr* are used for data cleaning. Please use help file to obtain more information. (These packages are widely used for data cleaning. However, this is not the focus of this subject.)
+
+
+
+# Spatial Plots
+* First, we load the dataset.
+  + z: temperature (F)
+  + id: weather station ID. 
+  + t: time (1 = 1am, ... )
+  + We do not really used column *julian* nor *proc*
+
+```{r, echo=TRUE, fig.width=6, fig.align="center", message = FALSE}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+
+load("datasets/Tmax.Rdata")
+head(Tmax)
+```
+
+* The plot will be produced by package *ggplot2*. The new function here
+  + geom_path: add US states map
+
+```{r, echo=TRUE, fig.width=6, fig.align="center", message = FALSE}
+Tmax_1 <- subset(Tmax, t %in% c(1, 15, 30))  # extract data
+
+# Spatial Plots
+NOAA_plot <- ggplot(Tmax_1) +                              # plot points
+  geom_point(aes(x = lon,y = lat,                          # lon and lat
+                 colour = z),                              # attribute color
+             size = 1.2) +                                 # point size
+  scale_colour_gradientn(name = "degF",                    # attach color scale
+                        colours = terrain.colors(10)) +            
+  xlab("Longitude (deg)") +                                # x-axis label
+  ylab("Latitude (deg)") +                                 # y-axis label
+  geom_path(data = map_data("state"),                      # add US states map
+            aes(x = long, y = lat, group = group)) +
+  facet_grid(~date) +                                      # facet by time
+  coord_fixed(xlim = c(-105, -75),
+              ylim = c(25, 50))  +                         # zoom in
+  theme_bw()  
+
+NOAA_plot
+
+## -----------------------------------------------------------
+UIDs <- unique(Tmax$id)                     # extract IDs
+UIDs_sub <- sample(UIDs, 10)                # sample 10 IDs
+Tmax_sub <- filter(Tmax, id %in% UIDs_sub)  # subset data
+
+## ------------------------------------------------------------------------
+TmaxTS <- ggplot(Tmax_sub) +
+    geom_line(aes(x = t, y = z)) + # line plot of z against t
+    facet_wrap(~id, ncol = 5) +    # facet by station
+    xlab("Day number (days)") +    # x label
+    ylab("Tmax (degF)") +          # y label
+    theme_bw() +                   # BW theme
+    theme(panel.spacing = unit(1, "lines")) # facet spacing
+
+
+
+```
+
+
+
+
