@@ -9,6 +9,13 @@ knitr::opts_chunk$set(echo = TRUE)
 
 </div>
 
+# Introduction
+
+* In this Lab, we will learn
+  + Semivariogram
+  + MLE
+
+
 
 # Soil Data & Variogram
 

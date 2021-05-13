@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 </div>
 
 
-# Overview
+# Introduction
 
 * In Lab 11, we will follow Lab 2.2 of *Spatio-Temporal Statistics with R*. You can download the electronic pdf through https://spacetimewithr.org/. 
   + In this document, I will only highlight some important points; that is, the visulization of spatio-temporal data.  

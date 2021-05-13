@@ -10,7 +10,10 @@ knitr::opts_chunk$set(echo = TRUE)
 </div>
 
 
+# Introduction
 
+* In this Lab, we will learn 
+  + fitting Spatial lag model
 
 # Median House Price Example
 

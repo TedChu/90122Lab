@@ -12,8 +12,9 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 
+# Introduction
 
-# Two key functions:
+* In this Lab, we will learn two key functions
   + krige.control: specify the parameter for kriging, no computing involved.
   + krige.conv: to compute 
 
