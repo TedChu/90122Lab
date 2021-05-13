@@ -14,7 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 * In this lab, you will learn 
-  + Creat different type of spatial objects
+  + Create different type of spatial objects
   + Some basic property and manipulation of these spatial objects
 
 

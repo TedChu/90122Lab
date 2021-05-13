@@ -27,7 +27,7 @@ knitr::opts_chunk$set(echo = TRUE)
   + .dbf:	  storing attribute data
 
 
-* It is developed by Esri (Environmental Systems Research Institute, the company makes famous ArcGIS software). In R, if you want to read a shapefile, you need to use function *readOGR* in package *rgdal*.
+* It is developed by Esri (Environmental Systems Research Institute, the company makes famous ArcGIS software). In R, if you want to read a shapefile, the function *readOGR* from the package *rgdal* is used. 
 
 
 
