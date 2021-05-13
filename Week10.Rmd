@@ -14,7 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Median House Price Example
 
-* The data sets is collected on all LGA in great Melbourne on 2015 by Government. Here, I will show you
+* The dataset is collected on all LGA in great Melbourne on 2015 by Government. Here, I will show you
   + name: LGA name
   + price: median house price
   + dis: distance to Melbourne (in km)

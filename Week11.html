@@ -337,7 +337,7 @@ $(document).ready(function () {
 <ul>
 <li><a href="#overview"><span class="toc-section-number">1</span> Overview</a></li>
 <li><a href="#spatial-plots"><span class="toc-section-number">2</span> Spatial Plots</a></li>
-<li><a href="#spatial-plots-1"><span class="toc-section-number">3</span> Spatial Plots</a></li>
+<li><a href="#time-series-plots"><span class="toc-section-number">3</span> Time-Series Plots</a></li>
 </ul>
 </div>
 
@@ -408,25 +408,33 @@ NOAA_plot &lt;- ggplot(Tmax_1) +                              # plot points
 NOAA_plot</code></pre>
 <p><img src="Week11_files/figure-html/unnamed-chunk-2-1.png" width="576" style="display: block; margin: auto;" /></p>
 </div>
-<div id="spatial-plots-1" class="section level1">
-<h1><span class="header-section-number">3</span> Spatial Plots</h1>
-<pre class="r"><code>## -----------------------------------------------------------
-UIDs &lt;- unique(Tmax$id)                     # extract IDs
+<div id="time-series-plots" class="section level1">
+<h1><span class="header-section-number">3</span> Time-Series Plots</h1>
+<p>First, we randomly select 10 station for visualization.</p>
+<pre class="r"><code>UIDs &lt;- unique(Tmax$id)                     # extract IDs
 UIDs_sub &lt;- sample(UIDs, 10)                # sample 10 IDs
 Tmax_sub &lt;- filter(Tmax, id %in% UIDs_sub)  # subset data
-
-## ------------------------------------------------------------------------
+head(Tmax_sub)</code></pre>
+<pre><code>##   julian year month day   id  z proc   lat       lon       date t
+## 1 728050 1993     5   1 3928 69 Tmax 37.65 -97.43333 1993-05-01 1
+## 2 728051 1993     5   2 3928 53 Tmax 37.65 -97.43333 1993-05-02 2
+## 3 728052 1993     5   3 3928 66 Tmax 37.65 -97.43333 1993-05-03 3
+## 4 728053 1993     5   4 3928 77 Tmax 37.65 -97.43333 1993-05-04 4
+## 5 728054 1993     5   5 3928 78 Tmax 37.65 -97.43333 1993-05-05 5
+## 6 728055 1993     5   6 3928 73 Tmax 37.65 -97.43333 1993-05-06 6</code></pre>
+<p>Next, time-series is plotted.</p>
+<pre class="r"><code>## ------------------------------------------------------------------------
 TmaxTS &lt;- ggplot(Tmax_sub) +
-    geom_line(aes(x = t, y = z)) + # line plot of z against t
-    facet_wrap(~id, ncol = 5) +    # facet by station
-    xlab(&quot;Day number (days)&quot;) +    # x label
-    ylab(&quot;Tmax (degF)&quot;) +          # y label
-    theme_bw() +                   # BW theme
-    theme(panel.spacing = unit(1, &quot;lines&quot;)) # facet spacing
+    geom_line(aes(x = t, y = z)) +          # line plot of z against t
+    facet_wrap(~id, ncol = 5) +             # facet by station
+    xlab(&quot;Day number (days)&quot;) +             # x label
+    ylab(&quot;Tmax (degF)&quot;) +                   # y label
+    theme_bw() +                            # BW theme
+    theme(panel.spacing = unit(1, &quot;lines&quot;)) # facet spacing: the space between each subplots. 
 
 
 TmaxTS</code></pre>
-<p><img src="Week11_files/figure-html/unnamed-chunk-3-1.png" width="576" style="display: block; margin: auto;" /></p>
+<p><img src="Week11_files/figure-html/unnamed-chunk-4-1.png" width="576" style="display: block; margin: auto;" /></p>
 </div>
 
 

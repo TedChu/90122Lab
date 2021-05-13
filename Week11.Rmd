@@ -64,21 +64,28 @@ NOAA_plot
 
 
 
-# Spatial Plots
+# Time-Series Plots
+
+First, we randomly select 10 station for visualization. 
+
 ```{r, echo=TRUE, fig.width=6, fig.align="center", message = FALSE}
-## -----------------------------------------------------------
 UIDs <- unique(Tmax$id)                     # extract IDs
 UIDs_sub <- sample(UIDs, 10)                # sample 10 IDs
 Tmax_sub <- filter(Tmax, id %in% UIDs_sub)  # subset data
+head(Tmax_sub)
+```
 
+Next, time-series is plotted. 
+
+```{r, echo=TRUE, fig.width=6, fig.align="center", message = FALSE}
 ## ------------------------------------------------------------------------
 TmaxTS <- ggplot(Tmax_sub) +
-    geom_line(aes(x = t, y = z)) + # line plot of z against t
-    facet_wrap(~id, ncol = 5) +    # facet by station
-    xlab("Day number (days)") +    # x label
-    ylab("Tmax (degF)") +          # y label
-    theme_bw() +                   # BW theme
-    theme(panel.spacing = unit(1, "lines")) # facet spacing
+    geom_line(aes(x = t, y = z)) +          # line plot of z against t
+    facet_wrap(~id, ncol = 5) +             # facet by station
+    xlab("Day number (days)") +             # x label
+    ylab("Tmax (degF)") +                   # y label
+    theme_bw() +                            # BW theme
+    theme(panel.spacing = unit(1, "lines")) # facet spacing: the space between each subplots. 
 
 
 TmaxTS
