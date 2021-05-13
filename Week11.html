@@ -312,6 +312,9 @@ $(document).ready(function () {
   <a href="Week10.html">Week 10</a>
 </li>
 <li>
+  <a href="Week11.html">Week 11</a>
+</li>
+<li>
   <a href="Versions.html">Versions</a>
 </li>
       </ul>
@@ -334,6 +337,7 @@ $(document).ready(function () {
 <ul>
 <li><a href="#overview"><span class="toc-section-number">1</span> Overview</a></li>
 <li><a href="#spatial-plots"><span class="toc-section-number">2</span> Spatial Plots</a></li>
+<li><a href="#spatial-plots-1"><span class="toc-section-number">3</span> Spatial Plots</a></li>
 </ul>
 </div>
 
@@ -377,9 +381,10 @@ head(Tmax)</code></pre>
 ## 5 728054 1993     5   5 3804 73 Tmax 39.35 -81.43333 1993-05-05 5
 ## 6 728055 1993     5   6 3804 78 Tmax 39.35 -81.43333 1993-05-06 6</code></pre>
 <ul>
-<li>The plot will be produced by package <em>ggplot2</em>. The new function here
+<li>Next, the plot will be produced by package <em>ggplot2</em>. The new function here
 <ul>
-<li>geom_path: add US states map</li>
+<li>geom_path: add US states map. You can replace these US map with Australia ones from Week 7 Lab.</li>
+<li>facet_grid(~date): for each date (1, 15 and 30), produce a plot.</li>
 </ul></li>
 </ul>
 <pre class="r"><code>Tmax_1 &lt;- subset(Tmax, t %in% c(1, 15, 30))  # extract data
@@ -402,6 +407,9 @@ NOAA_plot &lt;- ggplot(Tmax_1) +                              # plot points
 
 NOAA_plot</code></pre>
 <p><img src="Week11_files/figure-html/unnamed-chunk-2-1.png" width="576" style="display: block; margin: auto;" /></p>
+</div>
+<div id="spatial-plots-1" class="section level1">
+<h1><span class="header-section-number">3</span> Spatial Plots</h1>
 <pre class="r"><code>## -----------------------------------------------------------
 UIDs &lt;- unique(Tmax$id)                     # extract IDs
 UIDs_sub &lt;- sample(UIDs, 10)                # sample 10 IDs
@@ -414,7 +422,11 @@ TmaxTS &lt;- ggplot(Tmax_sub) +
     xlab(&quot;Day number (days)&quot;) +    # x label
     ylab(&quot;Tmax (degF)&quot;) +          # y label
     theme_bw() +                   # BW theme
-    theme(panel.spacing = unit(1, &quot;lines&quot;)) # facet spacing</code></pre>
+    theme(panel.spacing = unit(1, &quot;lines&quot;)) # facet spacing
+
+
+TmaxTS</code></pre>
+<p><img src="Week11_files/figure-html/unnamed-chunk-3-1.png" width="576" style="display: block; margin: auto;" /></p>
 </div>
 
 

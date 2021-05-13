@@ -35,8 +35,10 @@ load("datasets/Tmax.Rdata")
 head(Tmax)
 ```
 
-* The plot will be produced by package *ggplot2*. The new function here
-  + geom_path: add US states map
+* Next, the plot will be produced by package *ggplot2*. The new function here
+  + geom_path: add US states map. You can replace these US map with Australia ones from Week 7 Lab. 
+  + facet_grid(~date): for each date (1, 15 and 30), produce a plot. 
+  
 
 ```{r, echo=TRUE, fig.width=6, fig.align="center", message = FALSE}
 Tmax_1 <- subset(Tmax, t %in% c(1, 15, 30))  # extract data
@@ -58,7 +60,12 @@ NOAA_plot <- ggplot(Tmax_1) +                              # plot points
   theme_bw()  
 
 NOAA_plot
+```
 
+
+
+# Spatial Plots
+```{r, echo=TRUE, fig.width=6, fig.align="center", message = FALSE}
 ## -----------------------------------------------------------
 UIDs <- unique(Tmax$id)                     # extract IDs
 UIDs_sub <- sample(UIDs, 10)                # sample 10 IDs
@@ -74,9 +81,7 @@ TmaxTS <- ggplot(Tmax_sub) +
     theme(panel.spacing = unit(1, "lines")) # facet spacing
 
 
-
+TmaxTS
 ```
-
-
 
 
