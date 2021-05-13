@@ -312,6 +312,9 @@ $(document).ready(function () {
   <a href="Week10.html">Week 10</a>
 </li>
 <li>
+  <a href="Week11.html">Week 11</a>
+</li>
+<li>
   <a href="Versions.html">Versions</a>
 </li>
       </ul>
@@ -332,7 +335,7 @@ $(document).ready(function () {
 
 <div id="TOC">
 <ul>
-<li><a href="#goal"><span class="toc-section-number">1</span> Goal</a></li>
+<li><a href="#introduction"><span class="toc-section-number">1</span> Introduction</a></li>
 <li><a href="#create-weight-matrix"><span class="toc-section-number">2</span> Create Weight Matrix</a></li>
 <li><a href="#morans-i-test"><span class="toc-section-number">3</span> Moran’s I test</a></li>
 <li><a href="#lisa"><span class="toc-section-number">4</span> LISA</a></li>
@@ -343,8 +346,8 @@ $(document).ready(function () {
 <div style="margin-bottom:50px;">
 
 </div>
-<div id="goal" class="section level1">
-<h1><span class="header-section-number">1</span> Goal</h1>
+<div id="introduction" class="section level1">
+<h1><span class="header-section-number">1</span> Introduction</h1>
 <ul>
 <li>In this lab, you will learn
 <ul>
@@ -387,11 +390,11 @@ moran.test(x=gmel2$price, nb2listw(Wqueen), alternative=&quot;two.sided&quot;)</
 ## data:  gmel2$price  
 ## weights: nb2listw(Wqueen)    
 ## 
-## Moran I statistic standard deviate = 5.8942, p-value = 3.765e-09
+## Moran I statistic standard deviate = 5.8472, p-value = 5e-09
 ## alternative hypothesis: two.sided
 ## sample estimates:
 ## Moran I statistic       Expectation          Variance 
-##        0.62112582       -0.03448276        0.01237199</code></pre>
+##        0.59027230       -0.03333333        0.01137440</code></pre>
 <p>Since the p-value &lt; 0.05, we conclude that there is spatial autocorrelation for the house price in Greater Melbourne.</p>
 <ul>
 <li>Comments
@@ -414,13 +417,13 @@ moran.test(x=gmel2$price, nb2listw(Wqueen), alternative=&quot;two.sided&quot;)</
 <p>LISA is performed on <em>price</em> variable.</p>
 <pre class="r"><code>resI = localmoran(gmel2$price, nb2listw(Wqueen), alternative=&quot;two.sided&quot;)
 round(head(resI),3)</code></pre>
-<pre><code>##      Ii   E.Ii Var.Ii  Z.Ii Pr(z != 0)
-## 2 1.343 -0.034  0.286 2.575      0.010
-## 3 2.347 -0.034  0.160 5.959      0.000
-## 4 0.494 -0.034  0.106 1.628      0.104
-## 5 0.728 -0.034  0.128 2.130      0.033
-## 6 0.659 -0.034  0.160 1.735      0.083
-## 7 0.005 -0.034  0.207 0.087      0.931</code></pre>
+<pre><code>##       Ii   E.Ii Var.Ii   Z.Ii Pr(z != 0)
+## 1 -0.123 -0.033  0.129 -0.250      0.803
+## 2  1.407 -0.033  0.286  2.691      0.007
+## 3  1.927 -0.033  0.129  5.462      0.000
+## 4  0.497 -0.033  0.106  1.627      0.104
+## 5  0.736 -0.033  0.129  2.143      0.032
+## 6  0.665 -0.033  0.160  1.744      0.081</code></pre>
 <ul>
 <li>For the lisa output
 <ul>
@@ -451,14 +454,14 @@ spplot(gmellisa, &quot;pvalue&quot;, col.regions=pal, at = brks,  main = &quot;p
 <p>Suppose we want to know which LGAs have significant local spatial autocorrelation (<span class="math inline">\(\alpha = 0.05\)</span>).</p>
 <pre class="r"><code>gmellisa@data[gmellisa$pvalue &lt; 0.05, c(1,3,7,8)]</code></pre>
 <pre><code>##           name2   price      lisa       pvalue
-## 2       Bayside 1250000 1.3430029 1.002157e-02
-## 3    Boroondara 1550000 2.3470446 2.537627e-09
-## 5         Casey  401000 0.7279176 3.316967e-02
-## 9     Glen Eira 1021000 1.1520060 2.989545e-03
-## 18       Melton  372000 1.0375226 4.506830e-02
-## 22 Port Phillip 1182500 2.0689445 3.805522e-06
-## 23  Stonnington 1450000 2.6593532 5.226097e-14
-## 27        Yarra  950000 0.8046028 3.576890e-02</code></pre>
+## 2       Bayside 1250000 1.4065075 7.131023e-03
+## 3    Boroondara 1550000 1.9270316 4.695591e-08
+## 5         Casey  401000 0.7355848 3.214879e-02
+## 9     Glen Eira 1021000 1.2066751 1.954563e-03
+## 18       Melton  372000 1.0519791 4.254518e-02
+## 22 Port Phillip 1182500 2.1583959 1.504892e-06
+## 23  Stonnington 1450000 2.7722551 5.382037e-15
+## 27        Yarra  950000 0.6708980 4.972653e-02</code></pre>
 <p>They all have positive LISA values. If you want to formally test whether there are positive local autocorrelation, you will need to change <em>alternative</em> to <em>greater</em>.</p>
 </div>
 <div id="practice-columbus-data" class="section level1">

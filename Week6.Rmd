@@ -15,7 +15,7 @@ The following materials are partly based on "https://eriqande.github.io/rep-res-
 by Eric C. Anderson, Kristen C. Ruegg, Tina Cheng.
 ```
 
-# Overview
+# Introduction
 * In this Lab, we will learn the following functions in ggplot2. 
   + ggplot
   + geom_point: draw points
@@ -24,7 +24,7 @@ by Eric C. Anderson, Kristen C. Ruegg, Tina Cheng.
   + geom_sf: draw sf class
 
 
-# Introductoin of ggplot2
+# ggplot2
 According to wikipedia and R-project website (https://cran.r-project.org/web/packages/ggplot2/index.html). 
 
 *ggplot2 is a data visualization package for the statistical programming language R. Created by Hadley Wickham in 2005, ggplot2 is an implementation of Leland Wilkinson's Gurky Gang—a general scheme for data visualization which breaks up graphs into semantic components such as scales and layers. ggplot2 can serve as a replacement for the base graphics in R and contains a number of defaults for web and print display of common scales. Since 2005, ggplot2 has grown in use to become one of the most popular R packages.*

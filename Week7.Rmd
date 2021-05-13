@@ -11,6 +11,9 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 
+# Introduction
+* In this Lab, we will learn to draw some Autralian maps. 
+
 
 # Australia maps
 

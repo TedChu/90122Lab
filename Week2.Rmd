@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 
-# Goal
+# Introduction
 
 
 * In this lab, you will learn 

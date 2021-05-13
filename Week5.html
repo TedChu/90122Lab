@@ -312,6 +312,9 @@ $(document).ready(function () {
   <a href="Week10.html">Week 10</a>
 </li>
 <li>
+  <a href="Week11.html">Week 11</a>
+</li>
+<li>
   <a href="Versions.html">Versions</a>
 </li>
       </ul>
@@ -332,17 +335,18 @@ $(document).ready(function () {
 
 <div id="TOC">
 <ul>
-<li><a href="#test-of-csr"><span class="toc-section-number">1</span> Test of CSR</a><ul>
-<li><a href="#generate-poisson-process-hpp"><span class="toc-section-number">1.1</span> Generate Poisson Process: HPP</a></li>
-<li><a href="#quadrat-test"><span class="toc-section-number">1.2</span> Quadrat test</a></li>
-<li><a href="#test-g-function"><span class="toc-section-number">1.3</span> Test: G Function</a></li>
-<li><a href="#ppp-class"><span class="toc-section-number">1.4</span> ppp class</a></li>
+<li><a href="#introduction"><span class="toc-section-number">1</span> Introduction</a></li>
+<li><a href="#test-of-csr"><span class="toc-section-number">2</span> Test of CSR</a><ul>
+<li><a href="#generate-poisson-process-hpp"><span class="toc-section-number">2.1</span> Generate Poisson Process: HPP</a></li>
+<li><a href="#quadrat-test"><span class="toc-section-number">2.2</span> Quadrat test</a></li>
+<li><a href="#test-g-function"><span class="toc-section-number">2.3</span> Test: G Function</a></li>
+<li><a href="#ppp-class"><span class="toc-section-number">2.4</span> ppp class</a></li>
 </ul></li>
-<li><a href="#spatial-point-models"><span class="toc-section-number">2</span> Spatial Point Models</a><ul>
-<li><a href="#create-ipp"><span class="toc-section-number">2.1</span> Create IPP</a></li>
-<li><a href="#create-neyman-scott-process-clustered-data-pattern"><span class="toc-section-number">2.2</span> Create Neyman-Scott Process: clustered data pattern</a></li>
-<li><a href="#create-matern-i-and-matern-ii-regular-data-pattern"><span class="toc-section-number">2.3</span> Create Matern I and Matern II: regular data pattern</a></li>
-<li><a href="#further-study"><span class="toc-section-number">2.4</span> Further Study</a></li>
+<li><a href="#spatial-point-models"><span class="toc-section-number">3</span> Spatial Point Models</a><ul>
+<li><a href="#create-ipp"><span class="toc-section-number">3.1</span> Create IPP</a></li>
+<li><a href="#create-neyman-scott-process-clustered-data-pattern"><span class="toc-section-number">3.2</span> Create Neyman-Scott Process: clustered data pattern</a></li>
+<li><a href="#create-matern-i-and-matern-ii-regular-data-pattern"><span class="toc-section-number">3.3</span> Create Matern I and Matern II: regular data pattern</a></li>
+<li><a href="#further-study"><span class="toc-section-number">3.4</span> Further Study</a></li>
 </ul></li>
 </ul>
 </div>
@@ -350,10 +354,20 @@ $(document).ready(function () {
 <div style="margin-bottom:50px;">
 
 </div>
+<div id="introduction" class="section level1">
+<h1><span class="header-section-number">1</span> Introduction</h1>
+<ul>
+<li>In this lab, you will learn
+<ul>
+<li>Test of CSR</li>
+<li>Spatial Point Models</li>
+</ul></li>
+</ul>
+</div>
 <div id="test-of-csr" class="section level1">
-<h1><span class="header-section-number">1</span> Test of CSR</h1>
+<h1><span class="header-section-number">2</span> Test of CSR</h1>
 <div id="generate-poisson-process-hpp" class="section level2">
-<h2><span class="header-section-number">1.1</span> Generate Poisson Process: HPP</h2>
+<h2><span class="header-section-number">2.1</span> Generate Poisson Process: HPP</h2>
 <pre class="r"><code>library(spatstat)
 data1 = rpoispp(lambda=100, win=owin(c(0,2),c(0,2)))
 plot(data1, pch=46, cex =3)                           </code></pre>
@@ -368,14 +382,14 @@ plot(data1, pch=46, cex =3)                           </code></pre>
 </ul>
 </div>
 <div id="quadrat-test" class="section level2">
-<h2><span class="header-section-number">1.2</span> Quadrat test</h2>
+<h2><span class="header-section-number">2.2</span> Quadrat test</h2>
 <p>Here, we will use R package <em>spatstat</em></p>
 <pre class="r"><code>quadrat.test(data1, nx = 4, ny= 4, alternative = &quot;two.sided&quot;, method = &quot;Chisq&quot;)</code></pre>
 <pre><code>## 
 ##  Chi-squared test of CSR using quadrat counts
 ## 
 ## data:  data1
-## X2 = 7.8138, df = 15, p-value = 0.1379
+## X2 = 7.3398, df = 15, p-value = 0.1049
 ## alternative hypothesis: two.sided
 ## 
 ## Quadrats: 4 by 4 grid of tiles</code></pre>
@@ -391,7 +405,7 @@ plot(data1, pch=46, cex =3)                           </code></pre>
 <p>Since p-value is bigger than 0.05, we fail to reject <span class="math inline">\(H_0\)</span>.</p>
 </div>
 <div id="test-g-function" class="section level2">
-<h2><span class="header-section-number">1.3</span> Test: G Function</h2>
+<h2><span class="header-section-number">2.3</span> Test: G Function</h2>
 <pre class="r"><code>r=seq(0,sqrt(2), by=0.005)
 Gtest=envelope(data1,fun=Gest, r=r, nrank=2, nsim=99)</code></pre>
 <pre><code>## Generating 99 simulations of CSR  ...
@@ -418,7 +432,7 @@ Gtest=envelope(data1,fun=Gest, r=r, nrank=2, nsim=99)</code></pre>
 <p>What do you conclude from the above plot?</p>
 </div>
 <div id="ppp-class" class="section level2">
-<h2><span class="header-section-number">1.4</span> ppp class</h2>
+<h2><span class="header-section-number">2.4</span> ppp class</h2>
 <p>As mentioned earlier, package <em>spatstat</em> uses ppp class. We can transform between <em>SpatialPoints</em> class in <em>sp</em> package and <em>ppp</em> class using the function <em>as</em> in package <em>maptools</em></p>
 <pre class="r"><code>library(sp)
 library(maptools)</code></pre>
@@ -436,9 +450,9 @@ class(pppdata1) </code></pre>
 </div>
 </div>
 <div id="spatial-point-models" class="section level1">
-<h1><span class="header-section-number">2</span> Spatial Point Models</h1>
+<h1><span class="header-section-number">3</span> Spatial Point Models</h1>
 <div id="create-ipp" class="section level2">
-<h2><span class="header-section-number">2.1</span> Create IPP</h2>
+<h2><span class="header-section-number">3.1</span> Create IPP</h2>
 <pre class="r"><code># inhomogeneous Poisson process in unit square
 # with intensity lambda(x,y) = min(10 * exp(3*x), 100), where $s = (x, y)^T$
 lamb = function(x,y) { 10 * exp( 3 * x)}
@@ -448,7 +462,7 @@ plot(ipp, pch=46, cex =3)</code></pre>
 <p>Here, <em>lmax</em> specifies the largest possible intensity. For example, when <span class="math inline">\(x=1\)</span>, we have <span class="math inline">\(10\exp(3x)=201\)</span>. However, since <em>lmax = 100</em> is specified, the intensity will be 100. That is, we achieve "intensity lambda(x,y) = min(10 * exp(3*x), 100)".</p>
 </div>
 <div id="create-neyman-scott-process-clustered-data-pattern" class="section level2">
-<h2><span class="header-section-number">2.2</span> Create Neyman-Scott Process: clustered data pattern</h2>
+<h2><span class="header-section-number">3.2</span> Create Neyman-Scott Process: clustered data pattern</h2>
 <pre class="r"><code>nclust &lt;- function(x0, y0, radius, n) {
           return(runifdisc(n, radius, centre=c(x0, y0)))
             }
@@ -476,7 +490,7 @@ plot(rNS, pch=46, cex =3)</code></pre>
 </ul>
 </div>
 <div id="create-matern-i-and-matern-ii-regular-data-pattern" class="section level2">
-<h2><span class="header-section-number">2.3</span> Create Matern I and Matern II: regular data pattern</h2>
+<h2><span class="header-section-number">3.3</span> Create Matern I and Matern II: regular data pattern</h2>
 <pre class="r"><code>matI = rMaternI(kappa = 10, r = 0.1)
 matII = rMaternII(kappa = 10, r = 0.1)
 par(mfrow=c(1,2))
@@ -489,7 +503,7 @@ plot(matII, main=&quot;&quot;, pch=46, cex =3)</code></pre>
 </ul>
 </div>
 <div id="further-study" class="section level2">
-<h2><span class="header-section-number">2.4</span> Further Study</h2>
+<h2><span class="header-section-number">3.4</span> Further Study</h2>
 <p>If you have time, can you test <em>rNS</em> data whether it follow clustered point pattern?</p>
 </div>
 </div>

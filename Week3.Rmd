@@ -9,7 +9,7 @@ knitr::opts_chunk$set(echo = TRUE)
 </div>
 
 
-# Goal
+# Introduction
 
 
 * In this lab, you will learn 
