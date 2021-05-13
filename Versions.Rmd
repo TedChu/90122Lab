@@ -19,4 +19,6 @@ packageVersion("sf")
 packageVersion("sp")
 packageVersion("raster")
 packageVersion("rgdal")
+packageVersion("dplyr")
+packageVersion("tidyr")
 ```
