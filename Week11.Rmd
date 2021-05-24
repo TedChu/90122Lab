@@ -22,7 +22,7 @@ knitr::opts_chunk$set(echo = TRUE)
 * First, we load the dataset.
   + z: temperature (F)
   + id: weather station ID. 
-  + t: dates. 
+  + t: the same as the column *day*
   + We do not really used column *julian* nor *proc*
 
 ```{r, echo=TRUE, fig.width=6, fig.align="center", message = FALSE}

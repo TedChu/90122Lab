@@ -362,7 +362,7 @@ $(document).ready(function () {
 <ul>
 <li>z: temperature (F)</li>
 <li>id: weather station ID.</li>
-<li>t: dates.</li>
+<li>t: the same as the column <em>day</em></li>
 <li>We do not really used column <em>julian</em> nor <em>proc</em></li>
 </ul></li>
 </ul>
@@ -415,13 +415,13 @@ NOAA_plot</code></pre>
 UIDs_sub &lt;- sample(UIDs, 10)                # sample 10 IDs
 Tmax_sub &lt;- filter(Tmax, id %in% UIDs_sub)  # subset data
 head(Tmax_sub)</code></pre>
-<pre><code>##   julian year month day   id  z proc   lat       lon       date t
-## 1 728050 1993     5   1 3804 82 Tmax 39.35 -81.43333 1993-05-01 1
-## 2 728051 1993     5   2 3804 84 Tmax 39.35 -81.43333 1993-05-02 2
-## 3 728052 1993     5   3 3804 79 Tmax 39.35 -81.43333 1993-05-03 3
-## 4 728053 1993     5   4 3804 72 Tmax 39.35 -81.43333 1993-05-04 4
-## 5 728054 1993     5   5 3804 73 Tmax 39.35 -81.43333 1993-05-05 5
-## 6 728055 1993     5   6 3804 78 Tmax 39.35 -81.43333 1993-05-06 6</code></pre>
+<pre><code>##   julian year month day   id  z proc  lat       lon       date t
+## 1 728050 1993     5   1 3859 80 Tmax 37.3 -81.21667 1993-05-01 1
+## 2 728051 1993     5   2 3859 74 Tmax 37.3 -81.21667 1993-05-02 2
+## 3 728052 1993     5   3 3859 67 Tmax 37.3 -81.21667 1993-05-03 3
+## 4 728053 1993     5   4 3859 64 Tmax 37.3 -81.21667 1993-05-04 4
+## 5 728054 1993     5   5 3859 73 Tmax 37.3 -81.21667 1993-05-05 5
+## 6 728055 1993     5   6 3859 75 Tmax 37.3 -81.21667 1993-05-06 6</code></pre>
 <p>Next, time-series is plotted.</p>
 <pre class="r"><code>## ------------------------------------------------------------------------
 TmaxTS &lt;- ggplot(Tmax_sub) +
