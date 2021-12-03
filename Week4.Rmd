@@ -18,12 +18,12 @@ For more details, see https://cran.r-project.org/web/packages/sf/vignettes/sf1.h
 
 ## Shapefile
 
+The shapefile used here is downloaded from https://www.igismap.com/australia-shapefile-download/ (This website also has shapefile of other Australia regions and cities). You can download all LGA in Victoria through  https://data.gov.au/dataset/ds-dga-bdf92691-c6fe-42b9-a0e2-a4cd716fa811/details (However, it does not indicate which LGA belongs to Greater Melbourne). 
+
 * A shapefile is a simple, nontopological format for storing the geometric location and attribute information of geographic features. It is developed by Esri (Environmental Systems Research Institute, the company makes famous ArcGIS software). It usually includes the following file
   + .shp:  	geometries
   + .shx:  	an index file to the geometries
   + .dbf:	  storing attribute data
-
-The shapefile is downloaded from https://www.igismap.com/australia-shapefile-download/ (This website also has shapefile of other Australia regions and cities). You can download all LGA in Victoria through  https://data.gov.au/dataset/ds-dga-bdf92691-c6fe-42b9-a0e2-a4cd716fa811/details (However, it does not indicate which LGA belongs to Greater Melbourne). 
 
 * The shapefile here is named *Aus-Melbourne02*, which records information from all LGA in Greater Melbourne. Here is some extra information: 
   + All datasets can be downloaded at https://github.com/TedChu/90122Lab/tree/master/datasets. 
