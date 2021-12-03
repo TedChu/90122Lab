@@ -275,6 +275,9 @@ $(document).ready(function () {
   <a href="index.html">Home</a>
 </li>
 <li>
+  <a href="Week2.html">Week 2</a>
+</li>
+<li>
   <a href="Week3.html">Week 3</a>
 </li>
 <li>
@@ -352,12 +355,8 @@ $(document).ready(function () {
 <h1><span class="header-section-number">2</span> Test of CSR</h1>
 <div id="generate-poisson-process-hpp" class="section level2">
 <h2><span class="header-section-number">2.1</span> Generate Poisson Process: HPP</h2>
-<pre class="r"><code>library(spatstat)</code></pre>
-<pre><code>## Warning: package &#39;spatstat&#39; was built under R version 3.6.2</code></pre>
-<pre><code>## Warning: package &#39;spatstat.data&#39; was built under R version 3.6.2</code></pre>
-<pre><code>## Warning: package &#39;spatstat.geom&#39; was built under R version 3.6.2</code></pre>
-<pre><code>## Warning: package &#39;spatstat.linnet&#39; was built under R version 3.6.2</code></pre>
-<pre class="r"><code>data1 = rpoispp(lambda=100, win=owin(c(0,2),c(0,2)))
+<pre class="r"><code>library(spatstat)
+data1 = rpoispp(lambda=100, win=owin(c(0,2),c(0,2)))
 plot(data1, pch=46, cex =3)                           </code></pre>
 <p><img src="Week6_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
 <ul>
@@ -377,7 +376,7 @@ plot(data1, pch=46, cex =3)                           </code></pre>
 ##  Chi-squared test of CSR using quadrat counts
 ## 
 ## data:  data1
-## X2 = 9.4726, df = 15, p-value = 0.2969
+## X2 = 12.622, df = 15, p-value = 0.7371
 ## alternative hypothesis: two.sided
 ## 
 ## Quadrats: 4 by 4 grid of tiles</code></pre>

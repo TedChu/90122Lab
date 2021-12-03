@@ -22,7 +22,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ## Generate Poisson Process: HPP
 
 
-```{r echo=TRUE, results="hold", message=FALSE}
+```{r echo=TRUE, results="hold", message=FALSE, warning = F}
 library(spatstat)
 data1 = rpoispp(lambda=100, win=owin(c(0,2),c(0,2)))
 plot(data1, pch=46, cex =3)                           
