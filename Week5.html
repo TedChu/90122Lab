@@ -11,7 +11,7 @@
 
 
 
-<title>Week 5: Spatial Point Process – spatstat</title>
+<title>Week 5: Moran’s I, LISA</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -22,15 +22,6 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-
-<style type="text/css">
-  code{white-space: pre-wrap;}
-  span.smallcaps{font-variant: small-caps;}
-  span.underline{text-decoration: underline;}
-  div.column{display: inline-block; vertical-align: top; width: 50%;}
-  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-  ul.task-list{list-style: none;}
-    </style>
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
@@ -76,7 +67,6 @@ h6 {
   text-align: left;
 }
 </style>
-
 
 
 
@@ -329,25 +319,17 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Week 5: Spatial Point Process – spatstat</h1>
+<h1 class="title toc-ignore">Week 5: Moran’s I, LISA</h1>
 
 </div>
 
 <div id="TOC">
 <ul>
 <li><a href="#introduction"><span class="toc-section-number">1</span> Introduction</a></li>
-<li><a href="#test-of-csr"><span class="toc-section-number">2</span> Test of CSR</a><ul>
-<li><a href="#generate-poisson-process-hpp"><span class="toc-section-number">2.1</span> Generate Poisson Process: HPP</a></li>
-<li><a href="#quadrat-test"><span class="toc-section-number">2.2</span> Quadrat test</a></li>
-<li><a href="#test-g-function"><span class="toc-section-number">2.3</span> Test: G Function</a></li>
-<li><a href="#ppp-class"><span class="toc-section-number">2.4</span> ppp class</a></li>
-</ul></li>
-<li><a href="#spatial-point-models"><span class="toc-section-number">3</span> Spatial Point Models</a><ul>
-<li><a href="#create-ipp"><span class="toc-section-number">3.1</span> Create IPP</a></li>
-<li><a href="#create-neyman-scott-process-clustered-data-pattern"><span class="toc-section-number">3.2</span> Create Neyman-Scott Process: clustered data pattern</a></li>
-<li><a href="#create-matern-i-and-matern-ii-regular-data-pattern"><span class="toc-section-number">3.3</span> Create Matern I and Matern II: regular data pattern</a></li>
-<li><a href="#further-study"><span class="toc-section-number">3.4</span> Further Study</a></li>
-</ul></li>
+<li><a href="#create-weight-matrix"><span class="toc-section-number">2</span> Create Weight Matrix</a></li>
+<li><a href="#morans-i-test"><span class="toc-section-number">3</span> Moran’s I test</a></li>
+<li><a href="#lisa"><span class="toc-section-number">4</span> LISA</a></li>
+<li><a href="#practice-columbus-data"><span class="toc-section-number">5</span> Practice: Columbus Data</a></li>
 </ul>
 </div>
 
@@ -359,153 +341,135 @@ $(document).ready(function () {
 <ul>
 <li>In this lab, you will learn
 <ul>
-<li>Test of CSR</li>
-<li>Spatial Point Models</li>
+<li>Creating weight matrix</li>
+<li>Conducting Moran’s I and LISA</li>
 </ul></li>
 </ul>
 </div>
-<div id="test-of-csr" class="section level1">
-<h1><span class="header-section-number">2</span> Test of CSR</h1>
-<div id="generate-poisson-process-hpp" class="section level2">
-<h2><span class="header-section-number">2.1</span> Generate Poisson Process: HPP</h2>
-<pre class="r"><code>library(spatstat)
-data1 = rpoispp(lambda=100, win=owin(c(0,2),c(0,2)))
-plot(data1, pch=46, cex =3)                           </code></pre>
-<p><img src="Week5_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<div id="create-weight-matrix" class="section level1">
+<h1><span class="header-section-number">2</span> Create Weight Matrix</h1>
+<p>The dataset <em>gmel2</em> is from Week 3 Lab, and it can be downloaded at <a href="https://github.com/TedChu/90122Lab/tree/master/datasets" class="uri">https://github.com/TedChu/90122Lab/tree/master/datasets</a>.</p>
+<pre class="r"><code>library(rgdal)
+library(spdep)
+load(&quot;datasets/gmel2.Rdata&quot;)</code></pre>
+<p>R function <em>poly2nb</em> produces a spatial weight matrix from a SpatialPolygons(DataFrame) object.</p>
+<pre class="r"><code>Wqueen = poly2nb(gmel2)
+Wrook = poly2nb(gmel2, queen=FALSE)
+plot(gmel2,border=&quot;grey60&quot;, axes=TRUE)
+plot(Wqueen, coordinates(gmel2), pch=19, cex=0.6, add=TRUE,col=&quot;red&quot;)
+plot(Wrook, coordinates(gmel2), pch=19, cex=0.6, add=TRUE)</code></pre>
+<p><img src="Week5_files/figure-html/unnamed-chunk-2-1.png" width="288" style="display: block; margin: auto;" /></p>
 <ul>
-<li>Argument:
+<li>There are three potential class for spatial weight matrix: <em>nb</em> (neighborhood) class, <em>mat</em> (matrix) class, and <em>listw</em> class.
 <ul>
-<li>lambda=100: intensity function, <span style="color: red;">NOT number of points</span></li>
-<li>win=owin(c(0,2),c(0,2)): spatial point process data will be generated in the domain D = [0,2]*[0,2].</li>
-<li>Question: What is the expected number of events?</li>
+<li>They all store the same information, but in different formats.</li>
+<li>Different functions may require different formats. For example, <em>moran.test</em> requires the <em>listw</em> class. You can find these information in help files of these functions.</li>
+<li>Functions to transform between these three formats: <em>nb2listw</em>, <em>nb2mat</em>, <em>mat2nb</em>, etc.</li>
 </ul></li>
 </ul>
+<p>Can you see the difference between <em>queen</em> rule and <em>rook</em> rule?</p>
 </div>
-<div id="quadrat-test" class="section level2">
-<h2><span class="header-section-number">2.2</span> Quadrat test</h2>
-<p>Here, we will use R package <em>spatstat</em></p>
-<pre class="r"><code>quadrat.test(data1, nx = 4, ny= 4, alternative = &quot;two.sided&quot;, method = &quot;Chisq&quot;)</code></pre>
+<div id="morans-i-test" class="section level1">
+<h1><span class="header-section-number">3</span> Moran’s I test</h1>
+<p>A Moran’s I test is performed on the variable <em>price</em>. More information about Moran’s I codes can be found in Cp1C – 8.</p>
+<pre class="r"><code>## plot
+moran.test(x=gmel2$price, nb2listw(Wqueen), alternative=&quot;two.sided&quot;)</code></pre>
 <pre><code>## 
-##  Chi-squared test of CSR using quadrat counts
+##  Moran I test under randomisation
 ## 
-## data:  data1
-## X2 = 7.3398, df = 15, p-value = 0.1049
+## data:  gmel2$price  
+## weights: nb2listw(Wqueen)    
+## 
+## Moran I statistic standard deviate = 5.8472, p-value = 5e-09
 ## alternative hypothesis: two.sided
-## 
-## Quadrats: 4 by 4 grid of tiles</code></pre>
+## sample estimates:
+## Moran I statistic       Expectation          Variance 
+##        0.59027230       -0.03333333        0.01137440</code></pre>
+<p>Since the p-value &lt; 0.05, we conclude that there is spatial autocorrelation for the house price in Greater Melbourne.</p>
 <ul>
-<li>Argument:
+<li>Comments
 <ul>
-<li>pp: the dataset must be a “ppp” class.</li>
-<li><span style="color: red;">nx=4, ny =4</span>: number of block on x-axis and y-axis. Here, we have 4*4=16 blocks.</li>
-<li>alternative: alternative hypothesis. You can choose one of “two.sided”, “regular”, “clustered”</li>
-<li>method: the method used to compute p-value. “Chisq” (analytical way), “MonteCarlo”</li>
+<li>The function requires <em>listw</em> form for spatial weight matrix</li>
+<li>Argument <em>alternative</em>
+<ul>
+<li>What will you do if the alternative test is “There is positive spatial autocorrelation”.</li>
 </ul></li>
-</ul>
-<p>Since p-value is bigger than 0.05, we fail to reject <span class="math inline">\(H_0\)</span>.</p>
-</div>
-<div id="test-g-function" class="section level2">
-<h2><span class="header-section-number">2.3</span> Test: G Function</h2>
-<pre class="r"><code>r=seq(0,sqrt(2), by=0.005)
-Gtest=envelope(data1,fun=Gest, r=r, nrank=2, nsim=99)</code></pre>
-<pre><code>## Generating 99 simulations of CSR  ...
-## 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
-## 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80,
-## 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98,  99.
-## 
-## Done.</code></pre>
+<li>The above test is <em>Moran I test under randomisation</em>.
 <ul>
-<li>Argument:
-<ul>
-<li>nsim: the number of simulated datasets</li>
-<li>nrank: similar to deciding the significant level
-<ul>
-<li>Note that (2+2+1)/(99+1) = 0.05, and therefore, it is a similar to test at <span style="color: red;">“significant level”</span> = 0.05</li>
-<li>That is, if you want to ensure <span class="math inline">\(\alpha\)</span> (significant level), you need to set <span class="math inline">\((2nrank+1)/(nsim+1) = \alpha\)</span>.</li>
+<li>What does this mean?</li>
+<li>If you want to take analytical approach mentioned in lectures, what should you do?</li>
 </ul></li>
-<li>fun: Gest</li>
-<li>r: where the G function will be evaluated. (<span class="math inline">\(h\)</span> in our slides.)</li>
-</ul></li>
-</ul>
-<pre class="r"><code>plot(Gtest)</code></pre>
-<p><img src="Week5_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
-<p>What do you conclude from the above plot?</p>
-</div>
-<div id="ppp-class" class="section level2">
-<h2><span class="header-section-number">2.4</span> ppp class</h2>
-<p>As mentioned earlier, package <em>spatstat</em> uses ppp class. We can transform between <em>SpatialPoints</em> class in <em>sp</em> package and <em>ppp</em> class using the function <em>as</em> in package <em>maptools</em></p>
-<pre class="r"><code>library(sp)
-library(maptools)</code></pre>
-<pre><code>## Checking rgeos availability: TRUE</code></pre>
-<pre class="r"><code># from ppp class to SpatialPoints class 
-spdata1=as(data1, &quot;SpatialPoints&quot;)
-class(spdata1)  </code></pre>
-<pre><code>## [1] &quot;SpatialPoints&quot;
-## attr(,&quot;package&quot;)
-## [1] &quot;sp&quot;</code></pre>
-<pre class="r"><code># from SpatialPoints class to ppp class
-pppdata1=as(spdata1, &quot;ppp&quot;)
-class(pppdata1) </code></pre>
-<pre><code>## [1] &quot;ppp&quot;</code></pre>
-</div>
-</div>
-<div id="spatial-point-models" class="section level1">
-<h1><span class="header-section-number">3</span> Spatial Point Models</h1>
-<div id="create-ipp" class="section level2">
-<h2><span class="header-section-number">3.1</span> Create IPP</h2>
-<pre class="r"><code># inhomogeneous Poisson process in unit square
-# with intensity lambda(x,y) = min(10 * exp(3*x), 100), where $s = (x, y)^T$
-lamb = function(x,y) { 10 * exp( 3 * x)}
-ipp = rpoispp(lambda=lamb, lmax=100) 
-plot(ipp, pch=46, cex =3)</code></pre>
-<p><img src="Week5_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
-<p>Here, <em>lmax</em> specifies the largest possible intensity. For example, when <span class="math inline">\(x=1\)</span>, we have <span class="math inline">\(10\exp(3x)=201\)</span>. However, since <em>lmax = 100</em> is specified, the intensity will be 100. That is, we achieve "intensity lambda(x,y) = min(10 * exp(3*x), 100)".</p>
-</div>
-<div id="create-neyman-scott-process-clustered-data-pattern" class="section level2">
-<h2><span class="header-section-number">3.2</span> Create Neyman-Scott Process: clustered data pattern</h2>
-<pre class="r"><code>nclust &lt;- function(x0, y0, radius, n) {
-          return(runifdisc(n, radius, centre=c(x0, y0)))
-            }
-rNS = rNeymanScott(kappa=10, expand=0.2, 
-                   rcluster = nclust, radius=0.2, n=5)
-plot(rNS, pch=46, cex =3)</code></pre>
-<p><img src="Week5_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
-<ul>
-<li>Argument:
-<ul>
-<li>kappa: Intensity of the Poisson process for parent points (that is, <span class="math inline">\(\lambda\)</span> in our slides) – step (i)</li>
-<li>expand: Size of the expansion of the simulation window for parent points – step (i)</li>
-<li>rcluster: step <span class="math inline">\((ii^*)--(iii^*)\)</span>: here runifdisc function is used.</li>
-</ul></li>
-</ul>
-
-<ul>
-<li>About runifdisc function: runifdisc(n, radius)
-<ul>
-<li>Generate a random point pattern containing <span class="math inline">\(n\)</span> independent uniform random points in a circular disc.</li>
-<li>n: Number of offspring. Here, n=5 – in step <span class="math inline">\((ii^*)\)</span>.</li>
-<li>radius: Radius of the circle. radius = 0.2</li>
-<li>center: Coordinates of the center of the circle (that is, the location of the parent).</li>
 </ul></li>
 </ul>
 </div>
-<div id="create-matern-i-and-matern-ii-regular-data-pattern" class="section level2">
-<h2><span class="header-section-number">3.3</span> Create Matern I and Matern II: regular data pattern</h2>
-<pre class="r"><code>matI = rMaternI(kappa = 10, r = 0.1)
-matII = rMaternII(kappa = 10, r = 0.1)
-par(mfrow=c(1,2))
-plot(matI, main=&quot;&quot;, pch=46, cex =3)
-plot(matII, main=&quot;&quot;, pch=46, cex =3)</code></pre>
-<p><img src="Week5_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<div id="lisa" class="section level1">
+<h1><span class="header-section-number">4</span> LISA</h1>
+<p>LISA is performed on <em>price</em> variable.</p>
+<pre class="r"><code>resI = localmoran(gmel2$price, nb2listw(Wqueen), alternative=&quot;two.sided&quot;)
+round(head(resI),3)</code></pre>
+<pre><code>##       Ii   E.Ii Var.Ii   Z.Ii Pr(z != 0)
+## 1 -0.123 -0.033  0.129 -0.250      0.803
+## 2  1.407 -0.033  0.286  2.691      0.007
+## 3  1.927 -0.033  0.129  5.462      0.000
+## 4  0.497 -0.033  0.106  1.627      0.104
+## 5  0.736 -0.033  0.129  2.143      0.032
+## 6  0.665 -0.033  0.160  1.744      0.081</code></pre>
 <ul>
-<li>kappa: the intensity of the Poisson process (that is, <span class="math inline">\(\lambda\)</span> in our slides).</li>
-<li>r: Inhibition distance. (<span class="math inline">\(\delta\)</span> in our slides)</li>
+<li>For the lisa output
+<ul>
+<li>First column: the value of local moran’s I</li>
+<li>Second column: the expected value (which is <span class="math inline">\(-1/(n-1)\)</span>)</li>
+<li>Third column: the variance of local moran’s I</li>
+<li>Fourth column <span class="math inline">\(=\frac{(Ii - E.Ii)}{\sqrt{Var.Ii}}\)</span></li>
+<li>Fifth column: the p-value.</li>
+</ul></li>
 </ul>
+<p> </p>
+<p>Next, some visualisation for the above results.</p>
+<pre class="r"><code>gmellisa = gmel2
+gmellisa@data = data.frame(gmellisa@data, lisa=resI[,1], pvalue=resI[,5])
+### Spatial plots with LISA value
+### rev function is used to assign darker color to higher values. 
+spplot(gmellisa, &quot;lisa&quot;, col.regions = rev(heat.colors(16,alpha=0.8)),main=&quot;LISA value&quot;)</code></pre>
+<p><img src="Week5_files/figure-html/unnamed-chunk-5-1.png" width="288" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>### Spatial plots with p values
+spplot(gmellisa, &quot;pvalue&quot;, col.regions = heat.colors(16,alpha=0.8),main=&quot;p value&quot;)</code></pre>
+<p><img src="Week5_files/figure-html/unnamed-chunk-5-2.png" width="288" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>### Wants to see threshold 0.05, 0.10 for p vlaues
+library(RColorBrewer)     # for function brew.pal
+brks=c(0.00,0.05,0.10,0.5,0.8,1.00)
+pal=brewer.pal(5, &quot;OrRd&quot;) # we select 5 colors from the palette
+spplot(gmellisa, &quot;pvalue&quot;, col.regions=pal, at = brks,  main = &quot;p value&quot;)</code></pre>
+<p><img src="Week5_files/figure-html/unnamed-chunk-5-3.png" width="288" style="display: block; margin: auto;" /></p>
+<p>Suppose we want to know which LGAs have significant local spatial autocorrelation (<span class="math inline">\(\alpha = 0.05\)</span>).</p>
+<pre class="r"><code>gmellisa@data[gmellisa$pvalue &lt; 0.05, c(1,3,7,8)]</code></pre>
+<pre><code>##           name2   price      lisa       pvalue
+## 2       Bayside 1250000 1.4065075 7.131023e-03
+## 3    Boroondara 1550000 1.9270316 4.695591e-08
+## 5         Casey  401000 0.7355848 3.214879e-02
+## 9     Glen Eira 1021000 1.2066751 1.954563e-03
+## 18       Melton  372000 1.0519791 4.254518e-02
+## 22 Port Phillip 1182500 2.1583959 1.504892e-06
+## 23  Stonnington 1450000 2.7722551 5.382037e-15
+## 27        Yarra  950000 0.6708980 4.972653e-02</code></pre>
+<p>They all have positive LISA values. If you want to formally test whether there are positive local autocorrelation, you will need to change <em>alternative</em> to <em>greater</em>.</p>
 </div>
-<div id="further-study" class="section level2">
-<h2><span class="header-section-number">3.4</span> Further Study</h2>
-<p>If you have time, can you test <em>rNS</em> data whether it follow clustered point pattern?</p>
-</div>
+<div id="practice-columbus-data" class="section level1">
+<h1><span class="header-section-number">5</span> Practice: Columbus Data</h1>
+<p>If you have time, you can analyze the following Columbus data</p>
+<p>The dataset is about 49 neighbourhoods in Columbus, OH in Year 1980, more informaiton can be found in R by <em>?columbus</em>.</p>
+<p>It is essential a shapefile, and the difference from olinda data is columbus data is already stored in R. Thus, to read the colubus data, you use <em>system.file</em> instead.</p>
+<p>After read the shapefile, you will get a SpatialPolygonsDataFrame object <em>columbus</em>.</p>
+<pre class="r"><code>columbus &lt;- readOGR(system.file(&quot;shapes/columbus.shp&quot;, package=&quot;spData&quot;)[1])</code></pre>
+<pre><code>## OGR data source with driver: ESRI Shapefile 
+## Source: &quot;/Library/Frameworks/R.framework/Versions/3.6/Resources/library/spData/shapes/columbus.shp&quot;, layer: &quot;columbus&quot;
+## with 49 features
+## It has 20 fields
+## Integer64 fields read as strings:  COLUMBUS_ COLUMBUS_I POLYID</code></pre>
+<pre class="r"><code>plot(columbus, border=&quot;black&quot;,main=&quot;Neigbhoods of Columbus City&quot;)</code></pre>
+<p><img src="Week5_files/figure-html/unnamed-chunk-7-1.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>spplot(columbus, &quot;CRIME&quot;, col.regions = rev(heat.colors(20,alpha=0.8)))</code></pre>
+<p><img src="Week5_files/figure-html/unnamed-chunk-7-2.png" width="768" style="display: block; margin: auto;" /></p>
 </div>
 
 
@@ -517,7 +481,7 @@ plot(matII, main=&quot;&quot;, pch=46, cex =3)</code></pre>
 
 // add bootstrap table styles to pandoc tables
 function bootstrapStylePandocTables() {
-  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
 }
 $(document).ready(function () {
   bootstrapStylePandocTables();

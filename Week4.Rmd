@@ -1,128 +1,197 @@
 ---
-title: 'Week 4: Moran''s I, LISA'
+title: 'Week 3: Visualisation of Spatial Data -- Melbourne Example'
 ---
 
 <div style="margin-bottom:50px;">
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-
 </div>
+
 
 # Introduction
 
+
 * In this lab, you will learn 
-  + Creating weight matrix
-  + Conducting Moran's I and LISA
+  + Reading a map (and data) through shapefile. The example map is about all local government areas (LGA) within  Metropolitan Melbourne Area. 
+  + The shapefile will be stored as SpatialPolygonsDataFrame in R. Some manipulation of SpatialPolygonsDataFrame will be presented. 
+  + The visualisation of SpatialPolygonsDataFrame.
 
 
-# Create Weight Matrix
 
-The dataset *gmel2* is from Week 3 Lab, and it can be downloaded at https://github.com/TedChu/90122Lab/tree/master/datasets.
-```{r, echo=TRUE, fig.width=10, fig.align="center", message = FALSE}
+# Shapefile
+
+* A shapefile is a simple, nontopological format for storing the geometric location and attribute information of geographic features. It usually includes the following file
+  + .shp:  	geometries
+  + .shx:  	an index file to the geometries
+  + .dbf:	  storing attribute data
+
+
+* It is developed by Esri (Environmental Systems Research Institute, the company makes famous ArcGIS software). In R, if you want to read a shapefile, the function *readOGR* from the package *rgdal* is used. 
+
+
+
+## Melbourne Example
+
+The shapefile is downloaded from https://www.igismap.com/australia-shapefile-download/ (This website also has shapefile of other Australia regions and cities). You can download all LGA in Victoria through  https://data.gov.au/dataset/ds-dga-bdf92691-c6fe-42b9-a0e2-a4cd716fa811/details (However, it does not indicate which LGA belongs to Greater Melbourne). 
+
+The shapefile here is named *Aus-Melbourne02*, which records information from all LGA in Greater Melbourne. In readOGR, for more details, see help file using *?readOGR* 
+
+
+*The package "rgdal" can be installed in my Windows and Mac OS system. For Mac, you also need to install Xcode and XQuartz. If you are using Ubuntu 16.04, Rstudio may have trouble to install this package. (I am sorry that I cannot fix this problem since I am not very familiar with Linux system. There is some informaiton on Internet, which may help. If it does not work, you need to find a Windows/Mac system, such as in G69.) *
+
+* Here is some extra information: 
+  + All datasets can be downloaded at https://github.com/TedChu/90122Lab/tree/master/datasets. 
+  + First, set the working directory through *setwd*. Remember you need to use forward slash (/) or double slash (\\\\), but Not back slash (\\).
+  + I will not recommend you to have space between your folder titles. That is, to write *setwd("..../90122Lab")*, Not *setwd("..../90122 Lab")*
+  + As indicated below, all my files (*Aus-Melbourne02.shp*, *Aus-Melbourne02.dbf*, *Aus-Melbourne02.prj* and *Aus-Melbourne02.shx*) are stored at C:\\Users\\tingjinc\\OneDrive - The University of Melbourne\\Documents\\GitFile\\90122Lab\\datasets\\Mel
+  + Depending on where you store your files, you need to adjust directories in *setwd* and *dsn*. 
+
+```{r, echo=TRUE, fig.width=6, fig.align="center", message = FALSE}
 library(rgdal)
-library(spdep)
+library(sp)
+setwd("~/Dropbox/2_MAST90122/90122LabGit")
+gmel = readOGR(dsn = "datasets/Mel/Aus-Melbourne02.shp", "Aus-Melbourne02")
+```
+
+```{r, echo=TRUE, fig.width=6, fig.align="center"}
+class(gmel) 
+gmel = gmel[-1,]  # the first element is greater melbourne, not LGA
+```
+
+The shapefile you just read into is stored in *gmel*, which is a SpatialPolygonsDataFrame class. The olinda data includes all cities (LGA) within Metropolitan Melbourne Area.  Attributes of each neighbourhood is stored in *gmel@data*, and the geometric shape of each neighbourhood is stored as SpatialPolygons, which can be accessed using *as(gmel, "SpatialPolygons"*
+
+## Manuplation of SpatialXXXDF
+
+R package *mapview* provides functions to create interactive visualisation of spatial data.(For more detailed tutorial, please look at "https://r-spatial.github.io/mapview/index.html").  
+A simple interactive map can generated as
+```{r, echo=TRUE, fig.width=10, fig.align="center"}
+library(mapview)
+mapView(gmel)
+```
+
+* About no background map issue. 
+  + First, you need to download Aus-Melbourne02.prj
+  + If the issue does not solve. There is some information from https://github.com/r-spatial/mapview/issues/153.
+  + From the above webpage, it really depends on the versions of R, Rstudio.
+  + Try the following on R Viewer, click *Export*, then click *Save as Web Page*.  
+  
+
+
+I find out that by drawing SpatialPolygons directly on maps, it is easier to obtain a feeling of the dataset. Please click around the map, a lot of information will show up.  
+
+Variables
+```{r, echo=TRUE, fig.width=6, fig.align="center"}
+gmel$name                  # Extracting a variable
+gmel$ID = 1:31              # Add a new variable
+gmel$ID = NULL              # Delete a variable
+```
+
+Select LGA == City of Banyule is 
+```{r, echo=TRUE, fig.width=6, fig.align="center"}
+i = which(gmel$name == "City of Banyule")
+g = gmel[i, ]
+mapView(g)
+```
+
+
+
+# Combining Data (Optional)
+
+*If you find this part difficult, you can skip this part and move to the second part directly. It is optional, and will not be tested in exam.*
+
+
+```{r, echo=TRUE, fig.width=6, fig.align="center"}
+class(gmel) 
+#gmel = gmel[-1,]  # the first element is greater melbourne, not LGA
+```
+
+
+In https://discover.data.vic.gov.au/dataset/2015-local-government-area-profiles, many statistics for each LGA in Victoria is recorded on 2015, and it is available in *LGAData.csv*. It includes around 400 variables. 
+
+* Here, we choose
+  + name: LGA name
+  + price: median house price
+  + dis: distance to Melbourne (in km)
+  + off: totoal offences per 1000 population
+  + inc: median household income weekly
+
+
+```{r, echo=TRUE, fig.width=6, fig.align="center"}
+LGAData = read.csv("datasets/LGAData.csv")
+LGAsub = subset(LGAData, select = c("LGA.Name","Median.house.price", "Distance.to.Melbourne", "Total.offences.per.1.000.population", "Median.household.income"))
+colnames(LGAsub) = c("name","price", "dis", "off", "inc")
+```
+
+We want to combine the data in *LGAsub* and *gmel* together. However, the use different names. For example, in *LGAsub*, it says "City of Banyule", while it says "Banyule (C)" in *gmel*. We want to add a new variable *name2*, and for the above LGA, it will be named "Banyule".  Therefore, *LGAsub* and *gmel* will be matched and joined. 
+```{r, echo=TRUE, fig.width=6, fig.align="center"}
+# Add name2 for gmel
+gmel$name2 = NA
+for (i in 1:length(gmel$name)){
+  lganame = as.character(gmel$name[i])
+  gmel$name2[i] = (strsplit(lganame," of ")[[1]])[2]
+}
+
+LGAsub$price = as.numeric(gsub('[$,]', '', LGAsub$price))  # Change price from dollar form to numbers
+LGAsub$inc = as.numeric(gsub('[$,]', '', LGAsub$inc))       # Change income from dollar form to numbers
+LGAsub$dis = as.numeric(gsub(" km", "", LGAsub$dis))       # distance to numeric
+
+# Add name2 for LGAsub
+LGAsub$name2 = NA
+for (i in 1:dim(LGAsub)[1]){
+  lganame = as.character(LGAsub$name[i])
+  LGAsub$name2[i] = substr(lganame, 1, nchar(lganame)-4)
+}
+
+temdata = subset(gmel@data, select = "name2") 
+library(plyr) 
+meldata = plyr::join(temdata, LGAsub, by = "name2", type="left")
+gmel2 = gmel
+gmel2@data = meldata
+# Save the datasets
+save(gmel2, file = "datasets/gmel2.Rdata")   
+```
+Here, *plyr::join* means the *join* function in package *plyr*, since another package *dplyr* also has a function called *join*. 
+
+
+
+
+
+# Visualisation using spplot
+
+
+If you have not done the previous section, you can download the data *gmel2*
+```{r, echo=TRUE, fig.width=6, fig.align="center"}
 load("datasets/gmel2.Rdata")
 ```
 
-
-
-R function *poly2nb* produces a spatial weight matrix from a SpatialPolygons(DataFrame) object. 
-```{r, echo=TRUE, fig.width=3, fig.height =3, fig.align="center"}
-Wqueen = poly2nb(gmel2)
-Wrook = poly2nb(gmel2, queen=FALSE)
-plot(gmel2,border="grey60", axes=TRUE)
-plot(Wqueen, coordinates(gmel2), pch=19, cex=0.6, add=TRUE,col="red")
-plot(Wrook, coordinates(gmel2), pch=19, cex=0.6, add=TRUE)
+The visualisation can be achieved using *spplot*.
+```{r, echo=TRUE, fig.width=6, fig.align="center",warning = F}
+spplot(gmel2, "price", col.regions = grey.colors(20, 0.9, 0.3))
 ```
 
-* There are three potential class for spatial weight matrix: *nb* (neighborhood) class, *mat* (matrix) class, and *listw* class.
-  + They all store the same information, but in different formats.
-  + Different functions may require different formats. For example, *moran.test* requires the  *listw* class. You can find these information in help files of these functions.
-  + Functions to transform between these three formats: *nb2listw*, *nb2mat*, *mat2nb*, etc. 
+* Code
+  + The first argument shall be a SpatialXXX, or SpatialXXXDF. In this case, it is a SpatialPolygonsDataFrame
+  + The second argument is the value you want to draw. In this case, it is DEPRIV.
+  + The third argument is the color scheme. Other types of colors
+    + *spplot(gmel2, "price", col.regions = grey.colors(20, 0.9, 0.3), cut=4)*
+    + *spplot(gmel2, "price", col.regions = heat.colors(20,alpha=0.8))*
+    + *spplot(gmel2, "price", col.regions = rev(heat.colors(20,alpha=0.8)))*
 
 
-Can you see the difference between *queen* rule and *rook* rule?
+# Key Functions
+* Read shapefile: 
+  + readOGR
+* 2.2 Manuplation of SpatialXXXDF
+
+\newpage
 
 
-# Moran's I test
-A Moran's I test is performed on the variable *price*. More information about Moran's I codes can be found in Cp1C -- 8. 
-
-
-```{r, echo=TRUE, fig.align="center"}
-## plot
-moran.test(x=gmel2$price, nb2listw(Wqueen), alternative="two.sided")
-```
-
-Since the p-value < 0.05, we conclude that there is spatial autocorrelation for the house price in Greater Melbourne.  
-
-
-* Comments
-  + The function requires *listw* form for spatial weight matrix
-  + Argument *alternative*
-    + What will you do if the alternative test is "There is positive spatial autocorrelation".
-  + The above test is *Moran I test under randomisation*. 
-    + What does this mean?
-    + If you want to take analytical approach mentioned in lectures, what should you do?
-    
-    
-# LISA
-
-LISA is performed on *price* variable. 
-```{r, echo=TRUE, fig.width=3, fig.height =3, fig.align="center"}
-resI = localmoran(gmel2$price, nb2listw(Wqueen), alternative="two.sided")
-round(head(resI),3)
-```
-* For the lisa output
-  + First column: the value of local moran's I
-  + Second column: the expected value (which is $-1/(n-1)$)
-  + Third column: the variance of local moran's I
-  + Fourth column $=\frac{(Ii - E.Ii)}{\sqrt{Var.Ii}}$
-  + Fifth column: the p-value. 
-
-&nbsp;
-
-Next, some visualisation for the above results. 
-```{r, echo=TRUE, fig.width=3, fig.height =3, fig.align="center",warning = F}
-gmellisa = gmel2
-gmellisa@data = data.frame(gmellisa@data, lisa=resI[,1], pvalue=resI[,5])
-### Spatial plots with LISA value
-### rev function is used to assign darker color to higher values. 
-spplot(gmellisa, "lisa", col.regions = rev(heat.colors(16,alpha=0.8)),main="LISA value")
-### Spatial plots with p values
-spplot(gmellisa, "pvalue", col.regions = heat.colors(16,alpha=0.8),main="p value")
-
-### Wants to see threshold 0.05, 0.10 for p vlaues
-library(RColorBrewer)     # for function brew.pal
-brks=c(0.00,0.05,0.10,0.5,0.8,1.00)
-pal=brewer.pal(5, "OrRd") # we select 5 colors from the palette
-spplot(gmellisa, "pvalue", col.regions=pal, at = brks,  main = "p value")
-```
-
-Suppose we want to know which LGAs have significant local spatial autocorrelation ($\alpha = 0.05$). 
-
-```{r, echo=TRUE, fig.width=3, fig.height =3, fig.align="center",warning = F}
-gmellisa@data[gmellisa$pvalue < 0.05, c(1,3,7,8)]
-```
-
-
-They all have positive LISA values. If you want to formally test whether there are positive local autocorrelation, you will need to change *alternative* to *greater*.
-
-
-
-# Practice: Columbus Data
-If you have time, you can analyze the following Columbus data
-
-
-The dataset is about 49 neighbourhoods in Columbus, OH in Year 1980, more informaiton can be found in R by *?columbus*.
-
-It is essential a shapefile, and the difference from olinda data is columbus data is already stored in R. Thus, to read the colubus data, you use *system.file* instead. 
-
-After read the shapefile, you will get a SpatialPolygonsDataFrame object *columbus*. 
-```{r, echo=TRUE, fig.width=8, fig.align="center"}
-columbus <- readOGR(system.file("shapes/columbus.shp", package="spData")[1])
-plot(columbus, border="black",main="Neigbhoods of Columbus City")
-spplot(columbus, "CRIME", col.regions = rev(heat.colors(20,alpha=0.8)))
-```
-
+# References
+* For more information, please see (Not required to read, and treat the following materials as reference. )
+  + Classes and Methods for Spatial Data: the sp Package (https://cran.r-project.org/web/packages/sp/vignettes/intro_sp.pdf)
+  + Introduction to visualising spatial data in R
+(https://cran.r-project.org/doc/contrib/intro-spatial-rl.pdf)
+  + Spatial data manipulation
+(https://rspatial.org/raster/spatial/index.html)
 
