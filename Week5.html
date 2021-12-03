@@ -304,9 +304,6 @@ $(document).ready(function () {
 <li>
   <a href="Week11.html">Week 11</a>
 </li>
-<li>
-  <a href="Versions.html">Versions</a>
-</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         
@@ -353,7 +350,9 @@ $(document).ready(function () {
 library(spdep)
 load(&quot;datasets/gmel2.Rdata&quot;)</code></pre>
 <p>R function <em>poly2nb</em> produces a spatial weight matrix from a SpatialPolygons(DataFrame) object.</p>
-<pre class="r"><code>Wqueen = poly2nb(gmel2)
+<pre class="r"><code>## Convert gmel2 to SpatialPolygonsDataFrame, since the following packages require SpatialPolygonsDataFrame
+gmel2 = as(gmel2, &quot;Spatial&quot;)
+Wqueen = poly2nb(gmel2)
 Wrook = poly2nb(gmel2, queen=FALSE)
 plot(gmel2,border=&quot;grey60&quot;, axes=TRUE)
 plot(Wqueen, coordinates(gmel2), pch=19, cex=0.6, add=TRUE,col=&quot;red&quot;)
@@ -443,15 +442,15 @@ spplot(gmellisa, &quot;pvalue&quot;, col.regions=pal, at = brks,  main = &quot;p
 <p><img src="Week5_files/figure-html/unnamed-chunk-5-3.png" width="288" style="display: block; margin: auto;" /></p>
 <p>Suppose we want to know which LGAs have significant local spatial autocorrelation (<span class="math inline">\(\alpha = 0.05\)</span>).</p>
 <pre class="r"><code>gmellisa@data[gmellisa$pvalue &lt; 0.05, c(1,3,7,8)]</code></pre>
-<pre><code>##           name2   price      lisa       pvalue
-## 2       Bayside 1250000 1.4065075 7.131023e-03
-## 3    Boroondara 1550000 1.9270316 4.695591e-08
-## 5         Casey  401000 0.7355848 3.214879e-02
-## 9     Glen Eira 1021000 1.2066751 1.954563e-03
-## 18       Melton  372000 1.0519791 4.254518e-02
-## 22 Port Phillip 1182500 2.1583959 1.504892e-06
-## 23  Stonnington 1450000 2.7722551 5.382037e-15
-## 27        Yarra  950000 0.6708980 4.972653e-02</code></pre>
+<pre><code>##                  name.x           name.y  inc      lisa
+## 2       City of Bayside      Bayside (C) 1826 1.4065075
+## 3    City of Boroondara   Boroondara (C) 1893 1.9270316
+## 5         City of Casey        Casey (C) 1342 0.7355848
+## 9     City of Glen Eira    Glen Eira (C) 1445 1.2066751
+## 18       City of Melton       Melton (C) 1363 1.0519791
+## 22 City of Port Phillip Port Phillip (C) 1672 2.1583959
+## 23  City of Stonnington  Stonnington (C) 1722 2.7722551
+## 27        City of Yarra        Yarra (C) 1680 0.6708980</code></pre>
 <p>They all have positive LISA values. If you want to formally test whether there are positive local autocorrelation, you will need to change <em>alternative</em> to <em>greater</em>.</p>
 </div>
 <div id="practice-columbus-data" class="section level1">
