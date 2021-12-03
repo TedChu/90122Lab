@@ -22,8 +22,6 @@ navbar:
       href: Week10.html
     - text: "Week 11"
       href: Week11.html
-    - text: "Versions"
-      href: Versions.html
 output_dir: "."
 output:
   html_document:
