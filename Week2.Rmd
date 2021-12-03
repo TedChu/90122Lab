@@ -26,10 +26,10 @@ knitr::opts_chunk$set(echo = TRUE)
 
 The diagram will help
 ```{r, echo=FALSE, fig.width=8, fig.align="center"}
-setwd("C:/Users/tingjinc/OneDrive - The University of Melbourne/Documents/GitFile/90122Lab")
+#setwd("C:/Users/tingjinc/OneDrive - The University of Melbourne/Documents/GitFile/90122Lab")
 #setwd("~/Dropbox/1_MAST90122/2_Spatial_Lab/1_Visualisation_Lab23679/1_sp")
 #setwd("~/Dropbox/1-MAST90122/2_Spatial_Lab/1_Visualisation_Lab2367/1_sp")
-#setwd("/home/unimelb.edu.au/tingjinc/Dropbox/1_MAST90122/Spatial_Lab/2_Chapter1")
+setwd("~/Dropbox/2_MAST90122/90122LabGit")
 knitr::include_graphics("pics/SpPtDF.png")
 ```
 
