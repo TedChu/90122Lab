@@ -18,16 +18,15 @@ For more details, see https://cran.r-project.org/web/packages/sf/vignettes/sf1.h
 
 ## Shapefile
 
-The shapefile used here is downloaded from https://www.igismap.com/australia-shapefile-download/ (This website also has shapefile of other Australia regions and cities). You can download all LGA in Victoria through  https://data.gov.au/dataset/ds-dga-bdf92691-c6fe-42b9-a0e2-a4cd716fa811/details (However, it does not indicate which LGA belongs to Greater Melbourne). 
 
-* A shapefile is a simple, nontopological format for storing the geometric location and attribute information of geographic features. It is developed by Esri (Environmental Systems Research Institute, the company makes famous ArcGIS software). It usually includes the following file
+* A shapefile is a simple, nontopological format for storing the geometric location and attribute information of geographic features. It is developed by Esri (Environmental Systems Research Institute, the company that makes famous ArcGIS software). It usually includes the following file
   + .shp:  	geometries
   + .shx:  	an index file to the geometries
   + .dbf:	  storing attribute data
 
-* The shapefile here is named *Aus-Melbourne02*, which records information from all LGA in Greater Melbourne. Here is some extra information: 
+* The shapefile here is named *Aus-Melbourne02*, which records information from all LGA in Greater Melbourne. It is downloaded from https://www.igismap.com/australia-shapefile-download/ (This website also has shapefile of other Australian regions and cities). Here is some extra information: 
   + All datasets can be downloaded at https://github.com/TedChu/90122Lab/tree/master/datasets. 
-  + First, set the working directory through *setwd*. Remember you need to use forward slash (/) or double slash (\\\\), but Not back slash (\\).
+  + First, set the working directory through *setwd*. Remember you need to use forward-slash (/) or double slash (\\\\), but NOT backslash (\\).
   + I will not recommend you to have space between your folder titles. That is, to write *setwd("..../90122Lab")*, Not *setwd("..../90122 Lab")*
   + As indicated below, all my files (*Aus-Melbourne02.shp*, *Aus-Melbourne02.dbf*, *Aus-Melbourne02.prj* and *Aus-Melbourne02.shx*) are stored at C:\\Users\\tingjinc\\OneDrive - The University of Melbourne\\Documents\\GitFile\\90122Lab\\datasets\\Mel
   + Depending on where you store your files, you need to adjust directories in *setwd* and *dsn*. 
@@ -39,7 +38,7 @@ gmel = st_read(dsn = "datasets/Mel/Aus-Melbourne02.shp", "Aus-Melbourne02")
 ```
 
 
-The object *gmel* belongs to a *sf* class, which extends a *data.frame*. Note that the last column is called *geometry*, which stores the shape of the region. 
+The object *gmel* belongs to the *sf* class, which extends the *data.frame* class. Note that the last column is called *geometry*, which stores the shape of the region. 
 ```{r, echo=TRUE, fig.width=6, fig.align="center"}
 class(gmel) 
 print(gmel[1:3], n = 3)
@@ -48,14 +47,13 @@ print(gmel[1:3], n = 3)
 ## Manuplation of sf object
 
 
-You can manipulate the *sf* object similar to a *data.frame* object. Here, I want to remove the first element since it is greater melbourne, not LGA. 
+You can manipulate the *sf* object similar to a *data.frame* object. Here, I want to remove the first element since it is greater Melbourne, not LGA. 
 ```{r, echo=TRUE, fig.width=6, fig.align="center"}
 gmel = gmel[-1,]  # the first element is greater melbourne, not LGA
 ```
 
-R package *mapview* provides functions to create interactive visualisation of spatial data.(For more detailed tutorial, please look at "https://r-spatial.github.io/mapview/index.html").  
-A simple interactive map can generated as
-```{r, echo=TRUE, fig.width=10, fig.align="center"}
+R package *mapview* provides functions to create interactive visualisation of spatial data.(For more details, please see "https://r-spatial.github.io/mapview/index.html").  A simple interactive map can generated as below.
+```{r, echo=TRUE, fig.width=10, fig.align="center", warning = F}
 library(mapview)
 mapView(gmel)
 ```
@@ -78,7 +76,7 @@ mapView(g)
 ## Combining Data (Optional)
 
 
-In https://discover.data.vic.gov.au/dataset/2015-local-government-area-profiles, many statistics for each LGA in Victoria is recorded on 2015, and it is available in *LGAData.csv*. It includes around 400 variables. 
+In https://discover.data.vic.gov.au/dataset/2015-local-government-area-profiles, many statistics for each LGA in Victoria is recorded for 2015, and it is available in *LGAData.csv*. It includes around 400 variables. 
 
 * Here, we choose
   + name: LGA name
@@ -95,7 +93,7 @@ colnames(LGAsub) = c("name","price", "dis", "off", "inc")
 ```
 
 We want to combine the data in *LGAsub* and *gmel* together. However, the use different names. For example, in *LGAsub*, it says "City of Banyule", while it says "Banyule (C)" in *gmel*. We want to add a new variable *name2*, and for the above LGA, it will be named "Banyule".  Therefore, *LGAsub* and *gmel* will be matched and joined. 
-```{r, echo=TRUE, fig.width=6, fig.align="center"}
+```{r, echo=TRUE, fig.width=6, fig.align="center", warning = F, message = F}
 # Add name2 for gmel
 gmel$name2 = NA
 for (i in 1:length(gmel$name)){
@@ -114,6 +112,12 @@ for (i in 1:dim(LGAsub)[1]){
   LGAsub$name2[i] = substr(lganame, 1, nchar(lganame)-4)
 }
 
+
+```
+
+
+The datasets can be joined using the function *left_join* in package *dplyr*. 
+```{r, echo=TRUE, fig.width=6, fig.align="center", warning = F, message = F}
 ## I only want to select some variables from gmel
 temdata = subset(gmel, select = c("name", "name2"))
 
@@ -124,22 +128,19 @@ gmel2 = left_join(temdata, LGAsub, by = "name2")
 
 # Save the datasets
 save(gmel2, file = "datasets/gmel2.Rdata")   
+
+## gmel2 
+gmel2[1:3,]
 ```
 
 
 
-\vspace{100pt}
+## Visualization
 
 
-
-
-## Package sf
-
-
-An alternative (and better) way for visualization of spatial objects in ggplot2 is to use *geom_sf* function. 
-
-
-
+* There are two ways for visualization
+  + geom_sf:   work for sf class
+  + mapView:   work for both SpatialPolygonsDataFrame and sf class
 
 
 
@@ -149,12 +150,12 @@ ggplot()+geom_sf(data=gmel2, aes(fill = price))
 
 ```
 
-* In summary, we focus on two ways to visulization
-  + spplot:    work for SpatialPolygonsDataFrame
-  + geom_sf:   work for sf class
-  + mapView:   work for both SpatialPolygonsDataFrame and sf class
+
 
 ```{r, echo=TRUE, fig.width=6, fig.align="center"}
 library(mapview)
 mapView(gmel2, zcol = "price")
 ```
+
+# Reference
+For more details of *sf* package, please see 
