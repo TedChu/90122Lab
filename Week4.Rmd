@@ -158,4 +158,4 @@ mapView(gmel2, zcol = "price")
 ```
 
 # Reference
-For more details of *sf* package, please see 
+For more details of *sf* package, please see https://r-spatial.github.io/sf/articles/.
