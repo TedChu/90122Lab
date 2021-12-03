@@ -25,9 +25,8 @@ by Eric C. Anderson, Kristen C. Ruegg, Tina Cheng.
 
 
 # ggplot2
-According to wikipedia and R-project website (https://cran.r-project.org/web/packages/ggplot2/index.html). 
-
-*ggplot2 is a data visualization package for the statistical programming language R. Created by Hadley Wickham in 2005, ggplot2 is an implementation of Leland Wilkinson's Gurky Gang—a general scheme for data visualization which breaks up graphs into semantic components such as scales and layers. ggplot2 can serve as a replacement for the base graphics in R and contains a number of defaults for web and print display of common scales. Since 2005, ggplot2 has grown in use to become one of the most popular R packages.*
+According to wikipedia and R-project website, 
+*``ggplot2 is a data visualization package for the statistical programming language R. Created by Hadley Wickham in 2005, ggplot2 is an implementation of Leland Wilkinson's Gurky Gang—a general scheme for data visualization which breaks up graphs into semantic components such as scales and layers. ggplot2 can serve as a replacement for the base graphics in R and contains a number of defaults for web and print display of common scales. Since 2005, ggplot2 has grown in use to become one of the most popular R packages."*
 
 It is a general framework for data visualisation, and in this class, we will use it to visualise spatial data and spatio-temporal data. 
 
@@ -36,12 +35,10 @@ It is a general framework for data visualisation, and in this class, we will use
 
 ## pv dataset
 
-Here, I only provide a very brief introduction of *ggplot2*. If you would like to learn more, please see https://r4ds.had.co.nz/data-visualisation.html. 
-
 The pv dataset includes information of  the history of pole-vaulting world record "http://en.wikipedia.org/wiki/Men's_pole_vault_world_record_progression". Here, the data is already stored in *pv.RData*. 
 
 First, read the RData set. 
-```{r, echo=TRUE, fig.width=6, fig.align="center"}
+```{r, echo=TRUE, fig.width=6, fig.align="center", warning = F}
 
 library(ggplot2)
 load("datasets/pv.RData")
@@ -82,6 +79,7 @@ g4
   + geom_point: more example at https://ggplot2.tidyverse.org/reference/geom_point.html
   + geom_line: https://ggplot2.tidyverse.org/reference/geom_path.html?q=geom%20_%20lines#arguments
 
+## More examples
 
 This part is to provide some interesting plots
 ```{r, echo=TRUE, fig.width=9, fig.height=3, fig.align="center"}
@@ -104,11 +102,6 @@ grid.arrange(dr1, dr2, dr3, nrow = 1)
 ```
 
 
-
-
-
-
-\newpage
 
 # ggplot for spatial data
 
@@ -152,13 +145,12 @@ grid.arrange(gg0, gg1, gg2, nrow = 1)
 
 
 ## US state
-```{r, echo=TRUE, fig.width=10, fig.align="center"}
+```{r, echo=TRUE, fig.width=10, fig.align="center", warning = F}
 ### Draw plots for all USA States
 states <- map_data("state")
 ggplot(data = states) + 
   geom_polygon(aes(x = long, y = lat, fill = region, group = group), color = "white") + 
-  coord_fixed(1.3) +
-  guides(fill=FALSE) 
+  coord_fixed(1.3) + guides(fill=FALSE) 
 
 ### Draw a subset of USA states
 ### Use function subset to select states. 
@@ -170,4 +162,6 @@ ggplot(data = west_coast) +
 
 Can you tell the difference between *color* and *fill* argument? 
 
+# Reference
+For more information about ggplot2, see https://r4ds.had.co.nz/data-visualisation.html.
 

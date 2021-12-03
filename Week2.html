@@ -328,11 +328,13 @@ $(document).ready(function () {
 <li><a href="#introduction"><span class="toc-section-number">1</span> Introduction</a></li>
 <li><a href="#ggplot2"><span class="toc-section-number">2</span> ggplot2</a><ul>
 <li><a href="#pv-dataset"><span class="toc-section-number">2.1</span> pv dataset</a></li>
+<li><a href="#more-examples"><span class="toc-section-number">2.2</span> More examples</a></li>
 </ul></li>
 <li><a href="#ggplot-for-spatial-data"><span class="toc-section-number">3</span> ggplot for spatial data</a><ul>
 <li><a href="#usa-map"><span class="toc-section-number">3.1</span> USA map</a></li>
 <li><a href="#us-state"><span class="toc-section-number">3.2</span> US state</a></li>
 </ul></li>
+<li><a href="#reference"><span class="toc-section-number">4</span> Reference</a></li>
 </ul>
 </div>
 
@@ -356,17 +358,14 @@ by Eric C. Anderson, Kristen C. Ruegg, Tina Cheng.</code></pre>
 </div>
 <div id="ggplot2" class="section level1">
 <h1><span class="header-section-number">2</span> ggplot2</h1>
-<p>According to wikipedia and R-project website (<a href="https://cran.r-project.org/web/packages/ggplot2/index.html" class="uri">https://cran.r-project.org/web/packages/ggplot2/index.html</a>).</p>
-<p><em>ggplot2 is a data visualization package for the statistical programming language R. Created by Hadley Wickham in 2005, ggplot2 is an implementation of Leland Wilkinson’s Gurky Gang—a general scheme for data visualization which breaks up graphs into semantic components such as scales and layers. ggplot2 can serve as a replacement for the base graphics in R and contains a number of defaults for web and print display of common scales. Since 2005, ggplot2 has grown in use to become one of the most popular R packages.</em></p>
+<p>According to wikipedia and R-project website, <em>``ggplot2 is a data visualization package for the statistical programming language R. Created by Hadley Wickham in 2005, ggplot2 is an implementation of Leland Wilkinson’s Gurky Gang—a general scheme for data visualization which breaks up graphs into semantic components such as scales and layers. ggplot2 can serve as a replacement for the base graphics in R and contains a number of defaults for web and print display of common scales. Since 2005, ggplot2 has grown in use to become one of the most popular R packages.&quot;</em></p>
 <p>It is a general framework for data visualisation, and in this class, we will use it to visualise spatial data and spatio-temporal data.</p>
 <div id="pv-dataset" class="section level2">
 <h2><span class="header-section-number">2.1</span> pv dataset</h2>
-<p>Here, I only provide a very brief introduction of <em>ggplot2</em>. If you would like to learn more, please see <a href="https://r4ds.had.co.nz/data-visualisation.html" class="uri">https://r4ds.had.co.nz/data-visualisation.html</a>.</p>
 <p>The pv dataset includes information of the history of pole-vaulting world record “<a href="http://en.wikipedia.org/wiki/Men&#39;s_pole_vault_world_record_progression" class="uri">http://en.wikipedia.org/wiki/Men's_pole_vault_world_record_progression</a>”. Here, the data is already stored in <em>pv.RData</em>.</p>
 <p>First, read the RData set.</p>
-<pre class="r"><code>library(ggplot2)</code></pre>
-<pre><code>## Warning: package &#39;ggplot2&#39; was built under R version 3.6.2</code></pre>
-<pre class="r"><code>load(&quot;datasets/pv.RData&quot;)</code></pre>
+<pre class="r"><code>library(ggplot2)
+load(&quot;datasets/pv.RData&quot;)</code></pre>
 <p>Here are some plots.</p>
 <pre class="r"><code>par(mfrow=c(1,3))      # This command will not work in ggplot2
 ## Tell ggplot the data, x variable and y variable
@@ -404,6 +403,9 @@ g4  </code></pre>
 <li>geom_line: <a href="https://ggplot2.tidyverse.org/reference/geom_path.html?q=geom%20_%20lines#arguments" class="uri">https://ggplot2.tidyverse.org/reference/geom_path.html?q=geom%20_%20lines#arguments</a></li>
 </ul></li>
 </ul>
+</div>
+<div id="more-examples" class="section level2">
+<h2><span class="header-section-number">2.2</span> More examples</h2>
 <p>This part is to provide some interesting plots</p>
 <pre class="r"><code>library(gridExtra)    # for the function grid.arrange
 d &lt;- ggplot(data = pv, aes(x = Date, y = Meters))
@@ -421,7 +423,6 @@ dr2 = d + geom_ribbon(aes(ymin = Meters - 0.5, ymax = Meters + 0.5), fill = &quo
 dr3 = d + geom_ribbon(aes(ymin = Meters), ymax = max(pv$Meters), fill = &quot;grey70&quot;) + geom_line(aes(y = Meters))
 grid.arrange(dr1, dr2, dr3, nrow = 1)</code></pre>
 <p><img src="Week2_files/figure-html/unnamed-chunk-4-1.png" width="864" style="display: block; margin: auto;" /></p>
-<div style="page-break-after: always;"></div>
 </div>
 </div>
 <div id="ggplot-for-spatial-data" class="section level1">
@@ -483,10 +484,7 @@ grid.arrange(gg0, gg1, gg2, nrow = 1)</code></pre>
 states &lt;- map_data(&quot;state&quot;)
 ggplot(data = states) + 
   geom_polygon(aes(x = long, y = lat, fill = region, group = group), color = &quot;white&quot;) + 
-  coord_fixed(1.3) +
-  guides(fill=FALSE) </code></pre>
-<pre><code>## Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use `guides(&lt;scale&gt; =
-## &quot;none&quot;)` instead.</code></pre>
+  coord_fixed(1.3) + guides(fill=FALSE) </code></pre>
 <p><img src="Week2_files/figure-html/unnamed-chunk-7-1.png" width="960" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>### Draw a subset of USA states
 ### Use function subset to select states. 
@@ -497,6 +495,10 @@ ggplot(data = west_coast) +
 <p><img src="Week2_files/figure-html/unnamed-chunk-7-2.png" width="960" style="display: block; margin: auto;" /></p>
 <p>Can you tell the difference between <em>color</em> and <em>fill</em> argument?</p>
 </div>
+</div>
+<div id="reference" class="section level1">
+<h1><span class="header-section-number">4</span> Reference</h1>
+<p>For more information about ggplot2, see <a href="https://r4ds.had.co.nz/data-visualisation.html" class="uri">https://r4ds.had.co.nz/data-visualisation.html</a>.</p>
 </div>
 
 

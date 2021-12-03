@@ -1,5 +1,5 @@
 ---
-title: 'Week 3: Visualisation of Spatial Data -- Melbourne Example'
+title: 'Week 4: Visualisation of Spatial Data -- Melbourne Example'
 ---
 
 <div style="margin-bottom:50px;">
