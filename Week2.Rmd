@@ -1,5 +1,5 @@
 ---
-title: 'Week 1: Spatial Data Classes -- package sp'
+title: 'Week 2: Spatial Data Classes -- package sp'
 ---
 
 <div style="margin-bottom:50px;">
