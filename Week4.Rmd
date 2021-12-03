@@ -143,9 +143,13 @@ for (i in 1:dim(LGAsub)[1]){
   LGAsub$name2[i] = substr(lganame, 1, nchar(lganame)-4)
 }
 
-temdata = subset(gmel@data, select = "name2") 
-library(plyr) 
-meldata = plyr::join(temdata, LGAsub, by = "name2", type="left")
+temdata = subset(gmel, select = "name2") 
+library(dplyr) 
+meldata = dplyr::join(temdata, LGAsub, by = "name2", type="left")
+
+meldata = left_join(temdata, LGAsub, by = "name2")
+
+
 gmel2 = gmel
 gmel2@data = meldata
 # Save the datasets
