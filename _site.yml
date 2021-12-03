@@ -4,8 +4,6 @@ navbar:
   left:
     - text: "Home"
       href: index.html
-    - text: "Week 2"
-      href: Week2.html
     - text: "Week 3"
       href: Week3.html
     - text: "Week 4"

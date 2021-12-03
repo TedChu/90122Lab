@@ -6,4 +6,8 @@ There are labs between week 2--11.
 
 There is no lab for Week 1. However, if you do not know R, please study *An Introduction to R* at https://cran.r-project.org/doc/manuals/R-intro.pdf
 
+For week 2, please study Chapter 3 of the book *R for Data Science* (https://r4ds.had.co.nz/data-visualisation.html)
+
+
+
 There is no lab for Week 12. 
