@@ -31,7 +31,13 @@ According to wikipedia and R-project website (https://cran.r-project.org/web/pac
 
 It is a general framework for data visualisation, and in this class, we will use it to visualise spatial data and spatio-temporal data. 
 
+
+
+
 ## pv dataset
+
+Here, I only provide a very brief introduction of *ggplot2*. If you would like to learn more, please see https://r4ds.had.co.nz/data-visualisation.html. 
+
 The pv dataset includes information of  the history of pole-vaulting world record "http://en.wikipedia.org/wiki/Men's_pole_vault_world_record_progression". Here, the data is already stored in *pv.RData*. 
 
 First, read the RData set. 
