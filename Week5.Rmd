@@ -113,3 +113,8 @@ ggplot() + geom_sf(data=gmellisa, aes(fill = pvalue)) +
   geom_sf_label(data = gmellisa2, aes(label = name2))
 ```
 
+Or
+```{r, echo=TRUE, fig.width=8, fig.height =8, fig.align="center",warning = F}
+gmellisa2 = gmellisa[gmellisa$pvalue < 0.05, ]
+ggplot() + geom_sf(data=gmellisa, aes(fill = pvalue, color = (pvalue < 0.05)))
+```
