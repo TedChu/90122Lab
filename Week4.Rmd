@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # sf class 
 
-Here, *sf*(simple feature) is a type of data class. First, we use package *sf* to read shapefiles. 
+Here, *sf* (simple feature) is a type of data class. First, we use package *sf* to read shapefiles. 
 For more details, see https://cran.r-project.org/web/packages/sf/vignettes/sf1.html
 
 ## Shapefile
