@@ -430,9 +430,9 @@ gmellisa$pvalue = resI[,5]
 ### Spatial plots with LISA value
 library(ggplot2)
 ggplot() + geom_sf(data=gmellisa, aes(fill = lisa))</code></pre>
-<p><img src="Week5_files/figure-html/unnamed-chunk-5-1.png" width="480" style="display: block; margin: auto;" /></p>
+<p><img src="Week5_files/figure-html/unnamed-chunk-5-1.png" width="576" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>ggplot() + geom_sf(data=gmellisa, aes(fill = pvalue))</code></pre>
-<p><img src="Week5_files/figure-html/unnamed-chunk-5-2.png" width="480" style="display: block; margin: auto;" /></p>
+<p><img src="Week5_files/figure-html/unnamed-chunk-5-2.png" width="576" style="display: block; margin: auto;" /></p>
 <p>Suppose we want to know which LGAs have significant local spatial autocorrelation (<span class="math inline">\(\alpha = 0.05\)</span>).</p>
 <pre class="r"><code>gmellisa$name2[gmellisa$pvalue &lt; 0.05]</code></pre>
 <pre><code>## [1] &quot;Bayside&quot;      &quot;Boroondara&quot;   &quot;Casey&quot;        &quot;Glen Eira&quot;    &quot;Melton&quot;      
@@ -441,8 +441,9 @@ ggplot() + geom_sf(data=gmellisa, aes(fill = lisa))</code></pre>
 <p>You can also highlight these cities.</p>
 <pre class="r"><code>gmellisa2 = gmellisa[gmellisa$pvalue &lt; 0.05, ]
 ggplot() + geom_sf(data=gmellisa, aes(fill = pvalue)) + 
-  geom_sf(data = gmellisa2, color = &quot;red&quot;, alpha = 0)</code></pre>
-<p><img src="Week5_files/figure-html/unnamed-chunk-7-1.png" width="480" style="display: block; margin: auto;" /></p>
+  geom_sf(data = gmellisa2, color = &quot;red&quot;, alpha = 0) + 
+  geom_sf_label(data = gmellisa2, aes(label = name2))</code></pre>
+<p><img src="Week5_files/figure-html/unnamed-chunk-7-1.png" width="768" style="display: block; margin: auto;" /></p>
 </div>
 
 
