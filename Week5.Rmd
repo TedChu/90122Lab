@@ -27,7 +27,7 @@ load("datasets/gmel2.Rdata")
 
 
 R function *poly2nb* produces a spatial weight matrix from a SpatialPolygons(DataFrame) object. 
-```{r, echo=TRUE, fig.width=5, fig.height =5, fig.align="center"}
+```{r, echo=TRUE, fig.width=6, fig.height =6, fig.align="center"}
 ## Convert gmel2 to SpatialPolygonsDataFrame, since the following packages require SpatialPolygonsDataFrame
 gmel.sp = as(gmel2, "Spatial")
 Wqueen = poly2nb(gmel.sp)
