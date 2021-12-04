@@ -18,9 +18,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Create Weight Matrix
 
-The dataset *gmel2* is from Week 3 Lab, and it can be downloaded at https://github.com/TedChu/90122Lab/tree/master/datasets.
+The dataset is *gmel2*, and it can be downloaded at https://github.com/TedChu/90122Lab/tree/master/datasets.
 ```{r, echo=TRUE, fig.width=10, fig.align="center", message = FALSE}
-library(rgdal)
 library(spdep)
 load("datasets/gmel2.Rdata")
 ```
@@ -28,14 +27,14 @@ load("datasets/gmel2.Rdata")
 
 
 R function *poly2nb* produces a spatial weight matrix from a SpatialPolygons(DataFrame) object. 
-```{r, echo=TRUE, fig.width=3, fig.height =3, fig.align="center"}
+```{r, echo=TRUE, fig.width=5, fig.height =5, fig.align="center"}
 ## Convert gmel2 to SpatialPolygonsDataFrame, since the following packages require SpatialPolygonsDataFrame
-gmel2 = as(gmel2, "Spatial")
-Wqueen = poly2nb(gmel2)
-Wrook = poly2nb(gmel2, queen=FALSE)
-plot(gmel2,border="grey60", axes=TRUE)
-plot(Wqueen, coordinates(gmel2), pch=19, cex=0.6, add=TRUE,col="red")
-plot(Wrook, coordinates(gmel2), pch=19, cex=0.6, add=TRUE)
+gmel.sp = as(gmel2, "Spatial")
+Wqueen = poly2nb(gmel.sp)
+Wrook = poly2nb(gmel.sp, queen=FALSE)
+plot(gmel.sp,border="grey60", axes=TRUE)
+plot(Wqueen, coordinates(gmel.sp), pch=19, cex=0.6, add=TRUE,col="red")
+plot(Wrook, coordinates(gmel.sp), pch=19, cex=0.6, add=TRUE)
 ```
 
 * There are three potential class for spatial weight matrix: *nb* (neighborhood) class, *mat* (matrix) class, and *listw* class.
@@ -86,45 +85,25 @@ round(head(resI),3)
 
 Next, some visualisation for the above results. 
 ```{r, echo=TRUE, fig.width=3, fig.height =3, fig.align="center",warning = F}
+####
 gmellisa = gmel2
-gmellisa@data = data.frame(gmellisa@data, lisa=resI[,1], pvalue=resI[,5])
+gmellisa$lisa = resI[,1]
+gmellisa$pvalue = resI[,5]
 ### Spatial plots with LISA value
-### rev function is used to assign darker color to higher values. 
-spplot(gmellisa, "lisa", col.regions = rev(heat.colors(16,alpha=0.8)),main="LISA value")
-### Spatial plots with p values
-spplot(gmellisa, "pvalue", col.regions = heat.colors(16,alpha=0.8),main="p value")
+library(ggplot2)
+ggplot() + geom_sf(data=gmellisa, aes(fill = lisa))
 
-### Wants to see threshold 0.05, 0.10 for p vlaues
-library(RColorBrewer)     # for function brew.pal
-brks=c(0.00,0.05,0.10,0.5,0.8,1.00)
-pal=brewer.pal(5, "OrRd") # we select 5 colors from the palette
-spplot(gmellisa, "pvalue", col.regions=pal, at = brks,  main = "p value")
+ggplot() + geom_sf(data=gmellisa, aes(fill = pvalue))
 ```
 
 Suppose we want to know which LGAs have significant local spatial autocorrelation ($\alpha = 0.05$). 
 
 ```{r, echo=TRUE, fig.width=3, fig.height =3, fig.align="center",warning = F}
-gmellisa@data[gmellisa$pvalue < 0.05, c(1,3,7,8)]
+gmellisa$name2[gmellisa$pvalue < 0.05]
 ```
 
 
 They all have positive LISA values. If you want to formally test whether there are positive local autocorrelation, you will need to change *alternative* to *greater*.
 
-
-
-# Practice: Columbus Data
-If you have time, you can analyze the following Columbus data
-
-
-The dataset is about 49 neighbourhoods in Columbus, OH in Year 1980, more informaiton can be found in R by *?columbus*.
-
-It is essential a shapefile, and the difference from olinda data is columbus data is already stored in R. Thus, to read the colubus data, you use *system.file* instead. 
-
-After read the shapefile, you will get a SpatialPolygonsDataFrame object *columbus*. 
-```{r, echo=TRUE, fig.width=8, fig.align="center"}
-columbus <- readOGR(system.file("shapes/columbus.shp", package="spData")[1])
-plot(columbus, border="black",main="Neigbhoods of Columbus City")
-spplot(columbus, "CRIME", col.regions = rev(heat.colors(20,alpha=0.8)))
-```
 
 
