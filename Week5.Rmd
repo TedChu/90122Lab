@@ -84,7 +84,7 @@ round(head(resI),3)
 &nbsp;
 
 Next, some visualisation for the above results. 
-```{r, echo=TRUE, fig.width=3, fig.height =3, fig.align="center",warning = F}
+```{r, echo=TRUE, fig.width=5, fig.height =5, fig.align="center",warning = F}
 ####
 gmellisa = gmel2
 gmellisa$lisa = resI[,1]
@@ -102,8 +102,13 @@ Suppose we want to know which LGAs have significant local spatial autocorrelatio
 gmellisa$name2[gmellisa$pvalue < 0.05]
 ```
 
-
 They all have positive LISA values. If you want to formally test whether there are positive local autocorrelation, you will need to change *alternative* to *greater*.
 
+You can also highlight these cities. 
 
+```{r, echo=TRUE, fig.width=5, fig.height =5, fig.align="center",warning = F}
+gmellisa2 = gmellisa[gmellisa$pvalue < 0.05, ]
+ggplot() + geom_sf(data=gmellisa, aes(fill = pvalue)) + 
+  geom_sf(data = gmellisa2, color = "red", alpha = 0)
+```
 
