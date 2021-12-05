@@ -1,5 +1,5 @@
 ---
-title: 'Week 7: Visualisation of Spatial Data--Australian maps'
+title: 'Week 6: Visualisation of Spatial Data--Australian maps'
 ---
 
 <div style="margin-bottom:50px;">
