@@ -21,4 +21,7 @@ It is a general framework for data visualisation, and in this class, we will use
   + 3.7 --- end: optional
 
 
-
+* ~
+  + ggplot, geom_point, geom_
+  + Cheat Sheet: https://github.com/rstudio/cheatsheets/blob/main/data-visualization-2.1.pdf
+  + color, fill, alpha
