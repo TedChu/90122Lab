@@ -1,0 +1,15 @@
+Title: Localities
+
+Description: Points showing locations of towns and cities. There are 4 categories (Settlement type) defined by Plan Melbourne, including Capital City, Regional City, Regional Centre and Peri-urban Town. Geographic location based on VicMap Features - Locality_Point data.
+
+Source: DELWP - Plan Melbourne
+
+Data Date: December 2016
+
+Contact: Denise Thorson, 03 8392 5596, denise.thorson@delwp.vic.gov.au
+
+
+Copyright The State of Victoria, Department of Environment, Land, Water and Planning, 2017
+
+The State of Vitoria does not warrant the accuracy or completeness of information in this publication and any person using or relying upon such information does so on the basis that the State of Victoria shall bear no responsibility or liability whatsoever for any errors, faults, defects or omissions in the information.
+

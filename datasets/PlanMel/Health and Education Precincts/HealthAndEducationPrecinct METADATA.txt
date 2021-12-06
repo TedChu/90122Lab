@@ -1,0 +1,17 @@
+Title: Health and Education Precincts
+
+Description: Points showing locations of health, education and combined health and education precincts. 
+
+This layer is indicative only and designed only for cartographic use.  It should not be used for any detailed analysis work.
+
+Source: DELWP - Plan Melbourne
+
+Data Date: July 2016
+
+Contact: Denise Thorson, 03 8392 5596, denise.thorson@delwp.vic.gov.au
+
+
+Copyright The State of Victoria, Department of Environment, Land, Water and Planning, 2017
+
+The State of Vitoria does not warrant the accuracy or completeness of information in this publication and any person using or relying upon such information does so on the basis that the State of Victoria shall bear no responsibility or liability whatsoever for any errors, faults, defects or omissions in the information.
+

@@ -1,0 +1,15 @@
+Title: Conservation Reserves
+
+Description: Points representing Conservation Reserves. Categories include proposed (future reserves where land and insfrastructure delivery has not yet commenced) and emerging (reserves where land acquisition or transfer and/or associated insfrastructure delivery is incomplete).
+
+Source: DELWP - Plan Melbourne, derived from data supplied by Victorian Planning Authority. 
+
+Data Date: December 2016
+
+Contact: Denise Thorson, 03 8392 5596, denise.thorson@delwp.vic.gov.au
+
+
+Copyright The State of Victoria, Department of Environment, Land, Water and Planning, 2017
+
+The State of Vitoria does not warrant the accuracy or completeness of information in this publication and any person using or relying upon such information does so on the basis that the State of Victoria shall bear no responsibility or liability whatsoever for any errors, faults, defects or omissions in the information.
+

@@ -133,10 +133,45 @@ mapView(tmp)
 The map appears OK, but a closer look shows that some suburb are not supposed to be there (e.g. Eltham). Here is a list of all suburbs in City of Banyule (https://en.wikipedia.org/wiki/City_of_Banyule). The reason for this is likely due to the different resolution and accuracy of shapefiles (VICSub and VICLGA). Therefore, I will remove all the suburbs with a very small area (Here, the unit is square meter, and 10000 is small by the surburb standard.)  
 
 ```{r, echo=TRUE, fig.width=6, fig.align="center", message = FALSE}
-## Obtain all suburbs in City of Melbourne (including part of suburb)
+## Obtain all suburbs in City of Banyule (including part of suburb)
 tmp$area = st_area(tmp)
 BSub = tmp[as.numeric(tmp$area) > 100000,]
 mapView(BSub)
 ```
 
+There are more shapefiles in *PlanMel* Folder, which outlines some future plan in greater melbourne regions and can be downloaded from https://www.planmelbourne.vic.gov.au/maps/spatial-data.
 
+There are major activity centres. According to the goverment, *These are places that provide a suburban focal point for services, employment, housing, public transport and social interaction. They have different attributes and provide different functions, with some serving larger subregional catchments. Plan Melbourne identifies 121 existing and future Major Activity Centres across Melbourne.*
+
+Suppose we want to obtain all major activity centres in the City of Banyule. Note these acitivity centres are represented as *points*
+
+```{r, echo=TRUE, fig.width=6, fig.align="center", message = FALSE}
+centres = st_read(dsn = "datasets/PlanMel/Activity Centres/ActivityCentrePoints_font_point.shp", 
+                 "ActivityCentrePoints_font_point")
+centres <- st_transform(centres, 4326)
+tmp = st_within(centres, CMEL, sparse = F)
+Bcen = centres[tmp[,1],]
+
+library(ggplot2)
+library(sf)
+ggplot() + geom_sf(data = BSub, aes(fill = VIC_LOCA_2)) +
+  geom_sf(data = Bcen, aes(size = 4))
+```
+
+Suppose you also want to draw major roads in City of Banyule. The shapefile of all roads are in the folder *VMTRANS*. Suppose we want to draw all roads with Road Class = 0, 1, 2. (I do not know what Road Class really means here, but it appears the smaller number indicates a more important road. After all, this is an example  to show you how to draw points, lines and polygons together.)
+
+
+```{r, echo=TRUE, fig.width=6, fig.align="center", message = FALSE}
+road = st_read(dsn = "datasets/VMTRANS/TR_ROAD.shp", "TR_ROAD")
+road <- st_transform(road, 4326)
+## You can see all roads in Banyule
+#mapView(road)
+## We only draw road with CLASS_CODE = 0, 1, 2
+highway = road[road$CLASS_CODE < 3,]
+#mapView(highway)
+
+## Now add all together
+ggplot() + geom_sf(data = BSub, color = "gray") + 
+  geom_sf(data = Bcen, size = 4) + 
+  geom_sf(data = highway, aes(color = as.factor(CLASS_CODE)), lwd = 1.5)  
+```
