@@ -20,7 +20,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # USA map
 R package *maps* and *mapdata* provide some maps. We will use them for the USA map
-```{r, echo=TRUE, fig.width=6, fig.align="center"}
+```{r, echo=TRUE, fig.width=6, fig.align="center", warning = F, message = F}
 library(ggplot2)
 library(sf)
 library(maps)
@@ -70,7 +70,7 @@ ggplot(data = states) +
 ### Use function subset to select states. 
 west_coast <- subset(states, region %in% c("california", "oregon", "washington"))
 ggplot(data = west_coast) + 
-  geom_polygon(aes(x = long, y = lat, group = group), fill = "palegreen", color = "black") + 
+  geom_polygon(aes(x = long, y = lat, group = group), fill = "palegreen", color = "red") + 
   coord_fixed(1.3)
 ```
 
@@ -87,65 +87,56 @@ Can you tell the difference between *color* and *fill* argument?
 + All suburb: VICSub folder  -- 2973 elements
 + LGA in Greater Melbourne -- 32 element (1st element is greater melbourne)
 
-All datasets are read into as SpatialPolygonsDataFrame
-```{r, echo=TRUE, fig.width=6, fig.align="center", message = FALSE}
-library(rgdal)
-library(sp)
-VICLGA = readOGR(dsn = "datasets/VICLGA/VIC_LOCALITY_POLYGON_shp.shp", "VIC_LOCALITY_POLYGON_shp")
-VICSub = readOGR(dsn="datasets/VICSub/VIC_LOCALITY_POLYGON_shp.shp", "VIC_LOCALITY_POLYGON_shp")
-MELLGA = readOGR(dsn = "datasets/Mel/Aus-Melbourne02.shp", "Aus-Melbourne02")
+All datasets are read into as *sf* objects
+```{r, echo=TRUE, fig.width=6, fig.align="center", message = F}
+library(sf)
+VICLGA = st_read(dsn = "datasets/VICLGA/VIC_LOCALITY_POLYGON_shp.shp", "VIC_LOCALITY_POLYGON_shp")
+VICSub = st_read(dsn="datasets/VICSub/VIC_LOCALITY_POLYGON_shp.shp", "VIC_LOCALITY_POLYGON_shp")
+MELLGA = st_read(dsn = "datasets/Mel/Aus-Melbourne02.shp", "Aus-Melbourne02")
 ```
 
 
 
+First, we make sure that all *sf* objects has the same CRS
+```{r, echo=TRUE, fig.width=6, fig.align="center", message = F}
+## Retrieve CRS
+st_crs(VICLGA) 
+st_crs(VICSub)
+st_crs(MELLGA)
 
-* You will cut SpatialPolygons you wants -- Essentially manipulation of SpatialPolygons.
-* One useful funciton in *crop* in package *raster*
-  + crop(x, y)
-+ crop returns a geographic subset of an object *x* as specified by an Extent object *y*
-  + ?crop for more details
+## Transform crs system to WGS84(epsg: 4326)
+VICLGA <- st_transform(VICLGA, 4326)
+VICSub <- st_transform(VICSub, 4326)
+st_crs(VICLGA) 
+st_crs(VICSub)
+```
 
-* Here we will create
-+ Task 1: all surburbs in Greater Melbourne
-+ Task 2: all surburbs in City of Melbourne
+Second, we want to obtain all suburbs in City of Melbourne. Note that we already have all suburbs in Victoria, and we also know the boundary of City of Melbourne from VICLGA or MELLGA. We only need to ``cut" all suburbs from *VICSub* using boundary of City of Melbourne. 
+
+* One useful funciton in *st_intersection* in package *sf*
+  + st_intersection(x, y)
+  + crop returns a geographic subset of an object *x* as specified by an Extent object *y*
 
 ```{r, echo=TRUE, fig.width=6, fig.align="center", message = FALSE}
 library(raster)
 library(mapview)
-# Before crop, first check CRS
-VICLGA@proj4string
-VICSub@proj4string
-MELLGA@proj4string
 
-# Making all CRS the same
-crs0 = VICLGA@proj4string
-MELLGA = spTransform(MELLGA, crs0)
-MELLGA@proj4string
 
-## Task 1
-GMEL = MELLGA[1, ]   # Greater Melbourne
-GMELSub = crop(VICSub, GMEL)
-mapView(GMELSub)      
-
-## Task 2: this code takes a while to run. 
-i = which(MELLGA$name == "City of Melbourne")
-CMEL = MELLGA[i, ]
-#CMELSub = crop(VICSub, CMEL)      
-#mapView(CMELSub) 
+## Obtain all suburbs in City of Melbourne (including part of suburb)
+i = which(VICLGA$VIC_LGA__3 == "BANYULE")
+CMEL = VICLGA[i, ]
+tmp = st_intersection(VICSub, CMEL)
+mapView(tmp)
 ```
 
 
+The map appears OK, but a closer look shows that some suburb are not supposed to be there (e.g. Eltham). Here is a list of all suburbs in City of Banyule (https://en.wikipedia.org/wiki/City_of_Banyule). The reason for this is likely due to the different resolution and accuracy of shapefiles (VICSub and VICLGA).  
 
-* There are more shapefiles in *PlanMelbourne* Folder, which can be downloaded from https://www.planmelbourne.vic.gov.au/maps/spatial-data
-+ I have not explore all of shapefiles
-+ It is quite useful. 
-+ The following gives *regions of Victoria* and *CBD*
-  
-  ```{r, echo=TRUE, fig.width=6, fig.align="center"}
-#SReg = readOGR(dsn="datasets/PlanMelbourne/Administrative/State Regions_region.shp", "State Regions_region")
-
-#library(mapview)
-#mapView(SReg)
-#CBD = readOGR(dsn="2_ggplot/PlanMelbourne/Central City Urban Renewal and Precincts/Central Business District_region.shp", "Central Business District_region")
-#mapView(CBD)
+```{r, echo=TRUE, fig.width=6, fig.align="center", message = FALSE}
+## Obtain all suburbs in City of Melbourne (including part of suburb)
+tmp$area = st_area(tmp)
+BSub = tmp[as.numeric(tmp$area) > 100000,]
+mapView(BSub)
 ```
+
+
