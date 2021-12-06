@@ -154,7 +154,8 @@ Bcen = centres[tmp[,1],]
 
 library(ggplot2)
 library(sf)
-ggplot() + geom_sf(data = BSub, aes(fill = VIC_LOCA_2)) +
+ggplot() + geom_sf(data = BSub, aes(fill = VIC_LOCA_2)) + 
+  geom_sf_label(data = BSub, aes(label = VIC_LOCA_2), size = 0.7) + 
   geom_sf(data = Bcen, aes(size = 4))
 ```
 
