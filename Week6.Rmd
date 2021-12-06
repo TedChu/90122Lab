@@ -145,7 +145,7 @@ There are major activity centres. According to the goverment, *These are places 
 
 Suppose we want to obtain all major activity centres in the City of Banyule. Note these acitivity centres are represented as *points*
 
-```{r, echo=TRUE, fig.width=6, fig.align="center", message = FALSE}
+```{r, echo=TRUE, fig.width=7, fig.align="center", message = FALSE}
 centres = st_read(dsn = "datasets/PlanMel/Activity Centres/ActivityCentrePoints_font_point.shp", 
                  "ActivityCentrePoints_font_point")
 centres <- st_transform(centres, 4326)
@@ -155,14 +155,14 @@ Bcen = centres[tmp[,1],]
 library(ggplot2)
 library(sf)
 ggplot() + geom_sf(data = BSub, aes(fill = VIC_LOCA_2)) + 
-  geom_sf_label(data = BSub, aes(label = VIC_LOCA_2), size = 0.7) + 
-  geom_sf(data = Bcen, aes(size = 4))
+  geom_sf_label(data = BSub, aes(label = VIC_LOCA_2), size = 2.1) + 
+  geom_sf(data = Bcen, size = 4) + theme(legend.position="none")
 ```
 
 Suppose you also want to draw major roads in City of Banyule. The shapefile of all roads are in the folder *VMTRANS*. Suppose we want to draw all roads with Road Class = 0, 1, 2. (I do not know what Road Class really means here, but it appears the smaller number indicates a more important road. After all, this is an example  to show you how to draw points, lines and polygons together.)
 
 
-```{r, echo=TRUE, fig.width=6, fig.align="center", message = FALSE}
+```{r, echo=TRUE, fig.width=7, fig.align="center", message = FALSE}
 road = st_read(dsn = "datasets/VMTRANS/TR_ROAD.shp", "TR_ROAD")
 road <- st_transform(road, 4326)
 ## You can see all roads in Banyule
