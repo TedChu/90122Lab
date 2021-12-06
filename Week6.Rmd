@@ -92,7 +92,6 @@ All datasets are read into as *sf* objects
 library(sf)
 VICLGA = st_read(dsn = "datasets/VICLGA/VIC_LOCALITY_POLYGON_shp.shp", "VIC_LOCALITY_POLYGON_shp")
 VICSub = st_read(dsn="datasets/VICSub/VIC_LOCALITY_POLYGON_shp.shp", "VIC_LOCALITY_POLYGON_shp")
-MELLGA = st_read(dsn = "datasets/Mel/Aus-Melbourne02.shp", "Aus-Melbourne02")
 ```
 
 
@@ -102,22 +101,23 @@ First, we make sure that all *sf* objects has the same CRS
 ## Retrieve CRS
 st_crs(VICLGA) 
 st_crs(VICSub)
-st_crs(MELLGA)
 
 ## Transform crs system to WGS84(epsg: 4326)
 VICLGA <- st_transform(VICLGA, 4326)
 VICSub <- st_transform(VICSub, 4326)
-st_crs(VICLGA) 
-st_crs(VICSub)
+
+## Check CRS
+#st_crs(VICLGA) 
+#st_crs(VICSub)
 ```
 
-Second, we want to obtain all suburbs in City of Melbourne. Note that we already have all suburbs in Victoria, and we also know the boundary of City of Melbourne from VICLGA or MELLGA. We only need to ``cut" all suburbs from *VICSub* using boundary of City of Melbourne. 
+Second, we want to obtain all suburbs in City of Melbourne. Note that we already have all suburbs in Victoria, and we also know the boundary of City of Melbourne from VICLGA. We only need to ``cut" all suburbs from *VICSub* using boundary of City of Melbourne. 
 
 * One useful funciton in *st_intersection* in package *sf*
   + st_intersection(x, y)
   + crop returns a geographic subset of an object *x* as specified by an Extent object *y*
 
-```{r, echo=TRUE, fig.width=6, fig.align="center", message = FALSE}
+```{r, echo=TRUE, fig.width=6, fig.align="center", message = FALSE, warning = F}
 library(raster)
 library(mapview)
 
@@ -130,7 +130,7 @@ mapView(tmp)
 ```
 
 
-The map appears OK, but a closer look shows that some suburb are not supposed to be there (e.g. Eltham). Here is a list of all suburbs in City of Banyule (https://en.wikipedia.org/wiki/City_of_Banyule). The reason for this is likely due to the different resolution and accuracy of shapefiles (VICSub and VICLGA).  
+The map appears OK, but a closer look shows that some suburb are not supposed to be there (e.g. Eltham). Here is a list of all suburbs in City of Banyule (https://en.wikipedia.org/wiki/City_of_Banyule). The reason for this is likely due to the different resolution and accuracy of shapefiles (VICSub and VICLGA). Therefore, I will remove all the suburbs with a very small area (Here, the unit is square meter, and 10000 is small by the surburb standard.)  
 
 ```{r, echo=TRUE, fig.width=6, fig.align="center", message = FALSE}
 ## Obtain all suburbs in City of Melbourne (including part of suburb)
