@@ -49,7 +49,7 @@ Suppose you want to plot all suburbs in City of Banyule. However, for suburbs sh
 
 First, you can *filter* all these suburbs from *VICSub*. Here, I used the variable *LC_PLY_PID* instead of suburb names, because there are actually two Bellfield in Vitoria (and only one is in City of Banyule). 
 
-```{r, echo=TRUE, fig.width=7, fig.align="center", message = FALSE}
+```{r, echo=TRUE, fig.width=7, fig.align="center", message = FALSE, warning = F}
 library(sf)
 library(ggplot2)
 library(dplyr)
@@ -61,7 +61,7 @@ BSub2 = VICSub %>% filter(LC_PLY_PID %in% BSub$LC_PLY_PID)
 ```
 
 Afterward, you can visualise your results. 
-```{r, echo=TRUE, fig.width=7, fig.align="center", message = FALSE}
+```{r, echo=TRUE, fig.width=7, fig.align="center", message = FALSE, warning = F}
 ggplot() + geom_sf(data = BSub2, aes(fill = VIC_LOCA_2)) + 
   geom_sf_label(data = BSub2, aes(label = VIC_LOCA_2), size = 2.1) + 
   theme(legend.position="none")
