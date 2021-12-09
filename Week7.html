@@ -325,6 +325,7 @@ $(document).ready(function () {
 <li><a href="#introduction"><span class="toc-section-number">1</span> Introduction</a></li>
 <li><a href="#tidyr"><span class="toc-section-number">2</span> tidyr</a></li>
 <li><a href="#dplyr"><span class="toc-section-number">3</span> dplyr</a></li>
+<li><a href="#an-example"><span class="toc-section-number">4</span> An Example</a></li>
 </ul>
 </div>
 
@@ -368,6 +369,37 @@ $(document).ready(function () {
 <li>full_join</li>
 </ul></li>
 </ul>
+</div>
+<div id="an-example" class="section level1">
+<h1><span class="header-section-number">4</span> An Example</h1>
+<p>Suppose you want to plot all suburbs in City of Banyule. However, for suburbs shared with other LGAs, such as Bundoora, you want to plot the whole suburb, instead of the portion inside Banyule.</p>
+<p>First, you can <em>filter</em> all these suburbs from <em>VICSub</em>. Here, I used the variable <em>LC_PLY_PID</em> instead of suburb names, because there are actually two Bellfield in Vitoria (and only one is in City of Banyule).</p>
+<pre class="r"><code>library(sf)</code></pre>
+<pre><code>## Warning: package &#39;sf&#39; was built under R version 3.6.2</code></pre>
+<pre class="r"><code>library(ggplot2)</code></pre>
+<pre><code>## Warning: package &#39;ggplot2&#39; was built under R version 3.6.2</code></pre>
+<pre class="r"><code>library(dplyr)</code></pre>
+<pre><code>## Warning: package &#39;dplyr&#39; was built under R version 3.6.2</code></pre>
+<pre class="r"><code>load(&quot;datasets/BSub.Rdata&quot;)
+VICSub = st_read(dsn=&quot;datasets/VICSub/VIC_LOCALITY_POLYGON_shp.shp&quot;, &quot;VIC_LOCALITY_POLYGON_shp&quot;)</code></pre>
+<pre><code>## Reading layer `VIC_LOCALITY_POLYGON_shp&#39; from data source 
+##   `/Users/tingjinc/Dropbox/2_MAST90122/90122LabGit/datasets/VICSub/VIC_LOCALITY_POLYGON_shp.shp&#39; 
+##   using driver `ESRI Shapefile&#39;
+## Simple feature collection with 2973 features and 12 fields
+## Geometry type: POLYGON
+## Dimension:     XY
+## Bounding box:  xmin: 140.9619 ymin: -39.13657 xmax: 149.9763 ymax: -33.98127
+## CRS:           7844</code></pre>
+<pre class="r"><code>VICSub &lt;- st_transform(VICSub, 4326)
+
+BSub2 = VICSub %&gt;% filter(LC_PLY_PID %in% BSub$LC_PLY_PID)</code></pre>
+<p>Afterward, you can visualise your results.</p>
+<pre class="r"><code>ggplot() + geom_sf(data = BSub2, aes(fill = VIC_LOCA_2)) + 
+  geom_sf_label(data = BSub2, aes(label = VIC_LOCA_2), size = 2.1) + 
+  theme(legend.position=&quot;none&quot;)</code></pre>
+<pre><code>## Warning in st_point_on_surface.sfc(sf::st_zm(x)): st_point_on_surface may not
+## give correct results for longitude/latitude data</code></pre>
+<p><img src="Week7_files/figure-html/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 
 

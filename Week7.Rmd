@@ -43,3 +43,27 @@ https://cran.r-project.org/web/packages/dplyr/vignettes/base.html. The tutorial 
   + full_join
 
 
+# An Example
+
+Suppose you want to plot all suburbs in City of Banyule. However, for suburbs shared with other LGAs, such as Bundoora,  you want to plot the whole suburb, instead of the portion inside Banyule.
+
+First, you can *filter* all these suburbs from *VICSub*. Here, I used the variable *LC_PLY_PID* instead of suburb names, because there are actually two Bellfield in Vitoria (and only one is in City of Banyule). 
+
+```{r, echo=TRUE, fig.width=7, fig.align="center", message = FALSE}
+library(sf)
+library(ggplot2)
+library(dplyr)
+load("datasets/BSub.Rdata")
+VICSub = st_read(dsn="datasets/VICSub/VIC_LOCALITY_POLYGON_shp.shp", "VIC_LOCALITY_POLYGON_shp")
+VICSub <- st_transform(VICSub, 4326)
+
+BSub2 = VICSub %>% filter(LC_PLY_PID %in% BSub$LC_PLY_PID)
+```
+
+Afterward, you can visualise your results. 
+```{r, echo=TRUE, fig.width=7, fig.align="center", message = FALSE}
+ggplot() + geom_sf(data = BSub2, aes(fill = VIC_LOCA_2)) + 
+  geom_sf_label(data = BSub2, aes(label = VIC_LOCA_2), size = 2.1) + 
+  theme(legend.position="none")
+```
+
