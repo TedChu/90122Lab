@@ -137,6 +137,7 @@ The map appears OK, but a closer look shows that some suburb are not supposed to
 tmp$area = st_area(tmp)
 BSub = tmp[as.numeric(tmp$area) > 100000,]
 mapView(BSub)
+save(BSub, file = "datasets/BSub.Rdata")   
 ```
 
 There are more shapefiles in *PlanMel* Folder, which outlines some future plan in greater melbourne regions and can be downloaded from https://www.planmelbourne.vic.gov.au/maps/spatial-data.
