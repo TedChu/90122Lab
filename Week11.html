@@ -23,15 +23,6 @@
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 
-<style type="text/css">
-  code{white-space: pre-wrap;}
-  span.smallcaps{font-variant: small-caps;}
-  span.underline{text-decoration: underline;}
-  div.column{display: inline-block; vertical-align: top; width: 50%;}
-  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-  ul.task-list{list-style: none;}
-    </style>
-
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
   pre:not([class]) {
@@ -76,7 +67,6 @@ h6 {
   text-align: left;
 }
 </style>
-
 
 
 
@@ -314,9 +304,6 @@ $(document).ready(function () {
 <li>
   <a href="Week11.html">Week 11</a>
 </li>
-<li>
-  <a href="Versions.html">Versions</a>
-</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         
@@ -349,9 +336,7 @@ $(document).ready(function () {
 <ul>
 <li>In Lab 11, we will follow Lab 2.2 of <em>Spatio-Temporal Statistics with R</em>. You can download the electronic pdf through <a href="https://spacetimewithr.org/" class="uri">https://spacetimewithr.org/</a>.
 <ul>
-<li>In this document, I will only highlight some important points; that is, the visulization of spatio-temporal data.<br />
-</li>
-<li>In Lab 2.1 – 2.2 of Spatio-Temporal Statistics with R, functions from package <em>dplyr</em> and <em>tidyr</em> are used for data cleaning. Please use help file to obtain more information. (These packages are widely used for data cleaning. However, this is not the focus of this subject.)</li>
+<li>In this document, I will only highlight some important points; that is, the visulization of spatio-temporal data.</li>
 </ul></li>
 </ul>
 </div>
@@ -387,7 +372,7 @@ head(Tmax)</code></pre>
 <li>facet_grid(~date): for each date (1, 15 and 30), produce a plot.</li>
 </ul></li>
 </ul>
-<pre class="r"><code>Tmax_1 &lt;- subset(Tmax, t %in% c(1, 15, 30))  # extract data
+<pre class="r"><code>Tmax_1 = Tmax %&gt;% filter(t %in% c(1, 15, 30))  # extract data
 
 # Spatial Plots
 NOAA_plot &lt;- ggplot(Tmax_1) +                              # plot points
@@ -415,13 +400,13 @@ NOAA_plot</code></pre>
 UIDs_sub &lt;- sample(UIDs, 10)                # sample 10 IDs
 Tmax_sub &lt;- filter(Tmax, id %in% UIDs_sub)  # subset data
 head(Tmax_sub)</code></pre>
-<pre><code>##   julian year month day   id  z proc  lat       lon       date t
-## 1 728050 1993     5   1 3859 80 Tmax 37.3 -81.21667 1993-05-01 1
-## 2 728051 1993     5   2 3859 74 Tmax 37.3 -81.21667 1993-05-02 2
-## 3 728052 1993     5   3 3859 67 Tmax 37.3 -81.21667 1993-05-03 3
-## 4 728053 1993     5   4 3859 64 Tmax 37.3 -81.21667 1993-05-04 4
-## 5 728054 1993     5   5 3859 73 Tmax 37.3 -81.21667 1993-05-05 5
-## 6 728055 1993     5   6 3859 75 Tmax 37.3 -81.21667 1993-05-06 6</code></pre>
+<pre><code>##   julian year month day   id  z proc      lat       lon       date t
+## 1 728050 1993     5   1 3969 78 Tmax 32.21667 -98.18333 1993-05-01 1
+## 2 728051 1993     5   2 3969 59 Tmax 32.21667 -98.18333 1993-05-02 2
+## 3 728052 1993     5   3 3969 76 Tmax 32.21667 -98.18333 1993-05-03 3
+## 4 728053 1993     5   4 3969 79 Tmax 32.21667 -98.18333 1993-05-04 4
+## 5 728054 1993     5   5 3969 69 Tmax 32.21667 -98.18333 1993-05-05 5
+## 6 728055 1993     5   6 3969 78 Tmax 32.21667 -98.18333 1993-05-06 6</code></pre>
 <p>Next, time-series is plotted.</p>
 <pre class="r"><code>## ------------------------------------------------------------------------
 TmaxTS &lt;- ggplot(Tmax_sub) +
@@ -446,7 +431,7 @@ TmaxTS</code></pre>
 
 // add bootstrap table styles to pandoc tables
 function bootstrapStylePandocTables() {
-  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
 }
 $(document).ready(function () {
   bootstrapStylePandocTables();

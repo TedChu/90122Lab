@@ -14,8 +14,6 @@ knitr::opts_chunk$set(echo = TRUE)
 
 * In Lab 11, we will follow Lab 2.2 of *Spatio-Temporal Statistics with R*. You can download the electronic pdf through https://spacetimewithr.org/. 
   + In this document, I will only highlight some important points; that is, the visulization of spatio-temporal data.  
-  + In Lab 2.1 -- 2.2 of Spatio-Temporal Statistics with R, functions from package *dplyr* and *tidyr* are used for data cleaning. Please use help file to obtain more information. (These packages are widely used for data cleaning. However, this is not the focus of this subject.)
-
 
 
 # Spatial Plots
@@ -25,7 +23,7 @@ knitr::opts_chunk$set(echo = TRUE)
   + t: the same as the column *day*
   + We do not really used column *julian* nor *proc*
 
-```{r, echo=TRUE, fig.width=6, fig.align="center", message = FALSE}
+```{r, echo=TRUE, fig.width=6, fig.align="center", message = FALSE, warning = F}
 library(dplyr)
 library(tidyr)
 library(ggplot2)
@@ -41,7 +39,7 @@ head(Tmax)
   
 
 ```{r, echo=TRUE, fig.width=6, fig.align="center", message = FALSE}
-Tmax_1 <- subset(Tmax, t %in% c(1, 15, 30))  # extract data
+Tmax_1 = Tmax %>% filter(t %in% c(1, 15, 30))  # extract data
 
 # Spatial Plots
 NOAA_plot <- ggplot(Tmax_1) +                              # plot points
