@@ -10,14 +10,10 @@ knitr::opts_chunk$set(echo = TRUE)
 </div>
 
 
-# Introduction
-
-* In this Lab, we will learn 
-  + fitting Spatial lag model
 
 # Median House Price Example
 
-* The dataset is collected on all LGA in great Melbourne on 2015 by Government. Here, I will show you
+* The dataset is collected on all LGA in great Melbourne in 2015 by Government. The variables include
   + name: LGA name
   + price: median house price
   + dis: distance to Melbourne (in km)
@@ -35,17 +31,10 @@ library(sf)
 library(ggplot2)
 ```
 
-Here is some data the data
+Here is some data visualisation
 ```{r, echo=TRUE, fig.width=6, fig.align="center"}
-load("datasets/gmel2.Rdata")
-head(gmel2@data)
-```
-
-
-```{r, echo=TRUE, fig.width=6, fig.align="center"}
-class(gmel2)                 # SpatialPolygonsDataFrame
-gmel2.sf = st_as_sf(gmel2)   # to sf class
 library(mapview)
+load("datasets/gmel2.Rdata")
 mapView(gmel2, zcol = "price")
 
 ```
@@ -64,13 +53,14 @@ library(spatialreg)
 
 
 ```{r, echo=TRUE, fig.width=6, fig.align="center"}
-swpoly = poly2nb(gmel2)
+gmel2.sp = as(gmel2, "Spatial")
+swpoly = poly2nb(gmel2.sp)
 ## row sum standarize to 1
 colw = nb2listw(swpoly, style = "W")
 
 ## This is a demonstration on how to use function "lagsarlm"
 ## Not really about how to analyze melbourne housing in depth. 
-mlag = spatialreg::lagsarlm(log(price)~dis+off + inc, data=gmel2@data, 
+mlag = spatialreg::lagsarlm(log(price)~dis+off + inc, data=gmel2, 
                 listw=colw) 
 
 ```
