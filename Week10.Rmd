@@ -25,18 +25,17 @@ knitr::opts_chunk$set(echo = TRUE)
 *All the code (and more) will be provided in Lab 9.*
 
 
-```{r, echo=TRUE, fig.width=6, fig.align="center", message = FALSE}
+```{r, echo=TRUE, fig.width=6, fig.align="center", message = FALSE, warning = F}
 library(sp)
 library(sf)
 library(ggplot2)
+library(mapview)
 ```
 
 Here is some data visualisation
 ```{r, echo=TRUE, fig.width=6, fig.align="center"}
-library(mapview)
 load("datasets/gmel2.Rdata")
 mapView(gmel2, zcol = "price")
-
 ```
 
 
@@ -46,7 +45,7 @@ mapView(gmel2, zcol = "price")
 
 Before 2020, function lagsarlm is in *spdep*. Now it is moved to *spatialreg* package, and I suggest you to use *spatialreg::lagsarlm* to make sure you are using *lagsarlm* function from *spatialreg* package
 
-```{r, echo=TRUE, fig.width=6, fig.align="center", message = FALSE}
+```{r, echo=TRUE, fig.width=6, fig.align="center", message = FALSE, warning = F}
 library(spdep)
 library(spatialreg)
 ```
