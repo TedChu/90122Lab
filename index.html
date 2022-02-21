@@ -23,6 +23,15 @@
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
   pre:not([class]) {
@@ -67,6 +76,7 @@ h6 {
   text-align: left;
 }
 </style>
+
 
 
 
@@ -322,7 +332,7 @@ $(document).ready(function () {
 
 
 <p>There are labs between week 2–11.</p>
-<p>If you do not know R, please study <em>An Introduction to R</em> at <a href="https://cran.r-project.org/doc/manuals/R-intro.pdf" class="uri">https://cran.r-project.org/doc/manuals/R-intro.pdf</a> before week 2.</p>
+<p>If you do not know R, please study <em>R introduction and reference guide</em> at <a href="https://mathstats.pages.gitlab.unimelb.edu.au/r-reference/" class="uri">https://mathstats.pages.gitlab.unimelb.edu.au/r-reference/</a> before week 2.</p>
 
 
 
@@ -333,7 +343,7 @@ $(document).ready(function () {
 
 // add bootstrap table styles to pandoc tables
 function bootstrapStylePandocTables() {
-  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
 }
 $(document).ready(function () {
   bootstrapStylePandocTables();
