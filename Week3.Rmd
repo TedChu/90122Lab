@@ -33,7 +33,8 @@ For more details, see https://cran.r-project.org/web/packages/sf/vignettes/sf1.h
 
 ```{r, echo=TRUE, fig.width=6, fig.align="center", message = FALSE}
 library(sf)
-setwd("~/Dropbox/2_MAST90122/90122LabGit")
+#setwd("~/Dropbox/2_MAST90122/90122LabGit")
+setwd("C:/Users/tingjinc/Dropbox/2_MAST90122/90122LabGit")
 gmel = st_read(dsn = "datasets/Mel/Aus-Melbourne02.shp", "Aus-Melbourne02")
 ```
 
@@ -146,6 +147,7 @@ gmel2[1:3,]
 
 ```{r, echo=TRUE, fig.width=6, fig.align="center", warning = FALSE}
 library(ggplot2)
+#load("datasets/gmel2.Rdata")     load dataset if you choose to skip Combining Data (Optional)
 ggplot()+geom_sf(data=gmel2, aes(fill = price))
 
 ```
