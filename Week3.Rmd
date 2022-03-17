@@ -28,13 +28,11 @@ For more details, see https://cran.r-project.org/web/packages/sf/vignettes/sf1.h
   + All datasets can be downloaded at https://github.com/TedChu/90122Lab/tree/master/datasets. 
   + First, set the working directory through *setwd*. Remember you need to use forward-slash (/) or double slash (\\\\), but NOT backslash (\\).
   + I will not recommend you to have space between your folder titles. That is, to write *setwd("..../90122Lab")*, Not *setwd("..../90122 Lab")*
-  + As indicated below, all my files (*Aus-Melbourne02.shp*, *Aus-Melbourne02.dbf*, *Aus-Melbourne02.prj* and *Aus-Melbourne02.shx*) are stored at C:\\Users\\tingjinc\\OneDrive - The University of Melbourne\\Documents\\GitFile\\90122Lab\\datasets\\Mel
   + Depending on where you store your files, you need to adjust directories in *setwd* and *dsn*. 
 
 ```{r, echo=TRUE, fig.width=6, fig.align="center", message = FALSE}
 library(sf)
-#setwd("~/Dropbox/2_MAST90122/90122LabGit")
-setwd("C:/Users/tingjinc/Dropbox/2_MAST90122/90122LabGit")
+setwd("~/Dropbox/2_MAST90122/90122LabGit")
 gmel = st_read(dsn = "datasets/Mel/Aus-Melbourne02.shp", "Aus-Melbourne02")
 ```
 
@@ -76,14 +74,13 @@ mapView(g)
 
 # Combining Data (Optional)
 
-
-In https://discover.data.vic.gov.au/dataset/2015-local-government-area-profiles, many statistics for each LGA in Victoria is recorded for 2015, and it is available in *LGAData.csv*. It includes around 400 variables. 
+LGA information based on 2015 survey are available in *LGAData.csv*. It includes around 400 variables. 
 
 * Here, we choose
   + name: LGA name
   + price: median house price
   + dis: distance to Melbourne (in km)
-  + off: totoal offences per 1000 population
+  + off: total offences per 1000 population
   + inc: median household income weekly
 
 
