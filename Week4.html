@@ -23,6 +23,15 @@
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
   pre:not([class]) {
@@ -67,6 +76,7 @@ h6 {
   text-align: left;
 }
 </style>
+
 
 
 
@@ -492,6 +502,9 @@ ggplot() + geom_sf(data=gmellisa, aes(fill = pvalue)) +
 <p>Or</p>
 <pre class="r"><code>ggplot() + geom_sf(data=gmellisa, aes(fill = lisa, color = (pvalue &lt; 0.05)))</code></pre>
 <p><img src="Week4_files/figure-html/unnamed-chunk-13-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p>Or</p>
+<pre class="r"><code>ggplot() + geom_sf(data=gmellisa, aes(fill = (pvalue&lt;0.05)))</code></pre>
+<p><img src="Week4_files/figure-html/unnamed-chunk-14-1.png" width="768" style="display: block; margin: auto;" /></p>
 </div>
 </div>
 
@@ -504,7 +517,7 @@ ggplot() + geom_sf(data=gmellisa, aes(fill = pvalue)) +
 
 // add bootstrap table styles to pandoc tables
 function bootstrapStylePandocTables() {
-  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
 }
 $(document).ready(function () {
   bootstrapStylePandocTables();

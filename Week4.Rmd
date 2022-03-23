@@ -173,3 +173,8 @@ Or
 ```{r, echo=TRUE, fig.width=8, fig.height =8, fig.align="center",warning = F}
 ggplot() + geom_sf(data=gmellisa, aes(fill = lisa, color = (pvalue < 0.05)))
 ```
+
+Or
+```{r, echo=TRUE, fig.width=8, fig.height =8, fig.align="center",warning = F}
+ggplot() + geom_sf(data=gmellisa, aes(fill = (pvalue<0.05)))
+```
