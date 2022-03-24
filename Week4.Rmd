@@ -132,7 +132,7 @@ round(head(resI),3)
 ```
 * For the lisa output
   + First column: the value of local moran's I
-  + Second column: the expected value (which is $-1/(n-1)$)
+  + Second column: the expected value calculated using numerical approach. Therefore, the results is different from the theoretical result from the lecture (which is $-1/(n-1)$). 
   + Third column: the variance of local moran's I
   + Fourth column $=\frac{(Ii - E.Ii)}{\sqrt{Var.Ii}}$
   + Fifth column: the p-value. 
@@ -172,9 +172,4 @@ ggplot() + geom_sf(data=gmellisa, aes(fill = pvalue)) +
 Or
 ```{r, echo=TRUE, fig.width=8, fig.height =8, fig.align="center",warning = F}
 ggplot() + geom_sf(data=gmellisa, aes(fill = lisa, color = (pvalue < 0.05)))
-```
-
-Or
-```{r, echo=TRUE, fig.width=8, fig.height =8, fig.align="center",warning = F}
-ggplot() + geom_sf(data=gmellisa, aes(fill = (pvalue<0.05)))
 ```

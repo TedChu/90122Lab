@@ -13,12 +13,22 @@
 
 <title>Week 4: Moran’s I, LISA</title>
 
-<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
@@ -33,11 +43,6 @@
     </style>
 
 <style type="text/css">code{white-space: pre;}</style>
-<style type="text/css">
-  pre:not([class]) {
-    background-color: white;
-  }
-</style>
 <script type="text/javascript">
 if (window.hljs) {
   hljs.configure({languages: []});
@@ -50,32 +55,6 @@ if (window.hljs) {
 
 
 
-<style type="text/css">
-h1 {
-  font-size: 34px;
-}
-h1.title {
-  font-size: 38px;
-}
-h2 {
-  font-size: 30px;
-}
-h3 {
-  font-size: 24px;
-}
-h4 {
-  font-size: 18px;
-}
-h5 {
-  font-size: 16px;
-}
-h6 {
-  font-size: 12px;
-}
-.table th:not([align]) {
-  text-align: left;
-}
-</style>
 
 
 
@@ -86,10 +65,6 @@ h6 {
   max-width: 940px;
   margin-left: auto;
   margin-right: auto;
-}
-code {
-  color: inherit;
-  background-color: rgba(0, 0, 0, 0.04);
 }
 img {
   max-width:100%;
@@ -106,40 +81,13 @@ button.code-folding-btn:focus {
 summary {
   display: list-item;
 }
+pre code {
+  padding: 0;
+}
 </style>
 
 
 <style type="text/css">
-/* padding for bootstrap navbar */
-body {
-  padding-top: 51px;
-  padding-bottom: 40px;
-}
-/* offset scroll position for anchor links (for fixed navbar)  */
-.section h1 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h2 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h3 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h4 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h5 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h6 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
 .dropdown-submenu {
   position: relative;
 }
@@ -167,7 +115,7 @@ body {
   margin-right: -10px;
 }
 .dropdown-submenu:hover>a:after {
-  border-left-color: #ffffff;
+  border-left-color: #adb5bd;
 }
 .dropdown-submenu.pull-left {
   float: none;
@@ -179,7 +127,7 @@ body {
 }
 </style>
 
-<script>
+<script type="text/javascript">
 // manage active state of menu based on current page
 $(document).ready(function () {
   // active menu anchor
@@ -190,10 +138,23 @@ $(document).ready(function () {
   var menuAnchor = $('a[href="' + href + '"]');
 
   // mark it active
-  menuAnchor.parent().addClass('active');
+  menuAnchor.tab('show');
 
   // if it's got a parent navbar menu mark it active as well
   menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
 });
 </script>
 
@@ -205,7 +166,6 @@ $(document).ready(function () {
   max-height: 500px;
   min-height: 44px;
   overflow-y: auto;
-  background: white;
   border: 1px solid #ddd;
   border-radius: 4px;
 }
@@ -322,7 +282,7 @@ $(document).ready(function () {
   </div><!--/.container -->
 </div><!--/.navbar -->
 
-<div class="fluid-row" id="header">
+<div id="header">
 
 
 
@@ -332,13 +292,15 @@ $(document).ready(function () {
 
 <div id="TOC">
 <ul>
-<li><a href="#spatialpolygonsdataframe"><span class="toc-section-number">1</span> SpatialPolygonsDataFrame</a><ul>
+<li><a href="#spatialpolygonsdataframe"><span class="toc-section-number">1</span> SpatialPolygonsDataFrame</a>
+<ul>
 <li><a href="#create-polygon"><span class="toc-section-number">1.1</span> Create Polygon</a></li>
 <li><a href="#create-polygons"><span class="toc-section-number">1.2</span> Create Polygons</a></li>
 <li><a href="#create-spatialpolygons"><span class="toc-section-number">1.3</span> Create SpatialPolygons</a></li>
 <li><a href="#create-spatialpolygonsdataframe"><span class="toc-section-number">1.4</span> Create SpatialPolygonsDataFrame</a></li>
 </ul></li>
-<li><a href="#morans-i"><span class="toc-section-number">2</span> Moran’s I</a><ul>
+<li><a href="#morans-i"><span class="toc-section-number">2</span> Moran’s I</a>
+<ul>
 <li><a href="#create-weight-matrix"><span class="toc-section-number">2.1</span> Create Weight Matrix</a></li>
 <li><a href="#morans-i-test"><span class="toc-section-number">2.2</span> Moran’s I test</a></li>
 <li><a href="#lisa"><span class="toc-section-number">2.3</span> LISA</a></li>
@@ -349,8 +311,8 @@ $(document).ready(function () {
 <div style="margin-bottom:50px;">
 
 </div>
-<div id="spatialpolygonsdataframe" class="section level1">
-<h1><span class="header-section-number">1</span> SpatialPolygonsDataFrame</h1>
+<div id="spatialpolygonsdataframe" class="section level1" number="1">
+<h1 number="1"><span class="header-section-number">1</span> SpatialPolygonsDataFrame</h1>
 <ul>
 <li>There are two ways to represent spatial shapes
 <ul>
@@ -360,8 +322,8 @@ $(document).ready(function () {
 </ul>
 <p>Due to time constrain, I will only talk <em>SpatialPolygonsDataFrame</em>.</p>
 <p>First, the diagram <img src="pics/SpPnDF.png" width="590" style="display: block; margin: auto;" /></p>
-<div id="create-polygon" class="section level2">
-<h2><span class="header-section-number">1.1</span> Create Polygon</h2>
+<div id="create-polygon" class="section level2" number="1.1">
+<h2 number="1.1"><span class="header-section-number">1.1</span> Create Polygon</h2>
 <p>Here, we will create Polygon class. For example, <em>Sr1</em> has the vertices <span class="math inline">\((2,2)\)</span>, <span class="math inline">\((4,3)\)</span>, <span class="math inline">\((4,5)\)</span> and <span class="math inline">\((1,4)\)</span>. Note that <span class="math inline">\((2,2)\)</span> needs to be written twice, since it is both the starting vertex and the ending vertex.</p>
 <pre class="r"><code>library(sp)
 #getClass(&quot;Polygon&quot;)
@@ -370,8 +332,8 @@ Sr2 = Polygon(cbind(c(5,4,2,5),c(2,3,2,2)))
 Sr3 = Polygon(cbind(c(4,4,5,10,4),c(5,3,2,5,5)))
 Sr4 = Polygon(cbind(c(5,6,6,5,5),c(4,4,3,3,4)), hole = TRUE)</code></pre>
 </div>
-<div id="create-polygons" class="section level2">
-<h2><span class="header-section-number">1.2</span> Create Polygons</h2>
+<div id="create-polygons" class="section level2" number="1.2">
+<h2 number="1.2"><span class="header-section-number">1.2</span> Create Polygons</h2>
 <p>A Polygons can contain any number of Polygon (including only 1 Polygon).</p>
 <p>Why do we need polygons? Imagine you want to draw world map. Each Polygons can represent a country, while a Polygon cannot. For example, New Zealand comprises two major islands, and you need two polygons, which is a Polygons.</p>
 <pre class="r"><code>#getClass(&quot;Polygons&quot;)
@@ -379,15 +341,15 @@ Srs1 = Polygons(list(Sr1), &quot;s1&quot;)
 Srs2 = Polygons(list(Sr2), &quot;s2&quot;)
 Srs3 = Polygons(list(Sr3, Sr4), &quot;s3/4&quot;)</code></pre>
 </div>
-<div id="create-spatialpolygons" class="section level2">
-<h2><span class="header-section-number">1.3</span> Create SpatialPolygons</h2>
+<div id="create-spatialpolygons" class="section level2" number="1.3">
+<h2 number="1.3"><span class="header-section-number">1.3</span> Create SpatialPolygons</h2>
 <pre class="r"><code>#getClass(&quot;SpatialPolygons&quot;)
 SpP = SpatialPolygons(list(Srs1,Srs2,Srs3), 1:3)
 plot(SpP, col = 1:3, bg=&quot;yellow&quot;)</code></pre>
 <p><img src="Week4_files/figure-html/unnamed-chunk-4-1.png" width="576" style="display: block; margin: auto;" /> Note that there is a hole in one of Polygons</p>
 </div>
-<div id="create-spatialpolygonsdataframe" class="section level2">
-<h2><span class="header-section-number">1.4</span> Create SpatialPolygonsDataFrame</h2>
+<div id="create-spatialpolygonsdataframe" class="section level2" number="1.4">
+<h2 number="1.4"><span class="header-section-number">1.4</span> Create SpatialPolygonsDataFrame</h2>
 <pre class="r"><code>#getClass(&quot;SpatialPolygons&quot;)
 df = data.frame(z1 = c(1.2,1.3,1.6), z2 = c(2.2,2.8,3.9), row.names = row.names(SpP))
 SpPDF = SpatialPolygonsDataFrame(Sr = SpP, data = df)
@@ -395,13 +357,20 @@ spplot(SpPDF, zcol = &quot;z1&quot;)</code></pre>
 <p><img src="Week4_files/figure-html/unnamed-chunk-5-1.png" width="576" style="display: block; margin: auto;" /> The argument “row.names = row.names(SpP)” is needed.</p>
 </div>
 </div>
-<div id="morans-i" class="section level1">
-<h1><span class="header-section-number">2</span> Moran’s I</h1>
-<div id="create-weight-matrix" class="section level2">
-<h2><span class="header-section-number">2.1</span> Create Weight Matrix</h2>
+<div id="morans-i" class="section level1" number="2">
+<h1 number="2"><span class="header-section-number">2</span> Moran’s I</h1>
+<div id="create-weight-matrix" class="section level2" number="2.1">
+<h2 number="2.1"><span class="header-section-number">2.1</span> Create Weight Matrix</h2>
 <p>The dataset is <em>gmel2</em>, and it can be downloaded at <a href="https://github.com/TedChu/90122Lab/tree/master/datasets" class="uri">https://github.com/TedChu/90122Lab/tree/master/datasets</a>.</p>
-<pre class="r"><code>library(spdep)
-load(&quot;datasets/gmel2.Rdata&quot;)</code></pre>
+<pre class="r"><code>library(spdep)</code></pre>
+<pre><code>## Warning: package &#39;spdep&#39; was built under R version 3.6.2</code></pre>
+<pre><code>## Warning: package &#39;sf&#39; was built under R version 3.6.2</code></pre>
+<pre><code>## Warning: namespace &#39;terra&#39; is not available and has been replaced
+## by .GlobalEnv when processing object &#39;&#39;
+
+## Warning: namespace &#39;terra&#39; is not available and has been replaced
+## by .GlobalEnv when processing object &#39;&#39;</code></pre>
+<pre class="r"><code>load(&quot;datasets/gmel2.Rdata&quot;)</code></pre>
 <p>R function <em>poly2nb</em> produces a spatial weight matrix from a SpatialPolygons(DataFrame) object.</p>
 <pre class="r"><code>## Convert gmel2 to SpatialPolygonsDataFrame, since the following packages require SpatialPolygonsDataFrame
 gmel.sp = as(gmel2, &quot;Spatial&quot;)
@@ -421,8 +390,8 @@ plot(Wrook, coordinates(gmel.sp), pch=19, cex=0.6, add=TRUE)</code></pre>
 </ul>
 <p>Can you see the difference between <em>queen</em> rule and <em>rook</em> rule?</p>
 </div>
-<div id="morans-i-test" class="section level2">
-<h2><span class="header-section-number">2.2</span> Moran’s I test</h2>
+<div id="morans-i-test" class="section level2" number="2.2">
+<h2 number="2.2"><span class="header-section-number">2.2</span> Moran’s I test</h2>
 <p>A Moran’s I test is performed on the variable <em>price</em>. More information about Moran’s I codes can be found in Cp1C – 8.</p>
 <pre class="r"><code>## plot
 moran.test(x=gmel2$price, nb2listw(Wqueen), alternative=&quot;two.sided&quot;)</code></pre>
@@ -454,23 +423,23 @@ moran.test(x=gmel2$price, nb2listw(Wqueen), alternative=&quot;two.sided&quot;)</
 </ul></li>
 </ul>
 </div>
-<div id="lisa" class="section level2">
-<h2><span class="header-section-number">2.3</span> LISA</h2>
+<div id="lisa" class="section level2" number="2.3">
+<h2 number="2.3"><span class="header-section-number">2.3</span> LISA</h2>
 <p>LISA is performed on <em>price</em> variable.</p>
 <pre class="r"><code>resI = localmoran(gmel2$price, nb2listw(Wqueen), alternative=&quot;two.sided&quot;)
 round(head(resI),3)</code></pre>
-<pre><code>##       Ii   E.Ii Var.Ii   Z.Ii Pr(z != 0)
-## 1 -0.123 -0.033  0.129 -0.250      0.803
-## 2  1.407 -0.033  0.286  2.691      0.007
-## 3  1.927 -0.033  0.129  5.462      0.000
-## 4  0.497 -0.033  0.106  1.627      0.104
-## 5  0.736 -0.033  0.129  2.143      0.032
-## 6  0.665 -0.033  0.160  1.744      0.081</code></pre>
+<pre><code>##       Ii   E.Ii Var.Ii   Z.Ii Pr(z != E(Ii))
+## 1 -0.123 -0.002  0.009 -1.239          0.215
+## 2  1.407 -0.100  0.864  1.621          0.105
+## 3  1.927 -0.239  0.777  2.457          0.014
+## 4  0.497 -0.029  0.100  1.666          0.096
+## 5  0.736 -0.030  0.125  2.169          0.030
+## 6  0.665 -0.038  0.194  1.596          0.111</code></pre>
 <ul>
 <li>For the lisa output
 <ul>
 <li>First column: the value of local moran’s I</li>
-<li>Second column: the expected value (which is <span class="math inline">\(-1/(n-1)\)</span>)</li>
+<li>Second column: the expected value calculated using numerical approach. Therefore, the results is different from the theoretical result from the lecture (which is <span class="math inline">\(-1/(n-1)\)</span>).</li>
 <li>Third column: the variance of local moran’s I</li>
 <li>Fourth column <span class="math inline">\(=\frac{(Ii - E.Ii)}{\sqrt{Var.Ii}}\)</span></li>
 <li>Fifth column: the p-value.</li>
@@ -490,8 +459,8 @@ ggplot() + geom_sf(data=gmellisa, aes(fill = lisa))</code></pre>
 <p><img src="Week4_files/figure-html/unnamed-chunk-10-2.png" width="576" style="display: block; margin: auto;" /></p>
 <p>Suppose we want to know which LGAs have significant local spatial autocorrelation (<span class="math inline">\(\alpha = 0.05\)</span>).</p>
 <pre class="r"><code>gmellisa$name2[gmellisa$pvalue &lt; 0.05]</code></pre>
-<pre><code>## [1] &quot;Bayside&quot;      &quot;Boroondara&quot;   &quot;Casey&quot;        &quot;Glen Eira&quot;    &quot;Melton&quot;      
-## [6] &quot;Port Phillip&quot; &quot;Stonnington&quot;  &quot;Yarra&quot;</code></pre>
+<pre><code>## [1] &quot;Boroondara&quot;   &quot;Casey&quot;        &quot;Glen Eira&quot;    &quot;Monash&quot;       &quot;Port Phillip&quot;
+## [6] &quot;Stonnington&quot;  &quot;Yarra&quot;</code></pre>
 <p>They all have positive LISA values. If you want to formally test whether there are positive local autocorrelation, you will need to change <em>alternative</em> to <em>greater</em>.</p>
 <p>You can also highlight these cities.</p>
 <pre class="r"><code>gmellisa2 = gmellisa[gmellisa$pvalue &lt; 0.05, ]
@@ -502,9 +471,6 @@ ggplot() + geom_sf(data=gmellisa, aes(fill = pvalue)) +
 <p>Or</p>
 <pre class="r"><code>ggplot() + geom_sf(data=gmellisa, aes(fill = lisa, color = (pvalue &lt; 0.05)))</code></pre>
 <p><img src="Week4_files/figure-html/unnamed-chunk-13-1.png" width="768" style="display: block; margin: auto;" /></p>
-<p>Or</p>
-<pre class="r"><code>ggplot() + geom_sf(data=gmellisa, aes(fill = (pvalue&lt;0.05)))</code></pre>
-<p><img src="Week4_files/figure-html/unnamed-chunk-14-1.png" width="768" style="display: block; margin: auto;" /></p>
 </div>
 </div>
 
@@ -535,7 +501,7 @@ $(document).ready(function () {
 
 $(document).ready(function () {
   $('.tabset-dropdown > .nav-tabs > li').click(function () {
-    $(this).parent().toggleClass('nav-tabs-open')
+    $(this).parent().toggleClass('nav-tabs-open');
   });
 });
 </script>
