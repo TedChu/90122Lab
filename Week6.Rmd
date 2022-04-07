@@ -85,7 +85,6 @@ Can you tell the difference between *color* and *fill* argument?
 * Most shapefile can found in https://data.gov.au. 
 + All LGA: VICLGA folder -- 92 elements
 + All suburb: VICSub folder  -- 2973 elements
-+ LGA in Greater Melbourne -- 32 element (1st element is greater melbourne)
 
 All datasets are read into as *sf* objects
 ```{r, echo=TRUE, fig.width=6, fig.align="center", message = F}
@@ -111,18 +110,18 @@ VICSub <- st_transform(VICSub, 4326)
 #st_crs(VICSub)
 ```
 
-Second, we want to obtain all suburbs in City of Melbourne. Note that we already have all suburbs in Victoria, and we also know the boundary of City of Melbourne from VICLGA. We only need to ``cut" all suburbs from *VICSub* using boundary of City of Melbourne. 
+Second, we want to obtain all suburbs in City of Banyule. Note that we already have all suburbs in Victoria, and we also know the boundary of City of Banyule from VICLGA. We only need to ``cut" all suburbs from *VICSub* using boundary of City of Banyule. 
 
 * One useful funciton in *st_intersection* in package *sf*
   + st_intersection(x, y)
-  + crop returns a geographic subset of an object *x* as specified by an Extent object *y*
+  + this function returns a geographic subset of an object *x* as specified by an Extent object *y*
 
 ```{r, echo=TRUE, fig.width=6, fig.align="center", message = FALSE, warning = F}
 library(raster)
 library(mapview)
 
 
-## Obtain all suburbs in City of Melbourne (including part of suburb)
+## Obtain all suburbs in City of Banyule (including part of suburb)
 i = which(VICLGA$VIC_LGA__3 == "BANYULE")
 CMEL = VICLGA[i, ]
 tmp = st_intersection(VICSub, CMEL)
@@ -130,17 +129,18 @@ mapView(tmp)
 ```
 
 
-The map appears OK, but a closer look shows that some suburb are not supposed to be there (e.g. Eltham). Here is a list of all suburbs in City of Banyule (https://en.wikipedia.org/wiki/City_of_Banyule). The reason for this is likely due to the different resolution and accuracy of shapefiles (VICSub and VICLGA). Therefore, I will remove all the suburbs with a very small area (Here, the unit is square meter, and 10000 is small by the surburb standard.)  
+The map appears OK, but a closer look shows that some suburbs are not supposed to be there (e.g. Eltham). Here is a list of all suburbs in City of Banyule (https://en.wikipedia.org/wiki/City_of_Banyule). The reason for this is likely due to the different resolution and accuracy of shapefiles (VICSub and VICLGA). Therefore, I will remove all the suburbs with a very small area (Here, the unit is square meter, and 10000 is small by a suburb standard.)  
 
 ```{r, echo=TRUE, fig.width=6, fig.align="center", message = FALSE}
 ## Obtain all suburbs in City of Banyule (including part of suburb)
+library(lwgeom)
 tmp$area = st_area(tmp)
 BSub = tmp[as.numeric(tmp$area) > 100000,]
 mapView(BSub)
 save(BSub, file = "datasets/BSub.Rdata")   
 ```
 
-There are more shapefiles in *PlanMel* Folder, which outlines some future plan in greater melbourne regions and can be downloaded from https://www.planmelbourne.vic.gov.au/maps/spatial-data.
+There are more shapefiles in *PlanMel* Folder, which outlines some future plan in greater Melbourne regions and can be downloaded from https://www.planmelbourne.vic.gov.au/maps/spatial-data.
 
 There are major activity centres. According to the goverment, *These are places that provide a suburban focal point for services, employment, housing, public transport and social interaction. They have different attributes and provide different functions, with some serving larger subregional catchments. Plan Melbourne identifies 121 existing and future Major Activity Centres across Melbourne.*
 
@@ -150,6 +150,7 @@ Suppose we want to obtain all major activity centres in the City of Banyule. Not
 centres = st_read(dsn = "datasets/PlanMel/Activity Centres/ActivityCentrePoints_font_point.shp", 
                  "ActivityCentrePoints_font_point")
 centres <- st_transform(centres, 4326)
+## obtain all centres within the City of Banyule (CMEL)
 tmp = st_within(centres, CMEL, sparse = F)
 Bcen = centres[tmp[,1],]
 
@@ -160,7 +161,23 @@ ggplot() + geom_sf(data = BSub, aes(fill = VIC_LOCA_2)) +
   geom_sf(data = Bcen, size = 4) + theme(legend.position="none")
 ```
 
-Suppose you also want to draw major roads in City of Banyule. The shapefile of all roads are in the folder *VMTRANS*. Suppose we want to draw all roads with Road Class = 0, 1, 2. (I do not know what Road Class really means here, but it appears the smaller number indicates a more important road. After all, this is an example  to show you how to draw points, lines and polygons together.)
+Next, we draw all suburbs in City of Banyule. Moreover, for suburbs only partly within Banyule, we want to draw the whole suburbs. 
+```{r, echo=TRUE, fig.width=7, fig.align="center", message = FALSE}
+## Names of all suburbs in Banyule
+BSub$VIC_LOCA_2
+
+ASub = subset(VICSub, VICSub$VIC_LOCA_2 %in% BSub$VIC_LOCA_2)
+## There are two suburbs in Victoria callled "Bellfield" but only one is in City of Banyule. I am mannually remove the other "Bellfield" which is not inside City of Banyule. 
+ASub = ASub[-5,]
+
+## Draw the map
+ggplot() + geom_sf(data = ASub, aes(fill = VIC_LOCA_2)) + 
+  geom_sf_label(data = ASub, aes(label = VIC_LOCA_2), size = 2.1) + 
+  geom_sf(data = Bcen, size = 4) + theme(legend.position="none")
+```
+
+
+Suppose you also want to draw major roads in City of Banyule. The shapefile of all roads are in the folder *VMTRANS*. Here, we want to draw all roads with Road Class = 0, 1, 2. (I do not know what Road Class really means here, but it appears the smaller number indicates a more important road.)
 
 
 ```{r, echo=TRUE, fig.width=7, fig.align="center", message = FALSE}
@@ -177,3 +194,6 @@ ggplot() + geom_sf(data = BSub, color = "gray") +
   geom_sf(data = Bcen, size = 4) + 
   geom_sf(data = highway, aes(color = as.factor(CLASS_CODE)), lwd = 1.5)  
 ```
+
+
+
