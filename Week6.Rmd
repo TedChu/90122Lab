@@ -161,20 +161,7 @@ ggplot() + geom_sf(data = BSub, aes(fill = VIC_LOCA_2)) +
   geom_sf(data = Bcen, size = 4) + theme(legend.position="none")
 ```
 
-Next, we draw all suburbs in City of Banyule. Moreover, for suburbs only partly within Banyule, we want to draw the whole suburbs. 
-```{r, echo=TRUE, fig.width=7, fig.align="center", message = FALSE}
-## Names of all suburbs in Banyule
-BSub$VIC_LOCA_2
 
-ASub = subset(VICSub, VICSub$VIC_LOCA_2 %in% BSub$VIC_LOCA_2)
-## There are two suburbs in Victoria callled "Bellfield" but only one is in City of Banyule. I am mannually remove the other "Bellfield" which is not inside City of Banyule. 
-ASub = ASub[-5,]
-
-## Draw the map
-ggplot() + geom_sf(data = ASub, aes(fill = VIC_LOCA_2)) + 
-  geom_sf_label(data = ASub, aes(label = VIC_LOCA_2), size = 2.1) + 
-  geom_sf(data = Bcen, size = 4) + theme(legend.position="none")
-```
 
 
 Suppose you also want to draw major roads in City of Banyule. The shapefile of all roads are in the folder *VMTRANS*. Here, we want to draw all roads with Road Class = 0, 1, 2. (I do not know what Road Class really means here, but it appears the smaller number indicates a more important road.)
