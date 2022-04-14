@@ -23,6 +23,15 @@
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
   pre:not([class]) {
@@ -67,6 +76,7 @@ h6 {
   text-align: left;
 }
 </style>
+
 
 
 
@@ -349,6 +359,62 @@ $(document).ready(function () {
 <li>unite</li>
 </ul></li>
 </ul>
+<p>The function <em>gather</em> and <em>spread</em> has been retired, but it is still widely used in many books/blogs. The <em>gather</em> function is replaced by <em>pivot_longer</em>, and <em>spread</em> function is replaced by <em>pivot_wider</em></p>
+<pre class="r"><code>library(tidyr)
+relig_income</code></pre>
+<pre><code>## # A tibble: 18 x 11
+##    religion `&lt;$10k` `$10-20k` `$20-30k` `$30-40k` `$40-50k` `$50-75k` `$75-100k`
+##    &lt;chr&gt;      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;
+##  1 Agnostic      27        34        60        81        76       137        122
+##  2 Atheist       12        27        37        52        35        70         73
+##  3 Buddhist      27        21        30        34        33        58         62
+##  4 Catholic     418       617       732       670       638      1116        949
+##  5 Don’t k~      15        14        15        11        10        35         21
+##  6 Evangel~     575       869      1064       982       881      1486        949
+##  7 Hindu          1         9         7         9        11        34         47
+##  8 Histori~     228       244       236       238       197       223        131
+##  9 Jehovah~      20        27        24        24        21        30         15
+## 10 Jewish        19        19        25        25        30        95         69
+## 11 Mainlin~     289       495       619       655       651      1107        939
+## 12 Mormon        29        40        48        51        56       112         85
+## 13 Muslim         6         7         9        10         9        23         16
+## 14 Orthodox      13        17        23        32        32        47         38
+## 15 Other C~       9         7        11        13        13        14         18
+## 16 Other F~      20        33        40        46        49        63         46
+## 17 Other W~       5         2         3         4         2         7          3
+## 18 Unaffil~     217       299       374       365       341       528        407
+## # ... with 3 more variables: $100-150k &lt;dbl&gt;, &gt;150k &lt;dbl&gt;,
+## #   Don&#39;t know/refused &lt;dbl&gt;</code></pre>
+<pre class="r"><code>relig_income %&gt;% pivot_longer(!religion, names_to = &quot;income&quot;, values_to = &quot;count&quot;)</code></pre>
+<pre><code>## # A tibble: 180 x 3
+##    religion income             count
+##    &lt;chr&gt;    &lt;chr&gt;              &lt;dbl&gt;
+##  1 Agnostic &lt;$10k                 27
+##  2 Agnostic $10-20k               34
+##  3 Agnostic $20-30k               60
+##  4 Agnostic $30-40k               81
+##  5 Agnostic $40-50k               76
+##  6 Agnostic $50-75k              137
+##  7 Agnostic $75-100k             122
+##  8 Agnostic $100-150k            109
+##  9 Agnostic &gt;150k                 84
+## 10 Agnostic Don&#39;t know/refused    96
+## # ... with 170 more rows</code></pre>
+<pre class="r"><code>relig_income %&gt;% gather(key = income, value = count, -religion)</code></pre>
+<pre><code>## # A tibble: 180 x 3
+##    religion                income count
+##    &lt;chr&gt;                   &lt;chr&gt;  &lt;dbl&gt;
+##  1 Agnostic                &lt;$10k     27
+##  2 Atheist                 &lt;$10k     12
+##  3 Buddhist                &lt;$10k     27
+##  4 Catholic                &lt;$10k    418
+##  5 Don’t know/refused      &lt;$10k     15
+##  6 Evangelical Prot        &lt;$10k    575
+##  7 Hindu                   &lt;$10k      1
+##  8 Historically Black Prot &lt;$10k    228
+##  9 Jehovah&#39;s Witness       &lt;$10k     20
+## 10 Jewish                  &lt;$10k     19
+## # ... with 170 more rows</code></pre>
 </div>
 <div id="dplyr" class="section level1">
 <h1><span class="header-section-number">3</span> dplyr</h1>
@@ -379,14 +445,12 @@ library(ggplot2)
 library(dplyr)
 load(&quot;datasets/BSub.Rdata&quot;)
 VICSub = st_read(dsn=&quot;datasets/VICSub/VIC_LOCALITY_POLYGON_shp.shp&quot;, &quot;VIC_LOCALITY_POLYGON_shp&quot;)</code></pre>
-<pre><code>## Reading layer `VIC_LOCALITY_POLYGON_shp&#39; from data source 
-##   `/Users/tingjinc/Dropbox/2_MAST90122/90122LabGit/datasets/VICSub/VIC_LOCALITY_POLYGON_shp.shp&#39; 
-##   using driver `ESRI Shapefile&#39;
+<pre><code>## Reading layer `VIC_LOCALITY_POLYGON_shp&#39; from data source `C:\Users\tingjinc\Dropbox\2_MAST90122\90122LabGit\datasets\VICSub\VIC_LOCALITY_POLYGON_shp.shp&#39; using driver `ESRI Shapefile&#39;
 ## Simple feature collection with 2973 features and 12 fields
-## Geometry type: POLYGON
-## Dimension:     XY
-## Bounding box:  xmin: 140.9619 ymin: -39.13657 xmax: 149.9763 ymax: -33.98127
-## CRS:           7844</code></pre>
+## geometry type:  POLYGON
+## dimension:      XY
+## bbox:           xmin: 140.9619 ymin: -39.13657 xmax: 149.9763 ymax: -33.98127
+## geographic CRS: GDA2020</code></pre>
 <pre class="r"><code>VICSub &lt;- st_transform(VICSub, 4326)
 
 BSub2 = VICSub %&gt;% filter(LC_PLY_PID %in% BSub$LC_PLY_PID)</code></pre>
@@ -394,7 +458,7 @@ BSub2 = VICSub %&gt;% filter(LC_PLY_PID %in% BSub$LC_PLY_PID)</code></pre>
 <pre class="r"><code>ggplot() + geom_sf(data = BSub2, aes(fill = VIC_LOCA_2)) + 
   geom_sf_label(data = BSub2, aes(label = VIC_LOCA_2), size = 2.1) + 
   theme(legend.position=&quot;none&quot;)</code></pre>
-<p><img src="Week7_files/figure-html/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="Week7_files/figure-html/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 
 
@@ -406,7 +470,7 @@ BSub2 = VICSub %&gt;% filter(LC_PLY_PID %in% BSub$LC_PLY_PID)</code></pre>
 
 // add bootstrap table styles to pandoc tables
 function bootstrapStylePandocTables() {
-  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
 }
 $(document).ready(function () {
   bootstrapStylePandocTables();

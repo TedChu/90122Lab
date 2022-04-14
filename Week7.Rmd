@@ -26,6 +26,15 @@ https://uc-r.github.io/tidyr. There are five commands
   + separate
   + unite
 
+The function *gather* and *spread* has been retired, but it is still widely used in many books/blogs. The *gather* function is replaced by *pivot_longer*, and *spread* function is replaced by *pivot_wider*
+```{r, echo=TRUE, fig.width=7, fig.align="center", message = FALSE, warning = F}
+library(tidyr)
+relig_income
+relig_income %>% pivot_longer(!religion, names_to = "income", values_to = "count")
+relig_income %>% gather(key = income, value = count, -religion)
+```
+
+
 # dplyr
 
 * Please study the *dplyr* package through the following tutorial
