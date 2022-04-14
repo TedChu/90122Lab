@@ -32,6 +32,10 @@ library(tidyr)
 relig_income
 relig_income %>% pivot_longer(!religion, names_to = "income", values_to = "count")
 relig_income %>% gather(key = income, value = count, -religion)
+
+fish_encounters
+fish_encounters %>% pivot_wider(names_from = station, values_from = seen)
+fish_encounters %>% spread(key = station, value = seen)
 ```
 
 
