@@ -336,8 +336,16 @@ $(document).ready(function () {
 <div id="TOC">
 <ul>
 <li><a href="#dataset"><span class="toc-section-number">1</span> Dataset</a></li>
-<li><a href="#arima"><span class="toc-section-number">2</span> ARIMA</a></li>
-<li><a href="#seasonal-arima"><span class="toc-section-number">3</span> Seasonal ARIMA</a></li>
+<li><a href="#arima"><span class="toc-section-number">2</span> ARIMA</a><ul>
+<li><a href="#fit-1"><span class="toc-section-number">2.1</span> Fit 1</a></li>
+<li><a href="#fit-2"><span class="toc-section-number">2.2</span> Fit 2</a></li>
+<li><a href="#fit-3"><span class="toc-section-number">2.3</span> Fit 3</a></li>
+</ul></li>
+<li><a href="#seasonal-arima"><span class="toc-section-number">3</span> Seasonal ARIMA</a><ul>
+<li><a href="#fit-4"><span class="toc-section-number">3.1</span> Fit 4</a></li>
+<li><a href="#fit-5"><span class="toc-section-number">3.2</span> Fit 5</a></li>
+<li><a href="#fit-6"><span class="toc-section-number">3.3</span> Fit 6</a></li>
+</ul></li>
 <li><a href="#forecasting"><span class="toc-section-number">4</span> Forecasting</a></li>
 </ul>
 </div>
@@ -347,6 +355,12 @@ $(document).ready(function () {
 </div>
 <div id="dataset" class="section level1">
 <h1><span class="header-section-number">1</span> Dataset</h1>
+<pre class="r"><code>library(tidyverse) # read_csv
+library(fpp3)
+library(ggplot2)
+library(dplyr)
+library(tsibble)
+library(fable)</code></pre>
 <ul>
 <li>Here, index
 <ul>
@@ -355,7 +369,15 @@ $(document).ready(function () {
 </ul></li>
 </ul>
 <pre class="r"><code>load(&quot;datasets/melb_sel.Rdata&quot;)
-head(melb_sel)</code></pre>
+head(melb_sel)
+## For the whole dataset
+autoplot(melb_sel, counts) + 
+  labs(x = &#39;Date 2019&#39;, y = &#39;Counts&#39;, title = &#39;Hourly number of pedestrians in Melbourne Central&#39;)</code></pre>
+<p><img src="WeekX_files/figure-html/unnamed-chunk-2-1.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>## For the first two weeks
+autoplot(melb_sel[1:336, ], counts) + 
+  labs(x = &#39;Date 2019&#39;, y = &#39;Counts&#39;, title = &#39;Hourly number of pedestrians in Melbourne Central&#39;)</code></pre>
+<p><img src="WeekX_files/figure-html/unnamed-chunk-2-2.png" width="768" style="display: block; margin: auto;" /></p>
 <pre><code>## # A tsibble: 6 x 2 [1h] &lt;UTC&gt;
 ##   date                counts
 ##   &lt;dttm&gt;               &lt;dbl&gt;
@@ -365,14 +387,6 @@ head(melb_sel)</code></pre>
 ## 4 2019-06-01 03:00:00   5.28
 ## 5 2019-06-01 04:00:00   4.75
 ## 6 2019-06-01 05:00:00   4.49</code></pre>
-<pre class="r"><code>## For the whole dataset
-autoplot(melb_sel, counts) + 
-  labs(x = &#39;Date 2019&#39;, y = &#39;Counts&#39;, title = &#39;Hourly number of pedestrians in Melbourne Central&#39;)</code></pre>
-<p><img src="WeekX_files/figure-html/unnamed-chunk-2-1.png" width="768" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>## For the first two weeks
-autoplot(melb_sel[1:336, ], counts) + 
-  labs(x = &#39;Date 2019&#39;, y = &#39;Counts&#39;, title = &#39;Hourly number of pedestrians in Melbourne Central&#39;)</code></pre>
-<p><img src="WeekX_files/figure-html/unnamed-chunk-2-2.png" width="768" style="display: block; margin: auto;" /></p>
 </div>
 <div id="arima" class="section level1">
 <h1><span class="header-section-number">2</span> ARIMA</h1>
@@ -382,17 +396,18 @@ autoplot(melb_sel[1:336, ], counts) +
 ##   kpss_stat kpss_pvalue
 ##       &lt;dbl&gt;       &lt;dbl&gt;
 ## 1    0.0677         0.1</code></pre>
+<pre class="r"><code>melb_sel[1:2208, ] %&gt;% gg_tsdisplay(plot_type = &quot;partial&quot;, y = counts)</code></pre>
+<p><img src="WeekX_files/figure-html/unnamed-chunk-3-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p>Although the <em>counts</em> is stationary, I will still consider a weekly difference + a lag 1 difference.</p>
 <pre class="r"><code>melb_sel$diff_week &lt;- difference(melb_sel$counts, lag=168) %&gt;% difference(lag = 1)
 melb_sel[170:2208, ] %&gt;% features(diff_week, unitroot_kpss)</code></pre>
 <pre><code>## # A tibble: 1 x 2
 ##   kpss_stat kpss_pvalue
 ##       &lt;dbl&gt;       &lt;dbl&gt;
 ## 1   0.00990         0.1</code></pre>
-<pre class="r"><code>melb_sel[1:2208, ] %&gt;% gg_tsdisplay(plot_type = &quot;partial&quot;, y = counts)</code></pre>
-<p><img src="WeekX_files/figure-html/unnamed-chunk-4-1.png" width="768" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>melb_sel[170:2208, ] %&gt;% 
   gg_tsdisplay(diff_week, plot_type=&#39;partial&#39;, lag = 48)</code></pre>
-<p><img src="WeekX_files/figure-html/unnamed-chunk-4-2.png" width="768" style="display: block; margin: auto;" /></p>
+<p><img src="WeekX_files/figure-html/unnamed-chunk-4-1.png" width="768" style="display: block; margin: auto;" /></p>
 <p>It is hard to see which ARIMA model shall be used for the <em>counts</em>, while for the <em>diff_week</em>, a possible candidates is MA(3).</p>
 <ul>
 <li>I will build three model.
@@ -402,7 +417,8 @@ melb_sel[170:2208, ] %&gt;% features(diff_week, unitroot_kpss)</code></pre>
 <li>fit3: automatic procedure for the <em>counts</em></li>
 </ul></li>
 </ul>
-<p>Fit 1: ACF at lag = 24 is over the threshold limits</p>
+<div id="fit-1" class="section level2">
+<h2><span class="header-section-number">2.1</span> Fit 1</h2>
 <pre class="r"><code>fit1 &lt;- melb_sel[170:2208, ] %&gt;%
   model(ARIMA(diff_week ~ PDQ(0,0,0)))
 report(fit1)</code></pre>
@@ -416,14 +432,17 @@ report(fit1)</code></pre>
 ## 
 ## sigma^2 estimated as 0.03655:  log likelihood=481.18
 ## AIC=-954.35   AICc=-954.33   BIC=-931.87</code></pre>
+<p>ACF is over the threshold limits at lag = 24.</p>
 <pre class="r"><code>fit1 %&gt;% gg_tsresiduals()</code></pre>
-<p><img src="WeekX_files/figure-html/unnamed-chunk-5-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p><img src="WeekX_files/figure-html/unnamed-chunk-6-1.png" width="768" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>augment(fit1) %&gt;% features(.innov, ljung_box, lag = 10, dof = 3)</code></pre>
 <pre><code>## # A tibble: 1 x 3
 ##   .model                          lb_stat lb_pvalue
 ##   &lt;chr&gt;                             &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 ARIMA(diff_week ~ PDQ(0, 0, 0))    5.10     0.647</code></pre>
-<p>Fit 2: ACF over the thereshold at multiple lags</p>
+</div>
+<div id="fit-2" class="section level2">
+<h2><span class="header-section-number">2.2</span> Fit 2</h2>
 <pre class="r"><code>fit2 &lt;- melb_sel[170:2208, ] %&gt;% 
   model(ARIMA(diff_week ~ pdq(0,0,3) + PDQ(0,0,0)))
 report(fit2)</code></pre>
@@ -437,14 +456,17 @@ report(fit2)</code></pre>
 ## 
 ## sigma^2 estimated as 0.03765:  log likelihood=451.06
 ## AIC=-894.11   AICc=-894.09   BIC=-871.63</code></pre>
+<p>ACF is over the thereshold at multiple lags</p>
 <pre class="r"><code>fit2 %&gt;% gg_tsresiduals()</code></pre>
-<p><img src="WeekX_files/figure-html/unnamed-chunk-6-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p><img src="WeekX_files/figure-html/unnamed-chunk-8-1.png" width="768" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>augment(fit2) %&gt;% features(.innov, ljung_box, lag = 10, dof = 3)</code></pre>
 <pre><code>## # A tibble: 1 x 3
 ##   .model                                         lb_stat lb_pvalue
 ##   &lt;chr&gt;                                            &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 ARIMA(diff_week ~ pdq(0, 0, 3) + PDQ(0, 0, 0))    59.4  2.03e-10</code></pre>
-<p>Fit 3: ACF over at multiple lags</p>
+</div>
+<div id="fit-3" class="section level2">
+<h2><span class="header-section-number">2.3</span> Fit 3</h2>
 <pre class="r"><code>fit3 &lt;- melb_sel[1:2208,] %&gt;% 
   model(ARIMA(counts ~ PDQ(0,0,0)))
 report(fit3)</code></pre>
@@ -458,8 +480,9 @@ report(fit3)</code></pre>
 ## 
 ## sigma^2 estimated as 0.08785:  log likelihood=-447.11
 ## AIC=908.21   AICc=908.26   BIC=948.11</code></pre>
+<p>ACF is over the thereshold at multiple lags</p>
 <pre class="r"><code>fit3 %&gt;% gg_tsresiduals()</code></pre>
-<p><img src="WeekX_files/figure-html/unnamed-chunk-7-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p><img src="WeekX_files/figure-html/unnamed-chunk-10-1.png" width="768" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>augment(fit3) %&gt;% features(.innov, ljung_box, lag = 10, dof = 3)</code></pre>
 <pre><code>## # A tibble: 1 x 3
 ##   .model                       lb_stat lb_pvalue
@@ -473,6 +496,7 @@ report(fit3)</code></pre>
 </ul></li>
 </ul>
 </div>
+</div>
 <div id="seasonal-arima" class="section level1">
 <h1><span class="header-section-number">3</span> Seasonal ARIMA</h1>
 <ul>
@@ -483,7 +507,9 @@ report(fit3)</code></pre>
 <li>fit5: automatic selection for ( ,1, )(,1, )<span class="math inline">\(_168\)</span> for the <em>counts</em></li>
 </ul></li>
 </ul>
-<p>Fit 4: <span class="math inline">\(\phi\)</span>’s and <span class="math inline">\(\theta\)</span>s are the same as Fit 1, but AIC, BIC and AICc are different.</p>
+<div id="fit-4" class="section level2">
+<h2><span class="header-section-number">3.1</span> Fit 4</h2>
+<p><span class="math inline">\(\phi\)</span>’s and <span class="math inline">\(\theta\)</span>s are the same as Fit 1, but AIC, BIC and AICc are different.</p>
 <pre class="r"><code>fit4 &lt;- melb_sel[1:2208, ] %&gt;% 
   model(ARIMA(counts ~ pdq(2,1,1) + PDQ(0,1,0, period = 168)))
 report(fit4)</code></pre>
@@ -498,13 +524,15 @@ report(fit4)</code></pre>
 ## sigma^2 estimated as 0.03655:  log likelihood=477.25
 ## AIC=-946.5   AICc=-946.48   BIC=-924.02</code></pre>
 <pre class="r"><code>fit4 %&gt;% gg_tsresiduals()</code></pre>
-<p><img src="WeekX_files/figure-html/unnamed-chunk-8-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p><img src="WeekX_files/figure-html/unnamed-chunk-11-1.png" width="768" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>augment(fit4) %&gt;% features(.innov, ljung_box, lag = 10, dof = 3)</code></pre>
 <pre><code>## # A tibble: 1 x 3
 ##   .model                                                    lb_stat lb_pvalue
 ##   &lt;chr&gt;                                                       &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 ARIMA(counts ~ pdq(2, 1, 1) + PDQ(0, 1, 0, period = 168))    5.46     0.604</code></pre>
-<p>Fit 5:</p>
+</div>
+<div id="fit-5" class="section level2">
+<h2><span class="header-section-number">3.2</span> Fit 5</h2>
 <pre class="r"><code>fit5 &lt;- melb_sel[1:2208, ] %&gt;% 
   model(ARIMA(counts ~ pdq(0,1,3) + PDQ(0,1,0, period = 168)))
 report(fit5)</code></pre>
@@ -519,13 +547,15 @@ report(fit5)</code></pre>
 ## sigma^2 estimated as 0.03765:  log likelihood=447.13
 ## AIC=-886.26   AICc=-886.24   BIC=-863.78</code></pre>
 <pre class="r"><code>fit5 %&gt;% gg_tsresiduals()</code></pre>
-<p><img src="WeekX_files/figure-html/unnamed-chunk-9-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p><img src="WeekX_files/figure-html/unnamed-chunk-12-1.png" width="768" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>augment(fit5) %&gt;% features(.innov, ljung_box, lag = 10, dof = 3)</code></pre>
 <pre><code>## # A tibble: 1 x 3
 ##   .model                                                    lb_stat lb_pvalue
 ##   &lt;chr&gt;                                                       &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 ARIMA(counts ~ pdq(0, 1, 3) + PDQ(0, 1, 0, period = 168))    64.0  2.37e-11</code></pre>
-<p>Fit 6: ACF is still over the threshold at lag = 24</p>
+</div>
+<div id="fit-6" class="section level2">
+<h2><span class="header-section-number">3.3</span> Fit 6</h2>
 <pre class="r"><code>## The following codes take quite a while to run
 #fit6 &lt;- melb_sel[1:2208, ] %&gt;% 
 #  model(ARIMA(counts ~ pdq(,1,) + PDQ(,1,, period = 168)))
@@ -533,12 +563,13 @@ report(fit5)</code></pre>
 #fit6 %&gt;% gg_tsresiduals()
 #augment(fit6) %&gt;% features(.innov, ljung_box, lag = 10, dof = 3)</code></pre>
 </div>
+</div>
 <div id="forecasting" class="section level1">
 <h1><span class="header-section-number">4</span> Forecasting</h1>
 <p>There is a function in the package to do the forecasting</p>
 <pre class="r"><code>forecast(fit3, h = 24) %&gt;%
   autoplot(melb_sel[2209:2233,])</code></pre>
-<p><img src="WeekX_files/figure-html/unnamed-chunk-11-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p><img src="WeekX_files/figure-html/unnamed-chunk-14-1.png" width="768" style="display: block; margin: auto;" /></p>
 <p>I will not recommend you to use Fit1/Fit2 for the forecasting the <em>counts</em>, since it is difficult to transform the prediction interval. Instead, using the corresponding seasonal-ARIMA model if you can.</p>
 <p>MSE</p>
 <pre class="r"><code>H = 24*7
@@ -551,7 +582,9 @@ tmp5 = forecast(fit5, h = H)
 MSE3 = mean((tmp3$.mean - melb_sel$counts[idx])^2)
 MSE4 = mean((tmp4$.mean - melb_sel$counts[idx])^2)
 MSE5 = mean((tmp5$.mean - melb_sel$counts[idx])^2)
-#MSE6 = mean((tmp6$.mean - melb_sel$counts[idx])^2)</code></pre>
+#MSE6 = mean((tmp6$.mean - melb_sel$counts[idx])^2)
+c(MSE3, MSE4, MSE5)</code></pre>
+<pre><code>## [1] 1.32308207 0.05927945 0.08740256</code></pre>
 <p>The plots</p>
 <pre class="r"><code>melb_sel$tf3 = NA
 melb_sel$tf4 = NA
@@ -566,7 +599,7 @@ ggplot(data = melb_sel[idx, ], aes(x = date, y = counts)) + geom_line() +
   geom_line(aes(x = date, y = tf5, color = &quot;Fit 2/5: diff&quot;)) + 
   geom_line(aes(x = date, y = tf3, color = &quot;Fit 3: no diff&quot;)) + 
   scale_color_manual(name = &quot;colour&quot;, values = c(&quot;Fit 1/4: diff + auto&quot; = &quot;red&quot;, &quot;Fit 2/5: diff&quot; = &quot;green&quot;, &quot;Fit 3: no diff&quot; = &quot;blue&quot;))</code></pre>
-<p><img src="WeekX_files/figure-html/unnamed-chunk-13-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p><img src="WeekX_files/figure-html/unnamed-chunk-16-1.png" width="768" style="display: block; margin: auto;" /></p>
 </div>
 
 
