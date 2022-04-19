@@ -1,0 +1,27 @@
+---
+title: 'Week X: ARIMA Models'
+---
+
+<div style="margin-bottom:50px;">
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+</div>
+
+
+# ggplot2
+According to wikipedia and R-project website, 
+*``ggplot2 is a data visualization package for the statistical programming language R. Created by Hadley Wickham in 2005, ggplot2 is an implementation of Leland Wilkinson's Gurky Gang—a general scheme for data visualization which breaks up graphs into semantic components such as scales and layers. ggplot2 can serve as a replacement for the base graphics in R and contains a number of defaults for web and print display of common scales. Since 2005, ggplot2 has grown in use to become one of the most popular R packages."*
+
+It is a general framework for data visualisation, and in this class, we will use it to visualise spatial data and spatio-temporal data. 
+
+* Please study Chapter 3 of the book *R for Data Science* (https://r4ds.had.co.nz/data-visualisation.html). 
+  + 3.1 --- 3.6: required
+  + 3.7 --- end: optional
+
+
+* ~
+  + ggplot, geom_point, geom_line
+  + Cheat Sheet: https://github.com/rstudio/cheatsheets/blob/main/data-visualization-2.1.pdf
+  + color, fill, alpha
