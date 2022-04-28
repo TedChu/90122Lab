@@ -13,12 +13,22 @@
 
 <title>Week 8: Geostatistics–Estimation</title>
 
-<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
@@ -33,11 +43,6 @@
     </style>
 
 <style type="text/css">code{white-space: pre;}</style>
-<style type="text/css">
-  pre:not([class]) {
-    background-color: white;
-  }
-</style>
 <script type="text/javascript">
 if (window.hljs) {
   hljs.configure({languages: []});
@@ -50,32 +55,6 @@ if (window.hljs) {
 
 
 
-<style type="text/css">
-h1 {
-  font-size: 34px;
-}
-h1.title {
-  font-size: 38px;
-}
-h2 {
-  font-size: 30px;
-}
-h3 {
-  font-size: 24px;
-}
-h4 {
-  font-size: 18px;
-}
-h5 {
-  font-size: 16px;
-}
-h6 {
-  font-size: 12px;
-}
-.table th:not([align]) {
-  text-align: left;
-}
-</style>
 
 
 
@@ -86,10 +65,6 @@ h6 {
   max-width: 940px;
   margin-left: auto;
   margin-right: auto;
-}
-code {
-  color: inherit;
-  background-color: rgba(0, 0, 0, 0.04);
 }
 img {
   max-width:100%;
@@ -106,40 +81,13 @@ button.code-folding-btn:focus {
 summary {
   display: list-item;
 }
+pre code {
+  padding: 0;
+}
 </style>
 
 
 <style type="text/css">
-/* padding for bootstrap navbar */
-body {
-  padding-top: 51px;
-  padding-bottom: 40px;
-}
-/* offset scroll position for anchor links (for fixed navbar)  */
-.section h1 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h2 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h3 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h4 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h5 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h6 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
 .dropdown-submenu {
   position: relative;
 }
@@ -167,7 +115,7 @@ body {
   margin-right: -10px;
 }
 .dropdown-submenu:hover>a:after {
-  border-left-color: #ffffff;
+  border-left-color: #adb5bd;
 }
 .dropdown-submenu.pull-left {
   float: none;
@@ -179,7 +127,7 @@ body {
 }
 </style>
 
-<script>
+<script type="text/javascript">
 // manage active state of menu based on current page
 $(document).ready(function () {
   // active menu anchor
@@ -190,10 +138,23 @@ $(document).ready(function () {
   var menuAnchor = $('a[href="' + href + '"]');
 
   // mark it active
-  menuAnchor.parent().addClass('active');
+  menuAnchor.tab('show');
 
   // if it's got a parent navbar menu mark it active as well
   menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
 });
 </script>
 
@@ -205,7 +166,6 @@ $(document).ready(function () {
   max-height: 500px;
   min-height: 44px;
   overflow-y: auto;
-  background: white;
   border: 1px solid #ddd;
   border-radius: 4px;
 }
@@ -315,7 +275,7 @@ $(document).ready(function () {
   <a href="Week11.html">Week 11</a>
 </li>
 <li>
-  <a href="Versions.html">Versions</a>
+  <a href="Pedestrian.html">CBD Pedestrian</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -325,7 +285,7 @@ $(document).ready(function () {
   </div><!--/.container -->
 </div><!--/.navbar -->
 
-<div class="fluid-row" id="header">
+<div id="header">
 
 
 
@@ -336,18 +296,22 @@ $(document).ready(function () {
 <div id="TOC">
 <ul>
 <li><a href="#introduction"><span class="toc-section-number">1</span> Introduction</a></li>
-<li><a href="#soil-data-variogram"><span class="toc-section-number">2</span> Soil Data &amp; Variogram</a><ul>
+<li><a href="#soil-data-semivariogram"><span class="toc-section-number">2</span> Soil Data &amp; Semivariogram</a>
+<ul>
 <li><a href="#soil-example"><span class="toc-section-number">2.1</span> Soil Example</a></li>
-<li><a href="#variogram"><span class="toc-section-number">2.2</span> Variogram</a></li>
+<li><a href="#semivariogram"><span class="toc-section-number">2.2</span> Semivariogram</a></li>
 </ul></li>
-<li><a href="#mle"><span class="toc-section-number">3</span> MLE</a><ul>
+<li><a href="#mle"><span class="toc-section-number">3</span> MLE</a>
+<ul>
 <li><a href="#mle-initial-value"><span class="toc-section-number">3.1</span> MLE: Initial Value</a></li>
 <li><a href="#mle-function"><span class="toc-section-number">3.2</span> MLE: Function</a></li>
-<li><a href="#spatial-trend"><span class="toc-section-number">3.3</span> Spatial Trend</a><ul>
+<li><a href="#spatial-trend"><span class="toc-section-number">3.3</span> Spatial Trend</a>
+<ul>
 <li><a href="#two-ways"><span class="toc-section-number">3.3.1</span> Two ways</a></li>
 </ul></li>
 </ul></li>
-<li><a href="#geodata-format"><span class="toc-section-number">4</span> Geodata format</a><ul>
+<li><a href="#geodata-format"><span class="toc-section-number">4</span> Geodata format</a>
+<ul>
 <li><a href="#create-geodata"><span class="toc-section-number">4.1</span> Create geodata</a></li>
 </ul></li>
 </ul>
@@ -356,8 +320,8 @@ $(document).ready(function () {
 <div style="margin-bottom:50px;">
 
 </div>
-<div id="introduction" class="section level1">
-<h1><span class="header-section-number">1</span> Introduction</h1>
+<div id="introduction" class="section level1" number="1">
+<h1 number="1"><span class="header-section-number">1</span> Introduction</h1>
 <ul>
 <li>In this Lab, we will learn
 <ul>
@@ -366,37 +330,37 @@ $(document).ready(function () {
 </ul></li>
 </ul>
 </div>
-<div id="soil-data-variogram" class="section level1">
-<h1><span class="header-section-number">2</span> Soil Data &amp; Variogram</h1>
-<div id="soil-example" class="section level2">
-<h2><span class="header-section-number">2.1</span> Soil Example</h2>
+<div id="soil-data-semivariogram" class="section level1" number="2">
+<h1 number="2"><span class="header-section-number">2</span> Soil Data &amp; Semivariogram</h1>
+<div id="soil-example" class="section level2" number="2.1">
+<h2 number="2.1"><span class="header-section-number">2.1</span> Soil Example</h2>
 <p><span class="math inline">\(Z(\mathbf{s})\)</span>: calcium content in soil at <span class="math inline">\(\mathbf{s}\)</span>.</p>
 <pre class="r"><code>library(geoR)
 data(ca20)
 points(ca20,cex.min = 0.2, cex.max = 1.5, pch = 21)</code></pre>
 <p><img src="Week8_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
 </div>
-<div id="variogram" class="section level2">
-<h2><span class="header-section-number">2.2</span> Variogram</h2>
+<div id="semivariogram" class="section level2" number="2.2">
+<h2 number="2.2"><span class="header-section-number">2.2</span> Semivariogram</h2>
 <pre class="r"><code>plot(variog(ca20, option=&quot;bin&quot;, max.dist=510), 
      xlab = &quot;h&quot;, ylab = &quot;gamma(h)&quot;)</code></pre>
 <pre><code>## variog: computing omnidirectional variogram</code></pre>
 <p><img src="Week8_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
-<p>Variogram argument</p>
+<p>Here, the function <em>variog</em> is ued to calcuate the semivariogram in our slides.</p>
 <ul>
 <li>Function: variog
 <ul>
 <li>argument</li>
 <li>opition: “bin”</li>
-<li>max.dist: maximum distance for the variogram</li>
+<li>max.dist: maximum distance for the semivariogram</li>
 </ul></li>
 </ul>
 </div>
 </div>
-<div id="mle" class="section level1">
-<h1><span class="header-section-number">3</span> MLE</h1>
-<div id="mle-initial-value" class="section level2">
-<h2><span class="header-section-number">3.1</span> MLE: Initial Value</h2>
+<div id="mle" class="section level1" number="3">
+<h1 number="3"><span class="header-section-number">3</span> MLE</h1>
+<div id="mle-initial-value" class="section level2" number="3.1">
+<h2 number="3.1"><span class="header-section-number">3.1</span> MLE: Initial Value</h2>
 <p><span style="color: red;">“Eye-fit”</span></p>
 <pre class="r"><code>plot(variog(ca20, option=&quot;bin&quot;, max.dist=510), 
      xlab = &quot;h&quot;, ylab = &quot;gamma(h)&quot;)
@@ -406,11 +370,46 @@ lines.variomodel(seq(0, 510, l = 100),
 <p><img src="Week8_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
 <p>Based on the plot, the initial value <span class="math inline">\((\sigma^2, \phi, \tau^2) = (100, 120, 30)\)</span>.</p>
 </div>
-<div id="mle-function" class="section level2">
-<h2><span class="header-section-number">3.2</span> MLE: Function</h2>
+<div id="mle-function" class="section level2" number="3.2">
+<h2 number="3.2"><span class="header-section-number">3.2</span> MLE: Function</h2>
 <pre class="r"><code># trend - constant mean
-m1 = likfit(ca20, ini = c(100, 120), nug = 30)
+m1 = likfit(ca20, ini = c(100, 120), nug = 30)</code></pre>
+<pre class="r"><code># trend - constant mean
 summary(m1)</code></pre>
+<pre><code>## Summary of the parameter estimation
+## -----------------------------------
+## Estimation method: maximum likelihood 
+## 
+## Parameters of the mean component (trend):
+##    beta 
+## 50.0668 
+## 
+## Parameters of the spatial component:
+##    correlation function: exponential
+##       (estimated) variance parameter sigmasq (partial sill) =  135.2
+##       (estimated) cor. fct. parameter phi (range parameter)  =  159.5
+##    anisotropy parameters:
+##       (fixed) anisotropy angle = 0  ( 0 degrees )
+##       (fixed) anisotropy ratio = 1
+## 
+## Parameter of the error component:
+##       (estimated) nugget =  16.77
+## 
+## Transformation parameter:
+##       (fixed) Box-Cox parameter = 1 (no transformation)
+## 
+## Practical Range with cor=0.05 for asymptotic range: 477.7842
+## 
+## Maximised Likelihood:
+##    log.L n.params      AIC      BIC 
+## &quot;-632.6&quot;      &quot;4&quot;   &quot;1273&quot;   &quot;1286&quot; 
+## 
+## non spatial model:
+##    log.L n.params      AIC      BIC 
+## &quot;-680.2&quot;      &quot;2&quot;   &quot;1364&quot;   &quot;1371&quot; 
+## 
+## Call:
+## likfit(geodata = ca20, ini.cov.pars = c(100, 120), nugget = 30)</code></pre>
 <ul>
 <li>Results of output
 <ul>
@@ -432,7 +431,7 @@ m1$nugget</code></pre>
 <pre><code>## [1] 135.1726 159.4883
 ## [1] 135.1726
 ## [1] 159.4883
-## [1] 16.76523</code></pre>
+## [1] 16.76522</code></pre>
 <ul>
 <li><span style="color: red;">The arguments of function</span> <em>likfit</em>
 <ul>
@@ -442,7 +441,6 @@ m1$nugget</code></pre>
 <li>Initial value: ini.cov.pars, nugget</li>
 </ul></li>
 </ul>
-
 <ul>
 <li>Remarks: we have 4 parameters: nugget <span class="math inline">\(\tau^2\)</span>, partial sill <span class="math inline">\(\sigma^2\)</span>, range parameter <span class="math inline">\(\phi\)</span>, smooth parameter <span class="math inline">\(\kappa\)</span> ( <span class="math inline">\(\nu\)</span> in our slide. )
 <ul>
@@ -458,7 +456,6 @@ m1$nugget</code></pre>
 <li>To estimate: <span class="math inline">\(\tau^2\)</span>, <span class="math inline">\(\sigma^2\)</span>, <span class="math inline">\(\phi\)</span></li>
 </ul></li>
 </ul>
-
 <ul>
 <li>Example 2: no specification. “likfit(ca20, ini = c(100, 200), nug = 50, fix.nugget=TRUE)”
 <ul>
@@ -467,22 +464,20 @@ m1$nugget</code></pre>
 </ul></li>
 </ul>
 </div>
-<div id="spatial-trend" class="section level2">
-<h2><span class="header-section-number">3.3</span> Spatial Trend</h2>
-<div id="two-ways" class="section level3">
-<h3><span class="header-section-number">3.3.1</span> Two ways</h3>
+<div id="spatial-trend" class="section level2" number="3.3">
+<h2 number="3.3"><span class="header-section-number">3.3</span> Spatial Trend</h2>
+<div id="two-ways" class="section level3" number="3.3.1">
+<h3 number="3.3.1"><span class="header-section-number">3.3.1</span> Two ways</h3>
 <ul>
 <li>Specify directly in function like “likfit”: <code>fit = likfit(ca20, ini = c(100, 60), trend = ~altitude)</code></li>
 <li>Specify it through function “trend.spatial”: See below</li>
 </ul>
-
 <ul>
 <li>Usage: only to specify, not computing involved in this function.
 <ul>
 <li><code>trend.spatial(trend, geodata)</code></li>
 </ul></li>
 </ul>
-
 <ul>
 <li>Argument <em>trend</em>
 <ul>
@@ -494,8 +489,8 @@ m1$nugget</code></pre>
 </div>
 </div>
 </div>
-<div id="geodata-format" class="section level1">
-<h1><span class="header-section-number">4</span> Geodata format</h1>
+<div id="geodata-format" class="section level1" number="4">
+<h1 number="4"><span class="header-section-number">4</span> Geodata format</h1>
 <p>The package <em>geoR</em> requires <em>geodata</em> object, and in this part, we show how to create geodata object</p>
 <ul>
 <li>geodata object: a list with two obligatory components
@@ -504,8 +499,8 @@ m1$nugget</code></pre>
 <li>data: a vector (vectors) giving the corresponding measured value(s) at each of sampling location.</li>
 </ul></li>
 </ul>
-<div id="create-geodata" class="section level2">
-<h2><span class="header-section-number">4.1</span> Create geodata</h2>
+<div id="create-geodata" class="section level2" number="4.1">
+<h2 number="4.1"><span class="header-section-number">4.1</span> Create geodata</h2>
 <ul>
 <li><span style="color: red;">Converting a data.frame to geodata</span>: many functions in geoR requires geodata format.
 <ul>
@@ -550,7 +545,7 @@ $(document).ready(function () {
 
 $(document).ready(function () {
   $('.tabset-dropdown > .nav-tabs > li').click(function () {
-    $(this).parent().toggleClass('nav-tabs-open')
+    $(this).parent().toggleClass('nav-tabs-open');
   });
 });
 </script>

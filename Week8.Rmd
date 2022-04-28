@@ -17,7 +17,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 
-# Soil Data & Variogram
+# Soil Data & Semivariogram
 
 
 ## Soil Example
@@ -32,18 +32,19 @@ points(ca20,cex.min = 0.2, cex.max = 1.5, pch = 21)
 
 
 
-## Variogram
+## Semivariogram
 ```{r echo=TRUE, message=FALSE, warning=FALSE, hold=TRUE}
 plot(variog(ca20, option="bin", max.dist=510), 
      xlab = "h", ylab = "gamma(h)")
 ```
 
-Variogram argument
+Here, the function *variog* is ued to calcuate the semivariogram in our slides. 
+
 
 * Function: variog
   + argument
   + opition: "bin"
-  + max.dist: maximum distance for the variogram
+  + max.dist: maximum distance for the semivariogram
   
 
 
@@ -69,6 +70,10 @@ Based on the plot, the initial value $(\sigma^2, \phi, \tau^2) = (100, 120, 30)$
 ```{r echo=TRUE, results='hide', message=FALSE, warning=FALSE, hold=TRUE}
 # trend - constant mean
 m1 = likfit(ca20, ini = c(100, 120), nug = 30)
+```
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, hold=TRUE}
+# trend - constant mean
 summary(m1)
 ```
 
