@@ -275,7 +275,7 @@ $(document).ready(function () {
   <a href="Week11.html">Week 11</a>
 </li>
 <li>
-  <a href="Pedestrian.html">CBD Pedestrian</a>
+  <a href="WeekX.html">WeekX</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -337,6 +337,7 @@ $(document).ready(function () {
 </div>
 <div id="ordinary-kriging" class="section level1" number="2">
 <h1 number="2"><span class="header-section-number">2</span> Ordinary Kriging</h1>
+<p>Note: The <em>geoR</em> package was archived by R, but you can still manually install the previous packages (<a href="https://cran.r-project.org/web/packages/geoR/index.html" class="uri">https://cran.r-project.org/web/packages/geoR/index.html</a>). I think (or hope) that the author will update the package and therefore the package will be un-archived. — Information on May 5th, 2022.</p>
 <p>First, we fit the model <span class="math display">\[Z(\mathbf{s}) = \mu + U(\mathbf{s}) + \nu(\mathbf{s}).\]</span> Here <em>trend = “cte”</em> specifies that the trend <span class="math inline">\(\mu(\mathbf{s})\)</span> is a constant (<span class="math inline">\(\mu(\mathbf{s})=\mu\)</span>).</p>
 <pre class="r"><code>library(geoR)
 data(ca20)

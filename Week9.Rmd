@@ -39,6 +39,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Ordinary Kriging
 
+Note: The *geoR* package was archived by R, but you can still manually install the previous packages (https://cran.r-project.org/web/packages/geoR/index.html). I think (or hope) that the author will update the package and therefore the package will be un-archived. --- Information on May 5th, 2022. 
+
 First, we fit the model $$Z(\mathbf{s}) = \mu + U(\mathbf{s}) + \nu(\mathbf{s}).$$ Here *trend = "cte"* specifies that the trend $\mu(\mathbf{s})$ is a constant ($\mu(\mathbf{s})=\mu$). 
 ```{r echo=TRUE, results='hide', message=FALSE, warning=FALSE, hold=TRUE}
 library(geoR)
