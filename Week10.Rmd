@@ -22,7 +22,6 @@ knitr::opts_chunk$set(echo = TRUE)
 
 *The goal of this example is not to analyze Melbourne housing price. The goal is to show you an example using spatial lag model. I prefer to use (if possible) some example close to Melbourne/Victoria rather than Crime data in ohio, USA.*
 
-*All the code (and more) will be provided in Lab 9.*
 
 
 ```{r, echo=TRUE, fig.width=6, fig.align="center", message = FALSE, warning = F}
@@ -43,7 +42,7 @@ mapView(gmel2, zcol = "price")
 
 # Spatial Lag Model
 
-Before 2020, function lagsarlm is in *spdep*. Now it is moved to *spatialreg* package, and I suggest you to use *spatialreg::lagsarlm* to make sure you are using *lagsarlm* function from *spatialreg* package
+Before 2020, the function lagsarlm is in the package *spdep*. Now it is moved to *spatialreg* package, and I suggest you to use *spatialreg::lagsarlm* to make sure you are using *lagsarlm* function from *spatialreg* package
 
 ```{r, echo=TRUE, fig.width=6, fig.align="center", message = FALSE, warning = F}
 library(spdep)
@@ -74,7 +73,7 @@ summary(mlag)
 
 
 ```{r, echo=TRUE, fig.width=6, fig.align="center", results="hold"}
-## beta estiamtes and asymptotic standard error
+## beta estimates and asymptotic standard error
 mlag$coefficients
 mlag$rest.se
 ```
@@ -88,6 +87,16 @@ mlag$rho.se
 ```{r, echo=TRUE, fig.width=6, fig.align="center", results="hold"}
 ## sigma^2 estimates
 mlag$s2
+
+## AIC value
+AIC(mlag)
+
+## The loglikelihood value
+mlag$LL
+logLik(mlag)
+
+## the covariance matrix of the estimator ()
+vcov(mlag)
 ```
 
 
