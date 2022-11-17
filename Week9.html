@@ -13,7 +13,7 @@
 
 <title>Week 9: Geostatistics–Kriging</title>
 
-<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.18/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -60,6 +60,7 @@ if (window.hljs) {
 
 
 
+
 <style type = "text/css">
 .main-container {
   max-width: 940px;
@@ -80,6 +81,9 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
   padding: 0;
@@ -137,11 +141,15 @@ $(document).ready(function () {
     href = "index.html";
   var menuAnchor = $('a[href="' + href + '"]');
 
-  // mark it active
-  menuAnchor.tab('show');
-
-  // if it's got a parent navbar menu mark it active as well
-  menuAnchor.closest('li.dropdown').addClass('active');
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
 
   // Navbar adjustments
   var navHeight = $(".navbar").first().height() + 15;
@@ -170,8 +178,8 @@ $(document).ready(function () {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -179,16 +187,9 @@ $(document).ready(function () {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "&#xe258;";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
+  content: "\e258";
   font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
+  border: none;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -232,7 +233,7 @@ $(document).ready(function () {
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -295,12 +296,21 @@ $(document).ready(function () {
 
 <div id="TOC">
 <ul>
-<li><a href="#introduction"><span class="toc-section-number">1</span> Introduction</a></li>
-<li><a href="#ordinary-kriging"><span class="toc-section-number">2</span> Ordinary Kriging</a></li>
-<li><a href="#universal-kriging"><span class="toc-section-number">3</span> Universal Kriging</a>
+<li><a href="#introduction" id="toc-introduction"><span
+class="toc-section-number">1</span> Introduction</a></li>
+<li><a href="#ordinary-kriging" id="toc-ordinary-kriging"><span
+class="toc-section-number">2</span> Ordinary Kriging</a></li>
+<li><a href="#universal-kriging" id="toc-universal-kriging"><span
+class="toc-section-number">3</span> Universal Kriging</a>
 <ul>
-<li><a href="#universal-kriging-polynomial-of-coordinates"><span class="toc-section-number">3.1</span> Universal Kriging: Polynomial of coordinates</a></li>
-<li><a href="#universal-kriging-covariates"><span class="toc-section-number">3.2</span> Universal Kriging: covariates</a></li>
+<li><a href="#universal-kriging-polynomial-of-coordinates"
+id="toc-universal-kriging-polynomial-of-coordinates"><span
+class="toc-section-number">3.1</span> Universal Kriging: Polynomial of
+coordinates</a></li>
+<li><a href="#universal-kriging-covariates"
+id="toc-universal-kriging-covariates"><span
+class="toc-section-number">3.2</span> Universal Kriging:
+covariates</a></li>
 </ul></li>
 </ul>
 </div>
@@ -309,11 +319,12 @@ $(document).ready(function () {
 
 </div>
 <div id="introduction" class="section level1" number="1">
-<h1 number="1"><span class="header-section-number">1</span> Introduction</h1>
+<h1><span class="header-section-number">1</span> Introduction</h1>
 <ul>
 <li>In this Lab, we will learn two key functions
 <ul>
-<li>krige.control: specify the parameter for kriging, no computing involved.</li>
+<li>krige.control: specify the parameter for kriging, no computing
+involved.</li>
 <li>krige.conv: to compute</li>
 </ul></li>
 </ul>
@@ -330,15 +341,19 @@ $(document).ready(function () {
 <ul>
 <li>krige.conv(geodata, locations, krige)</li>
 <li>geodata</li>
-<li>locations: <span class="math inline">\(\mathbf s_0\)</span>, data.frame, multiple locations.</li>
+<li>locations: <span class="math inline">\(\mathbf s_0\)</span>,
+data.frame, multiple locations.</li>
 <li>krige: output of krige.control.</li>
 </ul></li>
 </ul>
 </div>
 <div id="ordinary-kriging" class="section level1" number="2">
-<h1 number="2"><span class="header-section-number">2</span> Ordinary Kriging</h1>
-<p>Note: The <em>geoR</em> package was archived by R, but you can still manually install the previous packages (<a href="https://cran.r-project.org/web/packages/geoR/index.html" class="uri">https://cran.r-project.org/web/packages/geoR/index.html</a>). I think (or hope) that the author will update the package and therefore the package will be un-archived. — Information on May 5th, 2022.</p>
-<p>First, we fit the model <span class="math display">\[Z(\mathbf{s}) = \mu + U(\mathbf{s}) + \nu(\mathbf{s}).\]</span> Here <em>trend = “cte”</em> specifies that the trend <span class="math inline">\(\mu(\mathbf{s})\)</span> is a constant (<span class="math inline">\(\mu(\mathbf{s})=\mu\)</span>).</p>
+<h1><span class="header-section-number">2</span> Ordinary Kriging</h1>
+<p>First, we fit the model <span class="math display">\[Z(\mathbf{s}) =
+\mu + U(\mathbf{s}) + \nu(\mathbf{s}).\]</span> Here <em>trend =
+“cte”</em> specifies that the trend <span
+class="math inline">\(\mu(\mathbf{s})\)</span> is a constant (<span
+class="math inline">\(\mu(\mathbf{s})=\mu\)</span>).</p>
 <pre class="r"><code>library(geoR)
 data(ca20)
 fit = likfit(ca20, ini = c(100, 60), trend = &quot;cte&quot;)</code></pre>
@@ -360,8 +375,10 @@ head(gr)     ## Here are the first six locations, where the first locations is (
 <ul>
 <li>The output includes
 <ul>
-<li>ca20pred$predict: the kriging estimates for all locations specified at <em>loc</em>.</li>
-<li>ca20pred$krige.var: the kriging variance for all locations specified at <em>loc</em>.</li>
+<li>ca20pred$predict: the kriging estimates for all locations specified
+at <em>loc</em>.</li>
+<li>ca20pred$krige.var: the kriging variance for all locations specified
+at <em>loc</em>.</li>
 </ul></li>
 </ul>
 <p>Last, we visualise both Kriging estimates and Kriging variances.</p>
@@ -395,12 +412,17 @@ class(capred)                            </code></pre>
 <p>We can visualize using all functions related to SpatialPoints.</p>
 </div>
 <div id="universal-kriging" class="section level1" number="3">
-<h1 number="3"><span class="header-section-number">3</span> Universal Kriging</h1>
-<p><span style="color: red;">Both ordinary kriging and universal kriging</span> using setting <em>type.krige = “ok”</em>. Once you put the trend in, the function will distinguish two types of kriging.</p>
-<div id="universal-kriging-polynomial-of-coordinates" class="section level2" number="3.1">
-<h2 number="3.1"><span class="header-section-number">3.1</span> Universal Kriging: Polynomial of coordinates</h2>
+<h1><span class="header-section-number">3</span> Universal Kriging</h1>
+<p><span style="color: red;">Both ordinary kriging and universal
+kriging</span> using setting <em>type.krige = “ok”</em>. Once you put
+the trend in, the function will distinguish two types of kriging.</p>
+<div id="universal-kriging-polynomial-of-coordinates"
+class="section level2" number="3.1">
+<h2><span class="header-section-number">3.1</span> Universal Kriging:
+Polynomial of coordinates</h2>
 <ul>
-<li>We need to provide <span class="math inline">\(x_1(\mathbf s_0), \ldots, x_p(\mathbf s_0)\)</span> for the function
+<li>We need to provide <span class="math inline">\(x_1(\mathbf s_0),
+\ldots, x_p(\mathbf s_0)\)</span> for the function
 <ul>
 <li>in function <em>krige.control</em></li>
 <li>trend.d: specify data trend</li>
@@ -414,15 +436,21 @@ KC = krige.control(obj.model = fit, trend.l=&quot;1st&quot;,
                    trend.d=&quot;1st&quot;)
 ca20pred = krige.conv(ca20, loc = gr, krige = KC)</code></pre>
 </div>
-<div id="universal-kriging-covariates" class="section level2" number="3.2">
-<h2 number="3.2"><span class="header-section-number">3.2</span> Universal Kriging: covariates</h2>
+<div id="universal-kriging-covariates" class="section level2"
+number="3.2">
+<h2><span class="header-section-number">3.2</span> Universal Kriging:
+covariates</h2>
 <pre class="r"><code>fit2 = likfit(ca20, ini = c(100, 60), trend = ~altitude)
 gr = pred_grid(ca20$borders, by = 10)
 graltitude = rnorm(10908,mean=5.5)
 KC2 = krige.control(type.krige = &quot;ok&quot;, obj.model=fit2, 
                     trend.d=~altitude, trend.l=~graltitude)
 ca20pred2 = krige.conv(ca20, loc = gr, krige = KC2)</code></pre>
-<p>In universal kriging, we need to know <span class="math inline">\(x(\mathbf s_0)\)</span>. In the above code, I randomly generated <span class="math inline">\(x(\mathbf s_0)\)</span> from <em>graltitude = rnorm(10908,mean=5.5)</em>. In practice, you shall know <span class="math inline">\(x(\mathbf s_0)\)</span> in advance.</p>
+<p>In universal kriging, we need to know <span
+class="math inline">\(x(\mathbf s_0)\)</span>. In the above code, I
+randomly generated <span class="math inline">\(x(\mathbf s_0)\)</span>
+from <em>graltitude = rnorm(10908,mean=5.5)</em>. In practice, you shall
+know <span class="math inline">\(x(\mathbf s_0)\)</span> in advance.</p>
 </div>
 </div>
 
