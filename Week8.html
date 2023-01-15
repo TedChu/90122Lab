@@ -13,7 +13,7 @@
 
 <title>Week 8: Geostatistics–Estimation</title>
 
-<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.19/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -60,6 +60,7 @@ if (window.hljs) {
 
 
 
+
 <style type = "text/css">
 .main-container {
   max-width: 940px;
@@ -80,6 +81,9 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
   padding: 0;
@@ -137,11 +141,15 @@ $(document).ready(function () {
     href = "index.html";
   var menuAnchor = $('a[href="' + href + '"]');
 
-  // mark it active
-  menuAnchor.tab('show');
-
-  // if it's got a parent navbar menu mark it active as well
-  menuAnchor.closest('li.dropdown').addClass('active');
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
 
   // Navbar adjustments
   var navHeight = $(".navbar").first().height() + 15;
@@ -170,8 +178,8 @@ $(document).ready(function () {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -179,16 +187,9 @@ $(document).ready(function () {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "&#xe258;";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
+  content: "\e258";
   font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
+  border: none;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -232,7 +233,7 @@ $(document).ready(function () {
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -295,24 +296,36 @@ $(document).ready(function () {
 
 <div id="TOC">
 <ul>
-<li><a href="#introduction"><span class="toc-section-number">1</span> Introduction</a></li>
-<li><a href="#soil-data-semivariogram"><span class="toc-section-number">2</span> Soil Data &amp; Semivariogram</a>
+<li><a href="#introduction" id="toc-introduction"><span
+class="toc-section-number">1</span> Introduction</a></li>
+<li><a href="#soil-data-semivariogram"
+id="toc-soil-data-semivariogram"><span
+class="toc-section-number">2</span> Soil Data &amp; Semivariogram</a>
 <ul>
-<li><a href="#soil-example"><span class="toc-section-number">2.1</span> Soil Example</a></li>
-<li><a href="#semivariogram"><span class="toc-section-number">2.2</span> Semivariogram</a></li>
+<li><a href="#soil-example" id="toc-soil-example"><span
+class="toc-section-number">2.1</span> Soil Example</a></li>
+<li><a href="#semivariogram" id="toc-semivariogram"><span
+class="toc-section-number">2.2</span> Semivariogram</a></li>
 </ul></li>
-<li><a href="#mle"><span class="toc-section-number">3</span> MLE</a>
+<li><a href="#mle" id="toc-mle"><span
+class="toc-section-number">3</span> MLE</a>
 <ul>
-<li><a href="#mle-initial-value"><span class="toc-section-number">3.1</span> MLE: Initial Value</a></li>
-<li><a href="#mle-function"><span class="toc-section-number">3.2</span> MLE: Function</a></li>
-<li><a href="#spatial-trend"><span class="toc-section-number">3.3</span> Spatial Trend</a>
+<li><a href="#mle-initial-value" id="toc-mle-initial-value"><span
+class="toc-section-number">3.1</span> MLE: Initial Value</a></li>
+<li><a href="#mle-function" id="toc-mle-function"><span
+class="toc-section-number">3.2</span> MLE: Function</a></li>
+<li><a href="#spatial-trend" id="toc-spatial-trend"><span
+class="toc-section-number">3.3</span> Spatial Trend</a>
 <ul>
-<li><a href="#two-ways"><span class="toc-section-number">3.3.1</span> Two ways</a></li>
+<li><a href="#two-ways" id="toc-two-ways"><span
+class="toc-section-number">3.3.1</span> Two ways</a></li>
 </ul></li>
 </ul></li>
-<li><a href="#geodata-format"><span class="toc-section-number">4</span> Geodata format</a>
+<li><a href="#geodata-format" id="toc-geodata-format"><span
+class="toc-section-number">4</span> Geodata format</a>
 <ul>
-<li><a href="#create-geodata"><span class="toc-section-number">4.1</span> Create geodata</a></li>
+<li><a href="#create-geodata" id="toc-create-geodata"><span
+class="toc-section-number">4.1</span> Create geodata</a></li>
 </ul></li>
 </ul>
 </div>
@@ -321,7 +334,7 @@ $(document).ready(function () {
 
 </div>
 <div id="introduction" class="section level1" number="1">
-<h1 number="1"><span class="header-section-number">1</span> Introduction</h1>
+<h1><span class="header-section-number">1</span> Introduction</h1>
 <ul>
 <li>In this Lab, we will learn
 <ul>
@@ -331,23 +344,31 @@ $(document).ready(function () {
 </ul>
 </div>
 <div id="soil-data-semivariogram" class="section level1" number="2">
-<h1 number="2"><span class="header-section-number">2</span> Soil Data &amp; Semivariogram</h1>
+<h1><span class="header-section-number">2</span> Soil Data &amp;
+Semivariogram</h1>
 <div id="soil-example" class="section level2" number="2.1">
-<h2 number="2.1"><span class="header-section-number">2.1</span> Soil Example</h2>
-<p><span class="math inline">\(Z(\mathbf{s})\)</span>: calcium content in soil at <span class="math inline">\(\mathbf{s}\)</span>.</p>
+<h2><span class="header-section-number">2.1</span> Soil Example</h2>
+<p><span class="math inline">\(Z(\mathbf{s})\)</span>: calcium content
+in soil at <span class="math inline">\(\mathbf{s}\)</span>.</p>
 <pre class="r"><code>library(geoR)
 data(ca20)
 points(ca20,cex.min = 0.2, cex.max = 1.5, pch = 21)</code></pre>
 <p><img src="Week8_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
-<p>Note: The <em>geoR</em> package was archived by R, but you can still manually install the previous packages (<a href="https://cran.r-project.org/web/packages/geoR/index.html" class="uri">https://cran.r-project.org/web/packages/geoR/index.html</a>). I think (or hope) that the author will update the package and therefore the package will be un-archived. — Information on May 5th, 2022.</p>
+<p>Note: The <em>geoR</em> package was archived by R, but you can still
+manually install the previous packages (<a
+href="https://cran.r-project.org/web/packages/geoR/index.html"
+class="uri">https://cran.r-project.org/web/packages/geoR/index.html</a>).
+I think (or hope) that the author will update the package and therefore
+the package will be un-archived. — Information on May 5th, 2022.</p>
 </div>
 <div id="semivariogram" class="section level2" number="2.2">
-<h2 number="2.2"><span class="header-section-number">2.2</span> Semivariogram</h2>
+<h2><span class="header-section-number">2.2</span> Semivariogram</h2>
 <pre class="r"><code>plot(variog(ca20, option=&quot;bin&quot;, max.dist=510), 
      xlab = &quot;h&quot;, ylab = &quot;gamma(h)&quot;)</code></pre>
 <pre><code>## variog: computing omnidirectional variogram</code></pre>
 <p><img src="Week8_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
-<p>Here, the function <em>variog</em> is ued to calcuate the semivariogram in our slides.</p>
+<p>Here, the function <em>variog</em> is ued to calcuate the
+semivariogram in our slides.</p>
 <ul>
 <li>Function: variog
 <ul>
@@ -359,9 +380,10 @@ points(ca20,cex.min = 0.2, cex.max = 1.5, pch = 21)</code></pre>
 </div>
 </div>
 <div id="mle" class="section level1" number="3">
-<h1 number="3"><span class="header-section-number">3</span> MLE</h1>
+<h1><span class="header-section-number">3</span> MLE</h1>
 <div id="mle-initial-value" class="section level2" number="3.1">
-<h2 number="3.1"><span class="header-section-number">3.1</span> MLE: Initial Value</h2>
+<h2><span class="header-section-number">3.1</span> MLE: Initial
+Value</h2>
 <p><span style="color: red;">“Eye-fit”</span></p>
 <pre class="r"><code>plot(variog(ca20, option=&quot;bin&quot;, max.dist=510), 
      xlab = &quot;h&quot;, ylab = &quot;gamma(h)&quot;)
@@ -369,10 +391,12 @@ lines.variomodel(seq(0, 510, l = 100),
                  cov.pars = c(100, 120),           
                  cov.model = &quot;mat&quot;, kap = 0.5, nug = 30)</code></pre>
 <p><img src="Week8_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
-<p>Based on the plot, the initial value <span class="math inline">\((\sigma^2, \phi, \tau^2) = (100, 120, 30)\)</span>.</p>
+<p>Based on the plot, the initial value <span
+class="math inline">\((\sigma^2, \phi, \tau^2) = (100, 120,
+30)\)</span>.</p>
 </div>
 <div id="mle-function" class="section level2" number="3.2">
-<h2 number="3.2"><span class="header-section-number">3.2</span> MLE: Function</h2>
+<h2><span class="header-section-number">3.2</span> MLE: Function</h2>
 <pre class="r"><code># trend - constant mean
 m1 = likfit(ca20, ini = c(100, 120), nug = 30)</code></pre>
 <pre class="r"><code># trend - constant mean
@@ -414,7 +438,8 @@ summary(m1)</code></pre>
 <ul>
 <li>Results of output
 <ul>
-<li>Spatial-dependence parameter estiamtes: <span class="math inline">\((\sigma^2, \phi, \tau^2)\)</span></li>
+<li>Spatial-dependence parameter estiamtes: <span
+class="math inline">\((\sigma^2, \phi, \tau^2)\)</span></li>
 <li>no standard error is provided.</li>
 <li>cov.pars: <span class="math inline">\((\sigma^2, \phi)\)</span></li>
 <li>nugget: <span class="math inline">\(\tau^2\)</span></li>
@@ -432,45 +457,73 @@ m1$nugget</code></pre>
 <pre><code>## [1] 135.1726 159.4883
 ## [1] 135.1726
 ## [1] 159.4883
-## [1] 16.76522</code></pre>
+## [1] 16.76523</code></pre>
 <ul>
-<li><span style="color: red;">The arguments of function</span> <em>likfit</em>
+<li><span style="color: red;">The arguments of function</span>
+<em>likfit</em>
 <ul>
 <li>argument</li>
 <li>cov.model: “exp” (default), more options see cov.pars</li>
-<li>Fixed or Estimated: fix.nugget = FALSE, fix.kappa = TRUE, kappa =0.5</li>
+<li>Fixed or Estimated: fix.nugget = FALSE, fix.kappa = TRUE, kappa
+=0.5</li>
 <li>Initial value: ini.cov.pars, nugget</li>
 </ul></li>
 </ul>
 <ul>
-<li>Remarks: we have 4 parameters: nugget <span class="math inline">\(\tau^2\)</span>, partial sill <span class="math inline">\(\sigma^2\)</span>, range parameter <span class="math inline">\(\phi\)</span>, smooth parameter <span class="math inline">\(\kappa\)</span> ( <span class="math inline">\(\nu\)</span> in our slide. )
+<li>Remarks: we have 4 parameters: nugget <span
+class="math inline">\(\tau^2\)</span>, partial sill <span
+class="math inline">\(\sigma^2\)</span>, range parameter <span
+class="math inline">\(\phi\)</span>, smooth parameter <span
+class="math inline">\(\kappa\)</span> ( <span
+class="math inline">\(\nu\)</span> in our slide. )
 <ul>
 <li>Function allow us either to pre-specify (fix) or estimate it</li>
-<li>Most of the time, <span class="math inline">\(\kappa\)</span> is fixed.</li>
+<li>Most of the time, <span class="math inline">\(\kappa\)</span> is
+fixed.</li>
 </ul></li>
 </ul>
 <p>Here are some exmaple:</p>
 <ul>
-<li>Example 1: no specification. “likfit(ca20, ini = c(100, 200), nug = 50)”
+<li>Example 1: no specification. “likfit(ca20, ini = c(100, 200), nug =
+50)”
 <ul>
-<li>Exp model (<span class="math inline">\(\kappa\)</span> = 0.5 fixed).</li>
-<li>To estimate: <span class="math inline">\(\tau^2\)</span>, <span class="math inline">\(\sigma^2\)</span>, <span class="math inline">\(\phi\)</span></li>
+<li>Exp model (<span class="math inline">\(\kappa\)</span> = 0.5
+fixed).</li>
+<li>To estimate: <span class="math inline">\(\tau^2\)</span>, <span
+class="math inline">\(\sigma^2\)</span>, <span
+class="math inline">\(\phi\)</span></li>
 </ul></li>
 </ul>
 <ul>
-<li>Example 2: no specification. “likfit(ca20, ini = c(100, 200), nug = 50, fix.nugget=TRUE)”
+<li>Example 2: no specification. “likfit(ca20, ini = c(100, 200), nug =
+50, fix.nugget=TRUE)”
 <ul>
-<li>Fixed: <span class="math inline">\(\kappa\)</span> = 0.5, nugget <span class="math inline">\(\tau^2 = 50\)</span></li>
-<li>To estiamte: <span class="math inline">\(\sigma^2\)</span>, <span class="math inline">\(\phi\)</span></li>
+<li>Fixed: <span class="math inline">\(\kappa\)</span> = 0.5, nugget
+<span class="math inline">\(\tau^2 = 50\)</span></li>
+<li>To estiamte: <span class="math inline">\(\sigma^2\)</span>, <span
+class="math inline">\(\phi\)</span></li>
 </ul></li>
 </ul>
+<p>Many other informatons can be obtained.</p>
+<pre class="r"><code># the estimated covariance matrix of beta. 
+m1$beta.var
+# AIC of the model
+AIC(m1)
+# and others...
+m1$practicalRange
+logLik(m1)</code></pre>
+<pre><code>## [1] 16.54567
+## [1] 1273.191
+## [1] 477.7842
+## &#39;log Lik.&#39; -632.5953 (df=4)</code></pre>
 </div>
 <div id="spatial-trend" class="section level2" number="3.3">
-<h2 number="3.3"><span class="header-section-number">3.3</span> Spatial Trend</h2>
+<h2><span class="header-section-number">3.3</span> Spatial Trend</h2>
 <div id="two-ways" class="section level3" number="3.3.1">
-<h3 number="3.3.1"><span class="header-section-number">3.3.1</span> Two ways</h3>
+<h3><span class="header-section-number">3.3.1</span> Two ways</h3>
 <ul>
-<li>Specify directly in function like “likfit”: <code>fit = likfit(ca20, ini = c(100, 60), trend = ~altitude)</code></li>
+<li>Specify directly in function like “likfit”:
+<code>fit = likfit(ca20, ini = c(100, 60), trend = ~altitude)</code></li>
 <li>Specify it through function “trend.spatial”: See below</li>
 </ul>
 <ul>
@@ -483,7 +536,8 @@ m1$nugget</code></pre>
 <li>Argument <em>trend</em>
 <ul>
 <li>trend = “cte”: constant mean</li>
-<li>trend = ~altitude: <span class="math inline">\(\mu(s)=\beta_0+\beta_1 altitude\)</span></li>
+<li>trend = ~altitude: <span
+class="math inline">\(\mu(s)=\beta_0+\beta_1 altitude\)</span></li>
 <li>Other options: “1st”, “2nd”, see help files for more details</li>
 </ul></li>
 </ul>
@@ -491,23 +545,32 @@ m1$nugget</code></pre>
 </div>
 </div>
 <div id="geodata-format" class="section level1" number="4">
-<h1 number="4"><span class="header-section-number">4</span> Geodata format</h1>
-<p>The package <em>geoR</em> requires <em>geodata</em> object, and in this part, we show how to create geodata object</p>
+<h1><span class="header-section-number">4</span> Geodata format</h1>
+<p>The package <em>geoR</em> requires <em>geodata</em> object, and in
+this part, we show how to create geodata object</p>
 <ul>
 <li>geodata object: a list with two obligatory components
 <ul>
-<li>coords: a matrix with the two-dimensional coordinates of the sampling locations</li>
-<li>data: a vector (vectors) giving the corresponding measured value(s) at each of sampling location.</li>
+<li>coords: a matrix with the two-dimensional coordinates of the
+sampling locations</li>
+<li>data: a vector (vectors) giving the corresponding measured value(s)
+at each of sampling location.</li>
 </ul></li>
 </ul>
 <div id="create-geodata" class="section level2" number="4.1">
-<h2 number="4.1"><span class="header-section-number">4.1</span> Create geodata</h2>
+<h2><span class="header-section-number">4.1</span> Create geodata</h2>
 <ul>
-<li><span style="color: red;">Converting a data.frame to geodata</span>: many functions in geoR requires geodata format.
+<li><span style="color: red;">Converting a data.frame to geodata</span>:
+many functions in geoR requires geodata format.
 <ul>
-<li><em>as.geodata(obj, coords.col = 1:2, data.col = 3, covar.col = NULL, covar.names = “obj.names”)</em></li>
-<li>coords.col = 1:2 (default): the first two columns are x-axis and y-axis.</li>
-<li>data.col = 3 (default): the column for the response (<span class="math inline">\(Z(\mathbf{s})\)</span>). The default is the third column, but you can specify it. In the following example, the 5th column is for the response.</li>
+<li><em>as.geodata(obj, coords.col = 1:2, data.col = 3, covar.col =
+NULL, covar.names = “obj.names”)</em></li>
+<li>coords.col = 1:2 (default): the first two columns are x-axis and
+y-axis.</li>
+<li>data.col = 3 (default): the column for the response (<span
+class="math inline">\(Z(\mathbf{s})\)</span>). The default is the third
+column, but you can specify it. In the following example, the 5th column
+is for the response.</li>
 <li>covar.col: columns for covariates.</li>
 </ul></li>
 </ul>

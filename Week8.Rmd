@@ -97,9 +97,6 @@ m1$nugget
 ```
 
 
-
-
-
 * <span style="color: red;">The arguments of function</span> *likfit*
   + argument
   + cov.model: "exp" (default), more options see cov.pars
@@ -125,6 +122,18 @@ Here are some exmaple:
   + Fixed: $\kappa$ = 0.5, nugget $\tau^2 = 50$
   + To estiamte: $\sigma^2$, $\phi$
 
+
+Many other informatons can be obtained. 
+```{r echo=TRUE, message=FALSE, warning=FALSE, results="hold"}
+# the estimated covariance matrix of beta. 
+m1$beta.var
+# AIC of the model
+AIC(m1)
+# and others...
+m1$practicalRange
+logLik(m1)
+```
+
   
 ## Spatial Trend
 
@@ -143,6 +152,9 @@ Here are some exmaple:
   + trend = "cte": constant mean
   + trend = ~altitude: $\mu(s)=\beta_0+\beta_1 altitude$
   + Other options: "1st", "2nd", see help files for more details
+
+
+
 
 
 # Geodata format
