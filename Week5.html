@@ -13,22 +13,36 @@
 
 <title>Week 5: Spatial Point Process – spatstat</title>
 
-<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<script src="site_libs/header-attrs-2.19/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 
-<style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
-  pre:not([class]) {
-    background-color: white;
-  }
-</style>
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
 <script type="text/javascript">
 if (window.hljs) {
   hljs.configure({languages: []});
@@ -41,32 +55,8 @@ if (window.hljs) {
 
 
 
-<style type="text/css">
-h1 {
-  font-size: 34px;
-}
-h1.title {
-  font-size: 38px;
-}
-h2 {
-  font-size: 30px;
-}
-h3 {
-  font-size: 24px;
-}
-h4 {
-  font-size: 18px;
-}
-h5 {
-  font-size: 16px;
-}
-h6 {
-  font-size: 12px;
-}
-.table th:not([align]) {
-  text-align: left;
-}
-</style>
+
+
 
 
 
@@ -76,10 +66,6 @@ h6 {
   max-width: 940px;
   margin-left: auto;
   margin-right: auto;
-}
-code {
-  color: inherit;
-  background-color: rgba(0, 0, 0, 0.04);
 }
 img {
   max-width:100%;
@@ -96,40 +82,16 @@ button.code-folding-btn:focus {
 summary {
   display: list-item;
 }
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
 </style>
 
 
 <style type="text/css">
-/* padding for bootstrap navbar */
-body {
-  padding-top: 51px;
-  padding-bottom: 40px;
-}
-/* offset scroll position for anchor links (for fixed navbar)  */
-.section h1 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h2 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h3 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h4 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h5 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h6 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
 .dropdown-submenu {
   position: relative;
 }
@@ -157,7 +119,7 @@ body {
   margin-right: -10px;
 }
 .dropdown-submenu:hover>a:after {
-  border-left-color: #ffffff;
+  border-left-color: #adb5bd;
 }
 .dropdown-submenu.pull-left {
   float: none;
@@ -169,7 +131,7 @@ body {
 }
 </style>
 
-<script>
+<script type="text/javascript">
 // manage active state of menu based on current page
 $(document).ready(function () {
   // active menu anchor
@@ -179,11 +141,28 @@ $(document).ready(function () {
     href = "index.html";
   var menuAnchor = $('a[href="' + href + '"]');
 
-  // mark it active
-  menuAnchor.parent().addClass('active');
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
 
-  // if it's got a parent navbar menu mark it active as well
-  menuAnchor.closest('li.dropdown').addClass('active');
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
 });
 </script>
 
@@ -195,13 +174,12 @@ $(document).ready(function () {
   max-height: 500px;
   min-height: 44px;
   overflow-y: auto;
-  background: white;
   border: 1px solid #ddd;
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -209,16 +187,9 @@ $(document).ready(function () {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "&#xe258;";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
+  content: "\e258";
   font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
+  border: none;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -262,7 +233,7 @@ $(document).ready(function () {
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -304,6 +275,9 @@ $(document).ready(function () {
 <li>
   <a href="Week11.html">Week 11</a>
 </li>
+<li>
+  <a href="WeekX.html">WeekX</a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         
@@ -312,28 +286,48 @@ $(document).ready(function () {
   </div><!--/.container -->
 </div><!--/.navbar -->
 
-<div class="fluid-row" id="header">
+<div id="header">
 
 
 
-<h1 class="title toc-ignore">Week 5: Spatial Point Process – spatstat</h1>
+<h1 class="title toc-ignore">Week 5: Spatial Point Process –
+spatstat</h1>
 
 </div>
 
 <div id="TOC">
 <ul>
-<li><a href="#introduction"><span class="toc-section-number">1</span> Introduction</a></li>
-<li><a href="#test-of-csr"><span class="toc-section-number">2</span> Test of CSR</a><ul>
-<li><a href="#generate-poisson-process-hpp"><span class="toc-section-number">2.1</span> Generate Poisson Process: HPP</a></li>
-<li><a href="#quadrat-test"><span class="toc-section-number">2.2</span> Quadrat test</a></li>
-<li><a href="#test-g-function"><span class="toc-section-number">2.3</span> Test: G Function</a></li>
-<li><a href="#ppp-class"><span class="toc-section-number">2.4</span> ppp class</a></li>
+<li><a href="#introduction" id="toc-introduction"><span
+class="toc-section-number">1</span> Introduction</a></li>
+<li><a href="#test-of-csr" id="toc-test-of-csr"><span
+class="toc-section-number">2</span> Test of CSR</a>
+<ul>
+<li><a href="#generate-poisson-process-hpp"
+id="toc-generate-poisson-process-hpp"><span
+class="toc-section-number">2.1</span> Generate Poisson Process:
+HPP</a></li>
+<li><a href="#quadrat-test" id="toc-quadrat-test"><span
+class="toc-section-number">2.2</span> Quadrat test</a></li>
+<li><a href="#test-g-function" id="toc-test-g-function"><span
+class="toc-section-number">2.3</span> Test: G Function</a></li>
+<li><a href="#ppp-class" id="toc-ppp-class"><span
+class="toc-section-number">2.4</span> ppp class</a></li>
 </ul></li>
-<li><a href="#spatial-point-models"><span class="toc-section-number">3</span> Spatial Point Models</a><ul>
-<li><a href="#create-ipp"><span class="toc-section-number">3.1</span> Create IPP</a></li>
-<li><a href="#create-neyman-scott-process-clustered-data-pattern"><span class="toc-section-number">3.2</span> Create Neyman-Scott Process: clustered data pattern</a></li>
-<li><a href="#create-matern-i-and-matern-ii-regular-data-pattern"><span class="toc-section-number">3.3</span> Create Matern I and Matern II: regular data pattern</a></li>
-<li><a href="#further-study"><span class="toc-section-number">3.4</span> Further Study</a></li>
+<li><a href="#spatial-point-models" id="toc-spatial-point-models"><span
+class="toc-section-number">3</span> Spatial Point Models</a>
+<ul>
+<li><a href="#create-ipp" id="toc-create-ipp"><span
+class="toc-section-number">3.1</span> Create IPP</a></li>
+<li><a href="#create-neyman-scott-process-clustered-data-pattern"
+id="toc-create-neyman-scott-process-clustered-data-pattern"><span
+class="toc-section-number">3.2</span> Create Neyman-Scott Process:
+clustered data pattern</a></li>
+<li><a href="#create-matern-i-and-matern-ii-regular-data-pattern"
+id="toc-create-matern-i-and-matern-ii-regular-data-pattern"><span
+class="toc-section-number">3.3</span> Create Matern I and Matern II:
+regular data pattern</a></li>
+<li><a href="#further-study" id="toc-further-study"><span
+class="toc-section-number">3.4</span> Further Study</a></li>
 </ul></li>
 </ul>
 </div>
@@ -341,7 +335,7 @@ $(document).ready(function () {
 <div style="margin-bottom:50px;">
 
 </div>
-<div id="introduction" class="section level1">
+<div id="introduction" class="section level1" number="1">
 <h1><span class="header-section-number">1</span> Introduction</h1>
 <ul>
 <li>In this lab, you will learn
@@ -351,10 +345,12 @@ $(document).ready(function () {
 </ul></li>
 </ul>
 </div>
-<div id="test-of-csr" class="section level1">
+<div id="test-of-csr" class="section level1" number="2">
 <h1><span class="header-section-number">2</span> Test of CSR</h1>
-<div id="generate-poisson-process-hpp" class="section level2">
-<h2><span class="header-section-number">2.1</span> Generate Poisson Process: HPP</h2>
+<div id="generate-poisson-process-hpp" class="section level2"
+number="2.1">
+<h2><span class="header-section-number">2.1</span> Generate Poisson
+Process: HPP</h2>
 <pre class="r"><code>library(spatstat)
 data1 = rpoispp(lambda=100, win=owin(c(0,2),c(0,2)))
 plot(data1, pch=46, cex =3)                           </code></pre>
@@ -362,13 +358,15 @@ plot(data1, pch=46, cex =3)                           </code></pre>
 <ul>
 <li>Argument:
 <ul>
-<li>lambda=100: intensity function, <span style="color: red;">NOT number of points</span></li>
-<li>win=owin(c(0,2),c(0,2)): spatial point process data will be generated in the domain D = [0,2]*[0,2].</li>
+<li>lambda=100: intensity function, <span style="color: red;">NOT number
+of points</span></li>
+<li>win=owin(c(0,2),c(0,2)): spatial point process data will be
+generated in the domain D = [0,2]*[0,2].</li>
 <li>Question: What is the expected number of events?</li>
 </ul></li>
 </ul>
 </div>
-<div id="quadrat-test" class="section level2">
+<div id="quadrat-test" class="section level2" number="2.2">
 <h2><span class="header-section-number">2.2</span> Quadrat test</h2>
 <p>Here, we will use R package <em>spatstat</em></p>
 <pre class="r"><code>quadrat.test(data1, nx = 4, ny= 4, alternative = &quot;two.sided&quot;, method = &quot;Chisq&quot;)</code></pre>
@@ -376,22 +374,27 @@ plot(data1, pch=46, cex =3)                           </code></pre>
 ##  Chi-squared test of CSR using quadrat counts
 ## 
 ## data:  data1
-## X2 = 14.623, df = 15, p-value = 0.9578
+## X2 = 24.56, df = 15, p-value = 0.1123
 ## alternative hypothesis: two.sided
 ## 
 ## Quadrats: 4 by 4 grid of tiles</code></pre>
 <ul>
 <li>Argument:
 <ul>
-<li>pp: the dataset must be a “ppp” class.</li>
-<li><span style="color: red;">nx=4, ny =4</span>: number of block on x-axis and y-axis. Here, we have 4*4=16 blocks.</li>
-<li>alternative: alternative hypothesis. You can choose one of “two.sided”, “regular”, “clustered”</li>
-<li>method: the method used to compute p-value. “Chisq” (analytical way), “MonteCarlo”</li>
+<li>pp: the dataset must be a “ppp” class, see section <em>ppp</em>
+below for more details.</li>
+<li><span style="color: red;">nx=4, ny =4</span>: number of block on
+x-axis and y-axis. Here, we have 4*4=16 blocks.</li>
+<li>alternative: alternative hypothesis. You can choose one of
+“two.sided”, “regular”, “clustered”.</li>
+<li>method: the method used to compute p-value. “Chisq” (analytical
+way), “MonteCarlo”</li>
 </ul></li>
 </ul>
-<p>Since p-value is bigger than 0.05, we fail to reject <span class="math inline">\(H_0\)</span>.</p>
+<p>Since p-value is bigger than 0.05, we fail to reject <span
+class="math inline">\(H_0\)</span>.</p>
 </div>
-<div id="test-g-function" class="section level2">
+<div id="test-g-function" class="section level2" number="2.3">
 <h2><span class="header-section-number">2.3</span> Test: G Function</h2>
 <pre class="r"><code>r=seq(0,sqrt(2), by=0.005)
 Gtest=envelope(data1,fun=Gest, r=r, nrank=2, nsim=99)</code></pre>
@@ -407,23 +410,37 @@ Gtest=envelope(data1,fun=Gest, r=r, nrank=2, nsim=99)</code></pre>
 <li>nsim: the number of simulated datasets</li>
 <li>nrank: similar to deciding the significant level
 <ul>
-<li>Note that (2+2+1)/(99+1) = 0.05, and therefore, it is a similar to test at <span style="color: red;">“significant level”</span> = 0.05</li>
-<li>That is, if you want to ensure <span class="math inline">\(\alpha\)</span> (significant level), you need to set <span class="math inline">\((2nrank+1)/(nsim+1) = \alpha\)</span>.</li>
+<li>Note that (2+2+1)/(99+1) = 0.05, and therefore, it is a similar to
+test at <span style="color: red;">“significant level”</span> = 0.05</li>
+<li>That is, if you want to ensure <span
+class="math inline">\(\alpha\)</span> (significant level), you need to
+set <span class="math inline">\((2nrank+1)/(nsim+1) =
+\alpha\)</span>.</li>
 </ul></li>
 <li>fun: Gest</li>
-<li>r: where the G function will be evaluated. (<span class="math inline">\(h\)</span> in our slides.)</li>
+<li>r: where the G function will be evaluated. (<span
+class="math inline">\(h\)</span> in our slides.)</li>
 </ul></li>
 </ul>
 <pre class="r"><code>plot(Gtest)</code></pre>
 <p><img src="Week5_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
 <p>What do you conclude from the above plot?</p>
 </div>
-<div id="ppp-class" class="section level2">
+<div id="ppp-class" class="section level2" number="2.4">
 <h2><span class="header-section-number">2.4</span> ppp class</h2>
-<p>As mentioned earlier, package <em>spatstat</em> uses ppp class. We can transform between <em>SpatialPoints</em> class in <em>sp</em> package and <em>ppp</em> class using the function <em>as</em> in package <em>maptools</em></p>
+<p>As mentioned earlier, package <em>spatstat</em> uses ppp class. We
+can transform between <em>SpatialPoints</em> class in <em>sp</em>
+package and <em>ppp</em> class using the function <em>as</em> in package
+<em>maptools</em></p>
 <pre class="r"><code>library(sp)
 library(maptools)</code></pre>
-<pre><code>## Checking rgeos availability: TRUE</code></pre>
+<pre><code>## Checking rgeos availability: FALSE
+## Please note that &#39;maptools&#39; will be retired during 2023,
+## plan transition at your earliest convenience;
+## some functionality will be moved to &#39;sp&#39;.
+##      Note: when rgeos is not available, polygon geometry     computations in maptools depend on gpclib,
+##      which has a restricted licence. It is disabled by default;
+##      to enable gpclib, type gpclibPermit()</code></pre>
 <pre class="r"><code># from ppp class to SpatialPoints class 
 spdata1=as(data1, &quot;SpatialPoints&quot;)
 class(spdata1)  </code></pre>
@@ -436,9 +453,10 @@ class(pppdata1) </code></pre>
 <pre><code>## [1] &quot;ppp&quot;</code></pre>
 </div>
 </div>
-<div id="spatial-point-models" class="section level1">
-<h1><span class="header-section-number">3</span> Spatial Point Models</h1>
-<div id="create-ipp" class="section level2">
+<div id="spatial-point-models" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> Spatial Point
+Models</h1>
+<div id="create-ipp" class="section level2" number="3.1">
 <h2><span class="header-section-number">3.1</span> Create IPP</h2>
 <pre class="r"><code># inhomogeneous Poisson process in unit square
 # with intensity lambda(x,y) = min(10 * exp(3*x), 100), where $s = (x, y)^T$
@@ -446,10 +464,16 @@ lamb = function(x,y) { 10 * exp( 3 * x)}
 ipp = rpoispp(lambda=lamb, lmax=100) 
 plot(ipp, pch=46, cex =3)</code></pre>
 <p><img src="Week5_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
-<p>Here, <em>lmax</em> specifies the largest possible intensity. For example, when <span class="math inline">\(x=1\)</span>, we have <span class="math inline">\(10\exp(3x)=201\)</span>. However, since <em>lmax = 100</em> is specified, the intensity will be 100. That is, we achieve &quot;intensity lambda(x,y) = min(10 * exp(3*x), 100)&quot;.</p>
+<p>Here, <em>lmax</em> specifies the largest possible intensity. For
+example, when <span class="math inline">\(x=1\)</span>, we have <span
+class="math inline">\(10\exp(3x)=201\)</span>. However, since <em>lmax =
+100</em> is specified, the intensity will be 100. That is, we achieve
+“intensity lambda(x,y) = min(10 * exp(3*x), 100)“.</p>
 </div>
-<div id="create-neyman-scott-process-clustered-data-pattern" class="section level2">
-<h2><span class="header-section-number">3.2</span> Create Neyman-Scott Process: clustered data pattern</h2>
+<div id="create-neyman-scott-process-clustered-data-pattern"
+class="section level2" number="3.2">
+<h2><span class="header-section-number">3.2</span> Create Neyman-Scott
+Process: clustered data pattern</h2>
 <pre class="r"><code>nclust &lt;- function(x0, y0, radius, n) {
           return(runifdisc(n, radius, centre=c(x0, y0)))
             }
@@ -460,24 +484,33 @@ plot(rNS, pch=46, cex =3)</code></pre>
 <ul>
 <li>Argument:
 <ul>
-<li>kappa: Intensity of the Poisson process for parent points (that is, <span class="math inline">\(\lambda\)</span> in our slides) – step (i)</li>
-<li>expand: Size of the expansion of the simulation window for parent points – step (i)</li>
-<li>rcluster: step <span class="math inline">\((ii^*)--(iii^*)\)</span>: here runifdisc function is used.</li>
+<li>kappa: Intensity of the Poisson process for parent points (that is,
+<span class="math inline">\(\lambda\)</span> in our slides) – step
+(i)</li>
+<li>expand: Size of the expansion of the simulation window for parent
+points – step (i)</li>
+<li>rcluster: step <span class="math inline">\((ii^*)--(iii^*)\)</span>:
+here runifdisc function is used.</li>
 </ul></li>
 </ul>
-
 <ul>
 <li>About runifdisc function: runifdisc(n, radius)
 <ul>
-<li>Generate a random point pattern containing <span class="math inline">\(n\)</span> independent uniform random points in a circular disc.</li>
-<li>n: Number of offspring. Here, n=5 – in step <span class="math inline">\((ii^*)\)</span>.</li>
+<li>Generate a random point pattern containing <span
+class="math inline">\(n\)</span> independent uniform random points in a
+circular disc.</li>
+<li>n: Number of offspring. Here, n=5 – in step <span
+class="math inline">\((ii^*)\)</span>.</li>
 <li>radius: Radius of the circle. radius = 0.2</li>
-<li>center: Coordinates of the center of the circle (that is, the location of the parent).</li>
+<li>center: Coordinates of the center of the circle (that is, the
+location of the parent).</li>
 </ul></li>
 </ul>
 </div>
-<div id="create-matern-i-and-matern-ii-regular-data-pattern" class="section level2">
-<h2><span class="header-section-number">3.3</span> Create Matern I and Matern II: regular data pattern</h2>
+<div id="create-matern-i-and-matern-ii-regular-data-pattern"
+class="section level2" number="3.3">
+<h2><span class="header-section-number">3.3</span> Create Matern I and
+Matern II: regular data pattern</h2>
 <pre class="r"><code>matI = rMaternI(kappa = 10, r = 0.1)
 matII = rMaternII(kappa = 10, r = 0.1)
 par(mfrow=c(1,2))
@@ -485,13 +518,16 @@ plot(matI, main=&quot;&quot;, pch=46, cex =3)
 plot(matII, main=&quot;&quot;, pch=46, cex =3)</code></pre>
 <p><img src="Week5_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
 <ul>
-<li>kappa: the intensity of the Poisson process (that is, <span class="math inline">\(\lambda\)</span> in our slides).</li>
-<li>r: Inhibition distance. (<span class="math inline">\(\delta\)</span> in our slides)</li>
+<li>kappa: the intensity of the Poisson process (that is, <span
+class="math inline">\(\lambda\)</span> in our slides).</li>
+<li>r: Inhibition distance. (<span class="math inline">\(\delta\)</span>
+in our slides)</li>
 </ul>
 </div>
-<div id="further-study" class="section level2">
+<div id="further-study" class="section level2" number="3.4">
 <h2><span class="header-section-number">3.4</span> Further Study</h2>
-<p>If you have time, can you test <em>rNS</em> data whether it follow clustered point pattern?</p>
+<p>If you have time, can you test <em>rNS</em> data whether it follow
+clustered point pattern?</p>
 </div>
 </div>
 
@@ -504,7 +540,7 @@ plot(matII, main=&quot;&quot;, pch=46, cex =3)</code></pre>
 
 // add bootstrap table styles to pandoc tables
 function bootstrapStylePandocTables() {
-  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
 }
 $(document).ready(function () {
   bootstrapStylePandocTables();
@@ -522,7 +558,7 @@ $(document).ready(function () {
 
 $(document).ready(function () {
   $('.tabset-dropdown > .nav-tabs > li').click(function () {
-    $(this).parent().toggleClass('nav-tabs-open')
+    $(this).parent().toggleClass('nav-tabs-open');
   });
 });
 </script>
