@@ -9,7 +9,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 </div>
 
-
+<span style="color: red;">Due to the Easter Break, this Lab will be on Week 7, Friday, April 21. </span>
 
 # Introduction
 * In this Lab, we will learn to draw some maps. 
@@ -88,6 +88,7 @@ Can you tell the difference between *color* and *fill* argument?
 
 All datasets are read into as *sf* objects
 ```{r, echo=TRUE, fig.width=6, fig.align="center", message = F}
+rm(list = ls())
 library(sf)
 VICLGA = st_read(dsn = "datasets/VICLGA/VIC_LOCALITY_POLYGON_shp.shp", "VIC_LOCALITY_POLYGON_shp")
 VICSub = st_read(dsn="datasets/VICSub/VIC_LOCALITY_POLYGON_shp.shp", "VIC_LOCALITY_POLYGON_shp")
@@ -125,15 +126,16 @@ library(mapview)
 i = which(VICLGA$VIC_LGA__3 == "BANYULE")
 CMEL = VICLGA[i, ]
 tmp = st_intersection(VICSub, CMEL)
-mapView(tmp)
+tmp$VIC_LOCA_2
 ```
 
 
-The map appears OK, but a closer look shows that some suburbs are not supposed to be there (e.g. Eltham). Here is a list of all suburbs in City of Banyule (https://en.wikipedia.org/wiki/City_of_Banyule). The reason for this is likely due to the different resolution and accuracy of shapefiles (VICSub and VICLGA). Therefore, I will remove all the suburbs with a very small area (Here, the unit is square meter, and 10000 is small by a suburb standard.)  
+The object *tmp* includes suburbs which is not in City of Banyule, such as Balwyn North. Here is a list of all suburbs in City of Banyule (https://en.wikipedia.org/wiki/City_of_Banyule). The reason for this is likely due to the different resolution and accuracy of shapefiles (VICSub and VICLGA).   
+
+Therefore, I will remove all the suburbs with a very small area (Here, the unit is square meter, and 10000 is small by a suburb standard.)  
 
 ```{r, echo=TRUE, fig.width=6, fig.align="center", message = FALSE}
 ## Obtain all suburbs in City of Banyule (including part of suburb)
-library(lwgeom)
 tmp$area = st_area(tmp)
 BSub = tmp[as.numeric(tmp$area) > 100000,]
 mapView(BSub)
