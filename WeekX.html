@@ -13,7 +13,7 @@
 
 <title>CBD Pedestrian: ARIMA Models</title>
 
-<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.19/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -60,6 +60,7 @@ if (window.hljs) {
 
 
 
+
 <style type = "text/css">
 .main-container {
   max-width: 940px;
@@ -80,6 +81,9 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
   padding: 0;
@@ -137,11 +141,15 @@ $(document).ready(function () {
     href = "index.html";
   var menuAnchor = $('a[href="' + href + '"]');
 
-  // mark it active
-  menuAnchor.tab('show');
-
-  // if it's got a parent navbar menu mark it active as well
-  menuAnchor.closest('li.dropdown').addClass('active');
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
 
   // Navbar adjustments
   var navHeight = $(".navbar").first().height() + 15;
@@ -170,8 +178,8 @@ $(document).ready(function () {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -179,16 +187,9 @@ $(document).ready(function () {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "&#xe258;";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
+  content: "\e258";
   font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
+  border: none;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -232,7 +233,7 @@ $(document).ready(function () {
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -295,20 +296,30 @@ $(document).ready(function () {
 
 <div id="TOC">
 <ul>
-<li><a href="#dataset"><span class="toc-section-number">1</span> Dataset</a></li>
-<li><a href="#arima"><span class="toc-section-number">2</span> ARIMA</a>
+<li><a href="#dataset" id="toc-dataset"><span
+class="toc-section-number">1</span> Dataset</a></li>
+<li><a href="#arima" id="toc-arima"><span
+class="toc-section-number">2</span> ARIMA</a>
 <ul>
-<li><a href="#fit-1"><span class="toc-section-number">2.1</span> Fit 1</a></li>
-<li><a href="#fit-2"><span class="toc-section-number">2.2</span> Fit 2</a></li>
-<li><a href="#fit-3"><span class="toc-section-number">2.3</span> Fit 3</a></li>
+<li><a href="#fit-1" id="toc-fit-1"><span
+class="toc-section-number">2.1</span> Fit 1</a></li>
+<li><a href="#fit-2" id="toc-fit-2"><span
+class="toc-section-number">2.2</span> Fit 2</a></li>
+<li><a href="#fit-3" id="toc-fit-3"><span
+class="toc-section-number">2.3</span> Fit 3</a></li>
 </ul></li>
-<li><a href="#seasonal-arima"><span class="toc-section-number">3</span> Seasonal ARIMA</a>
+<li><a href="#seasonal-arima" id="toc-seasonal-arima"><span
+class="toc-section-number">3</span> Seasonal ARIMA</a>
 <ul>
-<li><a href="#fit-4"><span class="toc-section-number">3.1</span> Fit 4</a></li>
-<li><a href="#fit-5"><span class="toc-section-number">3.2</span> Fit 5</a></li>
-<li><a href="#fit-6"><span class="toc-section-number">3.3</span> Fit 6</a></li>
+<li><a href="#fit-4" id="toc-fit-4"><span
+class="toc-section-number">3.1</span> Fit 4</a></li>
+<li><a href="#fit-5" id="toc-fit-5"><span
+class="toc-section-number">3.2</span> Fit 5</a></li>
+<li><a href="#fit-6" id="toc-fit-6"><span
+class="toc-section-number">3.3</span> Fit 6</a></li>
 </ul></li>
-<li><a href="#forecasting"><span class="toc-section-number">4</span> Forecasting</a></li>
+<li><a href="#forecasting" id="toc-forecasting"><span
+class="toc-section-number">4</span> Forecasting</a></li>
 </ul>
 </div>
 
@@ -316,7 +327,7 @@ $(document).ready(function () {
 
 </div>
 <div id="dataset" class="section level1" number="1">
-<h1 number="1"><span class="header-section-number">1</span> Dataset</h1>
+<h1><span class="header-section-number">1</span> Dataset</h1>
 <p>See slides on Chapter 8 for the background.</p>
 <pre class="r"><code>library(tidyverse) # read_csv
 library(fpp3)
@@ -352,26 +363,45 @@ autoplot(melb_sel[1:336, ], counts) +
 ## 6 2019-06-01 05:00:00   4.49</code></pre>
 </div>
 <div id="arima" class="section level1" number="2">
-<h1 number="2"><span class="header-section-number">2</span> ARIMA</h1>
-<p>First, we test whether the dataset is stationary. As you can see, KPSS fails to reject null hypothesis, meaning the dataset is trend stationary. Although it is stationary, I will still consider a weekly difference + a lag 1 difference.</p>
+<h1><span class="header-section-number">2</span> ARIMA</h1>
+<p>First, we test whether the dataset is stationary. As you can see,
+KPSS fails to reject null hypothesis, meaning the dataset is stationary.
+Although it is stationary, I will still consider a weekly difference + a
+lag 1 difference.</p>
 <pre class="r"><code>melb_sel[1:2208, ] %&gt;% features(counts, unitroot_kpss)</code></pre>
-<pre><code>## # A tibble: 1 x 2
+<pre><code>## # A tibble: 1 × 2
 ##   kpss_stat kpss_pvalue
 ##       &lt;dbl&gt;       &lt;dbl&gt;
 ## 1    0.0677         0.1</code></pre>
+<pre class="r"><code>melb_sel[1:2208, ] %&gt;% features(counts, unitroot_ndiffs)</code></pre>
+<pre><code>## # A tibble: 1 × 1
+##   ndiffs
+##    &lt;int&gt;
+## 1      0</code></pre>
 <pre class="r"><code>melb_sel[1:2208, ] %&gt;% gg_tsdisplay(plot_type = &quot;partial&quot;, y = counts)</code></pre>
-<p><img src="WeekX_files/figure-html/unnamed-chunk-3-1.png" width="768" style="display: block; margin: auto;" /></p>
-<p>Although the <em>counts</em> is stationary, I will still consider a weekly difference + a lag 1 difference.</p>
+<p><img src="WeekX_files/figure-html/unnamed-chunk-3-1.png" width="768" style="display: block; margin: auto;" />
+``The p-value is reported as 0.01 if it is less than 0.01, and as 0.1 if
+it is greater than 0.1.”</p>
+<p>Although the <em>counts</em> is stationary, I will still consider a
+weekly difference + a lag 1 difference.</p>
+<pre class="r"><code># To determine the seasonal differencing. 
+melb_sel[1:2208, ] %&gt;% features(counts, unitroot_nsdiffs)</code></pre>
+<pre><code>## # A tibble: 1 × 1
+##   nsdiffs
+##     &lt;int&gt;
+## 1       1</code></pre>
 <pre class="r"><code>melb_sel$diff_week &lt;- difference(melb_sel$counts, lag=168) %&gt;% difference(lag = 1)
 melb_sel[170:2208, ] %&gt;% features(diff_week, unitroot_kpss)</code></pre>
-<pre><code>## # A tibble: 1 x 2
+<pre><code>## # A tibble: 1 × 2
 ##   kpss_stat kpss_pvalue
 ##       &lt;dbl&gt;       &lt;dbl&gt;
 ## 1   0.00990         0.1</code></pre>
 <pre class="r"><code>melb_sel[170:2208, ] %&gt;% 
   gg_tsdisplay(diff_week, plot_type=&#39;partial&#39;, lag = 48)</code></pre>
 <p><img src="WeekX_files/figure-html/unnamed-chunk-4-1.png" width="768" style="display: block; margin: auto;" /></p>
-<p>It is hard to see which ARIMA model shall be used for the <em>counts</em>, while for the <em>diff_week</em>, a possible candidates is MA(3).</p>
+<p>It is hard to see which ARIMA model shall be used for the
+<em>counts</em>, while for the <em>diff_week</em>, a possible candidates
+is MA(3).</p>
 <ul>
 <li>I will build three model.
 <ul>
@@ -381,7 +411,7 @@ melb_sel[170:2208, ] %&gt;% features(diff_week, unitroot_kpss)</code></pre>
 </ul></li>
 </ul>
 <div id="fit-1" class="section level2" number="2.1">
-<h2 number="2.1"><span class="header-section-number">2.1</span> Fit 1</h2>
+<h2><span class="header-section-number">2.1</span> Fit 1</h2>
 <pre class="r"><code>fit1 &lt;- melb_sel[170:2208, ] %&gt;%
   model(ARIMA(diff_week ~ PDQ(0,0,0)))
 report(fit1)</code></pre>
@@ -399,13 +429,13 @@ report(fit1)</code></pre>
 <pre class="r"><code>fit1 %&gt;% gg_tsresiduals()</code></pre>
 <p><img src="WeekX_files/figure-html/unnamed-chunk-6-1.png" width="768" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>augment(fit1) %&gt;% features(.innov, ljung_box, lag = 10, dof = 3)</code></pre>
-<pre><code>## # A tibble: 1 x 3
+<pre><code>## # A tibble: 1 × 3
 ##   .model                          lb_stat lb_pvalue
 ##   &lt;chr&gt;                             &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 ARIMA(diff_week ~ PDQ(0, 0, 0))    5.10     0.647</code></pre>
 </div>
 <div id="fit-2" class="section level2" number="2.2">
-<h2 number="2.2"><span class="header-section-number">2.2</span> Fit 2</h2>
+<h2><span class="header-section-number">2.2</span> Fit 2</h2>
 <pre class="r"><code>fit2 &lt;- melb_sel[170:2208, ] %&gt;% 
   model(ARIMA(diff_week ~ pdq(0,0,3) + PDQ(0,0,0)))
 report(fit2)</code></pre>
@@ -423,13 +453,13 @@ report(fit2)</code></pre>
 <pre class="r"><code>fit2 %&gt;% gg_tsresiduals()</code></pre>
 <p><img src="WeekX_files/figure-html/unnamed-chunk-8-1.png" width="768" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>augment(fit2) %&gt;% features(.innov, ljung_box, lag = 10, dof = 3)</code></pre>
-<pre><code>## # A tibble: 1 x 3
+<pre><code>## # A tibble: 1 × 3
 ##   .model                                         lb_stat lb_pvalue
 ##   &lt;chr&gt;                                            &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 ARIMA(diff_week ~ pdq(0, 0, 3) + PDQ(0, 0, 0))    59.4  2.03e-10</code></pre>
 </div>
 <div id="fit-3" class="section level2" number="2.3">
-<h2 number="2.3"><span class="header-section-number">2.3</span> Fit 3</h2>
+<h2><span class="header-section-number">2.3</span> Fit 3</h2>
 <pre class="r"><code>fit3 &lt;- melb_sel[1:2208,] %&gt;% 
   model(ARIMA(counts ~ PDQ(0,0,0)))
 report(fit3)</code></pre>
@@ -447,32 +477,41 @@ report(fit3)</code></pre>
 <pre class="r"><code>fit3 %&gt;% gg_tsresiduals()</code></pre>
 <p><img src="WeekX_files/figure-html/unnamed-chunk-10-1.png" width="768" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>augment(fit3) %&gt;% features(.innov, ljung_box, lag = 10, dof = 3)</code></pre>
-<pre><code>## # A tibble: 1 x 3
+<pre><code>## # A tibble: 1 × 3
 ##   .model                       lb_stat lb_pvalue
 ##   &lt;chr&gt;                          &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 ARIMA(counts ~ PDQ(0, 0, 0))    122.         0</code></pre>
 <ul>
-<li>Fit 1 appears to be the best, although there are still some problems. Here is my personal opinion
+<li>Fit 1 appears to be the best, although there are still some
+problems. Here is my personal opinion
 <ul>
-<li>In the real-world dataset, the result is often not as good as the example in the book (e.g. Central African Republic exports in Cp 9.7)</li>
-<li>lag = 24 means some daily seasonality: maybe fixable with another difference with (lag = 24).</li>
+<li>In the real-world dataset, the result is often not as good as the
+example in the book (e.g. Central African Republic exports in Cp
+9.7)</li>
+<li>lag = 24 means some daily seasonality: maybe fixable with another
+difference with (lag = 24).</li>
 </ul></li>
 </ul>
 </div>
 </div>
 <div id="seasonal-arima" class="section level1" number="3">
-<h1 number="3"><span class="header-section-number">3</span> Seasonal ARIMA</h1>
+<h1><span class="header-section-number">3</span> Seasonal ARIMA</h1>
 <ul>
 <li>I will consider the following model
 <ul>
-<li>fit4: (2,1,1)(0,1,0)<span class="math inline">\(_{168}\)</span> for the <em>counts</em>, it is the same model as fit1</li>
-<li>fit4: (0,1,3)(0,1,0)<span class="math inline">\(_{168}\)</span> for the <em>counts</em>, it is the same model as fit2</li>
-<li>fit5: automatic selection for ( ,1, )(,1, )<span class="math inline">\(_168\)</span> for the <em>counts</em></li>
+<li>fit4: (2,1,1)(0,1,0)<span class="math inline">\(_{168}\)</span> for
+the <em>counts</em>, it is the same model as fit1</li>
+<li>fit4: (0,1,3)(0,1,0)<span class="math inline">\(_{168}\)</span> for
+the <em>counts</em>, it is the same model as fit2</li>
+<li>fit5: automatic selection for ( ,1, )(,1, )<span
+class="math inline">\(_168\)</span> for the <em>counts</em></li>
 </ul></li>
 </ul>
 <div id="fit-4" class="section level2" number="3.1">
-<h2 number="3.1"><span class="header-section-number">3.1</span> Fit 4</h2>
-<p><span class="math inline">\(\phi\)</span>’s and <span class="math inline">\(\theta\)</span>s are the same as Fit 1, but AIC, BIC and AICc are different.</p>
+<h2><span class="header-section-number">3.1</span> Fit 4</h2>
+<p><span class="math inline">\(\phi\)</span>’s and <span
+class="math inline">\(\theta\)</span>s are the same as Fit 1, but AIC,
+BIC and AICc are different.</p>
 <pre class="r"><code>fit4 &lt;- melb_sel[1:2208, ] %&gt;% 
   model(ARIMA(counts ~ pdq(2,1,1) + PDQ(0,1,0, period = 168)))
 report(fit4)</code></pre>
@@ -489,13 +528,13 @@ report(fit4)</code></pre>
 <pre class="r"><code>fit4 %&gt;% gg_tsresiduals()</code></pre>
 <p><img src="WeekX_files/figure-html/unnamed-chunk-11-1.png" width="768" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>augment(fit4) %&gt;% features(.innov, ljung_box, lag = 10, dof = 3)</code></pre>
-<pre><code>## # A tibble: 1 x 3
+<pre><code>## # A tibble: 1 × 3
 ##   .model                                                    lb_stat lb_pvalue
 ##   &lt;chr&gt;                                                       &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 ARIMA(counts ~ pdq(2, 1, 1) + PDQ(0, 1, 0, period = 168))    5.46     0.604</code></pre>
 </div>
 <div id="fit-5" class="section level2" number="3.2">
-<h2 number="3.2"><span class="header-section-number">3.2</span> Fit 5</h2>
+<h2><span class="header-section-number">3.2</span> Fit 5</h2>
 <pre class="r"><code>fit5 &lt;- melb_sel[1:2208, ] %&gt;% 
   model(ARIMA(counts ~ pdq(0,1,3) + PDQ(0,1,0, period = 168)))
 report(fit5)</code></pre>
@@ -512,13 +551,13 @@ report(fit5)</code></pre>
 <pre class="r"><code>fit5 %&gt;% gg_tsresiduals()</code></pre>
 <p><img src="WeekX_files/figure-html/unnamed-chunk-12-1.png" width="768" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>augment(fit5) %&gt;% features(.innov, ljung_box, lag = 10, dof = 3)</code></pre>
-<pre><code>## # A tibble: 1 x 3
+<pre><code>## # A tibble: 1 × 3
 ##   .model                                                    lb_stat lb_pvalue
 ##   &lt;chr&gt;                                                       &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 ARIMA(counts ~ pdq(0, 1, 3) + PDQ(0, 1, 0, period = 168))    64.0  2.37e-11</code></pre>
 </div>
 <div id="fit-6" class="section level2" number="3.3">
-<h2 number="3.3"><span class="header-section-number">3.3</span> Fit 6</h2>
+<h2><span class="header-section-number">3.3</span> Fit 6</h2>
 <pre class="r"><code>## The following codes take quite a while to run
 #fit6 &lt;- melb_sel[1:2208, ] %&gt;% 
 #  model(ARIMA(counts ~ pdq(,1,) + PDQ(,1,, period = 168)))
@@ -528,12 +567,15 @@ report(fit5)</code></pre>
 </div>
 </div>
 <div id="forecasting" class="section level1" number="4">
-<h1 number="4"><span class="header-section-number">4</span> Forecasting</h1>
+<h1><span class="header-section-number">4</span> Forecasting</h1>
 <p>There is a function in the package to do the forecasting</p>
 <pre class="r"><code>forecast(fit3, h = 24) %&gt;%
   autoplot(melb_sel[2209:2233,])</code></pre>
 <p><img src="WeekX_files/figure-html/unnamed-chunk-14-1.png" width="768" style="display: block; margin: auto;" /></p>
-<p>I will not recommend you to use Fit1/Fit2 for the forecasting the <em>counts</em>, since it is difficult to transform the prediction interval. Instead, using the corresponding seasonal-ARIMA model if you can.</p>
+<p>I will not recommend you to use Fit1/Fit2 for the forecasting the
+<em>counts</em>, since it is difficult to transform the prediction
+interval. Instead, using the corresponding seasonal-ARIMA model if you
+can.</p>
 <p>MSE</p>
 <pre class="r"><code>H = 24*7
 idx = 2209:(2208 + H)
@@ -547,7 +589,7 @@ MSE4 = mean((tmp4$.mean - melb_sel$counts[idx])^2)
 MSE5 = mean((tmp5$.mean - melb_sel$counts[idx])^2)
 #MSE6 = mean((tmp6$.mean - melb_sel$counts[idx])^2)
 c(MSE3, MSE4, MSE5)</code></pre>
-<pre><code>## [1] 1.32308207 0.05927944 0.08740256</code></pre>
+<pre><code>## [1] 1.32308207 0.05927945 0.08740256</code></pre>
 <p>The plots</p>
 <pre class="r"><code>melb_sel$tf3 = NA
 melb_sel$tf4 = NA
