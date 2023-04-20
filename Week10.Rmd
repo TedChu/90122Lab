@@ -37,25 +37,43 @@ load("datasets/gmel2.Rdata")
 mapView(gmel2, zcol = "price")
 ```
 
+# Specify W
+```{r, echo=TRUE, fig.width=6, fig.align="center", message = FALSE, warning = F}
+library(spdep)
+library(spatialreg)
+```
 
+```{r, echo=TRUE, fig.width=6, fig.align="center"}
+gmel2.sp = as(gmel2, "Spatial")
+# argument: queen = TRUE by default
+swpoly = poly2nb(gmel2.sp)
+# Style: whether to standardise  
+## "B": basic binary coding
+## "W": row standardised (sums over all links to n)
+colb = nb2listw(swpoly, style = "B")
+colw = nb2listw(swpoly, style = "W")
+apply(listw2mat(colb), 1, sum)
+apply(listw2mat(colw), 1, sum)
+
+
+# Construct W via distance
+centre_tmp = st_centroid(gmel2$geometry)
+centre = st_coordinates(centre_tmp)
+n = dim(gmel2)[1]
+dist_mat = as.matrix(dist(centre, diag = TRUE, upper = TRUE))
+matW = 1/dist_mat
+W1 = mat2listw(matW)
+```
 
 
 # Spatial Lag Model
 
 Before 2020, the function lagsarlm is in the package *spdep*. Now it is moved to *spatialreg* package, and I suggest you to use *spatialreg::lagsarlm* to make sure you are using *lagsarlm* function from *spatialreg* package
 
-```{r, echo=TRUE, fig.width=6, fig.align="center", message = FALSE, warning = F}
-library(spdep)
-library(spatialreg)
-```
+
 
 
 ```{r, echo=TRUE, fig.width=6, fig.align="center"}
-gmel2.sp = as(gmel2, "Spatial")
-swpoly = poly2nb(gmel2.sp)
-## row sum standarize to 1
-colw = nb2listw(swpoly, style = "W")
-
 ## This is a demonstration on how to use function "lagsarlm"
 ## Not really about how to analyze melbourne housing in depth. 
 mlag = spatialreg::lagsarlm(log(price)~dis+off + inc, data=gmel2, 
