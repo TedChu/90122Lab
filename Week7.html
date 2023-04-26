@@ -13,12 +13,22 @@
 
 <title>Week 7: Data Wrangling – tidyr and dplyr</title>
 
-<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<script src="site_libs/header-attrs-2.19/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
@@ -33,11 +43,6 @@
     </style>
 
 <style type="text/css">code{white-space: pre;}</style>
-<style type="text/css">
-  pre:not([class]) {
-    background-color: white;
-  }
-</style>
 <script type="text/javascript">
 if (window.hljs) {
   hljs.configure({languages: []});
@@ -50,32 +55,7 @@ if (window.hljs) {
 
 
 
-<style type="text/css">
-h1 {
-  font-size: 34px;
-}
-h1.title {
-  font-size: 38px;
-}
-h2 {
-  font-size: 30px;
-}
-h3 {
-  font-size: 24px;
-}
-h4 {
-  font-size: 18px;
-}
-h5 {
-  font-size: 16px;
-}
-h6 {
-  font-size: 12px;
-}
-.table th:not([align]) {
-  text-align: left;
-}
-</style>
+
 
 
 
@@ -86,10 +66,6 @@ h6 {
   max-width: 940px;
   margin-left: auto;
   margin-right: auto;
-}
-code {
-  color: inherit;
-  background-color: rgba(0, 0, 0, 0.04);
 }
 img {
   max-width:100%;
@@ -106,40 +82,16 @@ button.code-folding-btn:focus {
 summary {
   display: list-item;
 }
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
 </style>
 
 
 <style type="text/css">
-/* padding for bootstrap navbar */
-body {
-  padding-top: 51px;
-  padding-bottom: 40px;
-}
-/* offset scroll position for anchor links (for fixed navbar)  */
-.section h1 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h2 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h3 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h4 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h5 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h6 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
 .dropdown-submenu {
   position: relative;
 }
@@ -167,7 +119,7 @@ body {
   margin-right: -10px;
 }
 .dropdown-submenu:hover>a:after {
-  border-left-color: #ffffff;
+  border-left-color: #adb5bd;
 }
 .dropdown-submenu.pull-left {
   float: none;
@@ -179,7 +131,7 @@ body {
 }
 </style>
 
-<script>
+<script type="text/javascript">
 // manage active state of menu based on current page
 $(document).ready(function () {
   // active menu anchor
@@ -189,11 +141,28 @@ $(document).ready(function () {
     href = "index.html";
   var menuAnchor = $('a[href="' + href + '"]');
 
-  // mark it active
-  menuAnchor.parent().addClass('active');
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
 
-  // if it's got a parent navbar menu mark it active as well
-  menuAnchor.closest('li.dropdown').addClass('active');
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
 });
 </script>
 
@@ -205,13 +174,12 @@ $(document).ready(function () {
   max-height: 500px;
   min-height: 44px;
   overflow-y: auto;
-  background: white;
   border: 1px solid #ddd;
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -219,16 +187,9 @@ $(document).ready(function () {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "&#xe258;";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
+  content: "\e258";
   font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
+  border: none;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -272,7 +233,7 @@ $(document).ready(function () {
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -314,6 +275,9 @@ $(document).ready(function () {
 <li>
   <a href="Week11.html">Week 11</a>
 </li>
+<li>
+  <a href="WeekX.html">WeekX</a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         
@@ -322,35 +286,47 @@ $(document).ready(function () {
   </div><!--/.container -->
 </div><!--/.navbar -->
 
-<div class="fluid-row" id="header">
+<div id="header">
 
 
 
-<h1 class="title toc-ignore">Week 7: Data Wrangling – tidyr and dplyr</h1>
+<h1 class="title toc-ignore">Week 7: Data Wrangling – tidyr and
+dplyr</h1>
 
 </div>
 
 <div id="TOC">
 <ul>
-<li><a href="#introduction"><span class="toc-section-number">1</span> Introduction</a></li>
-<li><a href="#tidyr"><span class="toc-section-number">2</span> tidyr</a></li>
-<li><a href="#dplyr"><span class="toc-section-number">3</span> dplyr</a></li>
-<li><a href="#an-example"><span class="toc-section-number">4</span> An Example</a></li>
+<li><a href="#introduction" id="toc-introduction"><span
+class="toc-section-number">1</span> Introduction</a></li>
+<li><a href="#tidyr" id="toc-tidyr"><span
+class="toc-section-number">2</span> tidyr</a></li>
+<li><a href="#dplyr" id="toc-dplyr"><span
+class="toc-section-number">3</span> dplyr</a></li>
+<li><a href="#an-example" id="toc-an-example"><span
+class="toc-section-number">4</span> An Example</a></li>
 </ul>
 </div>
 
 <div style="margin-bottom:50px;">
 
 </div>
-<div id="introduction" class="section level1">
+<p><span style="color: red;">Due to the Easter Break, this Lab will be
+held in Week 8. </span></p>
+<div id="introduction" class="section level1" number="1">
 <h1><span class="header-section-number">1</span> Introduction</h1>
-<p>In previous labs, we studied how to visualise the spatial objects. In this lab, we will study operations on the data frame (and therefore, sf object).</p>
-<p>Two R packages, <em>tidyr</em> and <em>dplyr</em>, are designed to simplify the data cleaning and preparation.</p>
+<p>In previous labs, we studied how to visualise the spatial objects. In
+this lab, we will study operations on the data frame (and therefore, sf
+object).</p>
+<p>Two R packages, <em>tidyr</em> and <em>dplyr</em>, are designed to
+simplify the data cleaning and preparation.</p>
 </div>
-<div id="tidyr" class="section level1">
+<div id="tidyr" class="section level1" number="2">
 <h1><span class="header-section-number">2</span> tidyr</h1>
 <ul>
-<li>Please study the <em>tidyr</em> package through the following tutorial <a href="https://uc-r.github.io/tidyr" class="uri">https://uc-r.github.io/tidyr</a>. There are five commands
+<li>Please study the <em>tidyr</em> package through the following
+tutorial <a href="https://uc-r.github.io/tidyr"
+class="uri">https://uc-r.github.io/tidyr</a>. There are five commands
 <ul>
 <li>%&gt;%: the pipe operator</li>
 <li>gather</li>
@@ -359,34 +335,38 @@ $(document).ready(function () {
 <li>unite</li>
 </ul></li>
 </ul>
-<p>The function <em>gather</em> and <em>spread</em> has been retired, but it is still widely used in many books/blogs. The <em>gather</em> function is replaced by <em>pivot_longer</em>, and <em>spread</em> function is replaced by <em>pivot_wider</em></p>
+<p>The function <em>gather</em> and <em>spread</em> has been retired,
+but it is still widely used in many books/blogs. The <em>gather</em>
+function is replaced by <em>pivot_longer</em>, and <em>spread</em>
+function is replaced by <em>pivot_wider</em></p>
 <pre class="r"><code>library(tidyr)
 relig_income</code></pre>
-<pre><code>## # A tibble: 18 x 11
-##    religion `&lt;$10k` `$10-20k` `$20-30k` `$30-40k` `$40-50k` `$50-75k` `$75-100k`
-##    &lt;chr&gt;      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;
-##  1 Agnostic      27        34        60        81        76       137        122
-##  2 Atheist       12        27        37        52        35        70         73
-##  3 Buddhist      27        21        30        34        33        58         62
-##  4 Catholic     418       617       732       670       638      1116        949
-##  5 Don’t k~      15        14        15        11        10        35         21
-##  6 Evangel~     575       869      1064       982       881      1486        949
-##  7 Hindu          1         9         7         9        11        34         47
-##  8 Histori~     228       244       236       238       197       223        131
-##  9 Jehovah~      20        27        24        24        21        30         15
-## 10 Jewish        19        19        25        25        30        95         69
-## 11 Mainlin~     289       495       619       655       651      1107        939
-## 12 Mormon        29        40        48        51        56       112         85
-## 13 Muslim         6         7         9        10         9        23         16
-## 14 Orthodox      13        17        23        32        32        47         38
-## 15 Other C~       9         7        11        13        13        14         18
-## 16 Other F~      20        33        40        46        49        63         46
-## 17 Other W~       5         2         3         4         2         7          3
-## 18 Unaffil~     217       299       374       365       341       528        407
-## # ... with 3 more variables: $100-150k &lt;dbl&gt;, &gt;150k &lt;dbl&gt;,
-## #   Don&#39;t know/refused &lt;dbl&gt;</code></pre>
+<pre><code>## # A tibble: 18 × 11
+##    religion      `&lt;$10k` $10-2…¹ $20-3…² $30-4…³ $40-5…⁴ $50-7…⁵ $75-1…⁶ $100-…⁷
+##    &lt;chr&gt;           &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
+##  1 Agnostic           27      34      60      81      76     137     122     109
+##  2 Atheist            12      27      37      52      35      70      73      59
+##  3 Buddhist           27      21      30      34      33      58      62      39
+##  4 Catholic          418     617     732     670     638    1116     949     792
+##  5 Don’t know/r…      15      14      15      11      10      35      21      17
+##  6 Evangelical …     575     869    1064     982     881    1486     949     723
+##  7 Hindu               1       9       7       9      11      34      47      48
+##  8 Historically…     228     244     236     238     197     223     131      81
+##  9 Jehovah&#39;s Wi…      20      27      24      24      21      30      15      11
+## 10 Jewish             19      19      25      25      30      95      69      87
+## 11 Mainline Prot     289     495     619     655     651    1107     939     753
+## 12 Mormon             29      40      48      51      56     112      85      49
+## 13 Muslim              6       7       9      10       9      23      16       8
+## 14 Orthodox           13      17      23      32      32      47      38      42
+## 15 Other Christ…       9       7      11      13      13      14      18      14
+## 16 Other Faiths       20      33      40      46      49      63      46      40
+## 17 Other World …       5       2       3       4       2       7       3       4
+## 18 Unaffiliated      217     299     374     365     341     528     407     321
+## # … with 2 more variables: `&gt;150k` &lt;dbl&gt;, `Don&#39;t know/refused` &lt;dbl&gt;, and
+## #   abbreviated variable names ¹​`$10-20k`, ²​`$20-30k`, ³​`$30-40k`, ⁴​`$40-50k`,
+## #   ⁵​`$50-75k`, ⁶​`$75-100k`, ⁷​`$100-150k`</code></pre>
 <pre class="r"><code>relig_income %&gt;% pivot_longer(!religion, names_to = &quot;income&quot;, values_to = &quot;count&quot;)</code></pre>
-<pre><code>## # A tibble: 180 x 3
+<pre><code>## # A tibble: 180 × 3
 ##    religion income             count
 ##    &lt;chr&gt;    &lt;chr&gt;              &lt;dbl&gt;
 ##  1 Agnostic &lt;$10k                 27
@@ -399,9 +379,9 @@ relig_income</code></pre>
 ##  8 Agnostic $100-150k            109
 ##  9 Agnostic &gt;150k                 84
 ## 10 Agnostic Don&#39;t know/refused    96
-## # ... with 170 more rows</code></pre>
+## # … with 170 more rows</code></pre>
 <pre class="r"><code>relig_income %&gt;% gather(key = income, value = count, -religion)</code></pre>
-<pre><code>## # A tibble: 180 x 3
+<pre><code>## # A tibble: 180 × 3
 ##    religion                income count
 ##    &lt;chr&gt;                   &lt;chr&gt;  &lt;dbl&gt;
 ##  1 Agnostic                &lt;$10k     27
@@ -414,9 +394,9 @@ relig_income</code></pre>
 ##  8 Historically Black Prot &lt;$10k    228
 ##  9 Jehovah&#39;s Witness       &lt;$10k     20
 ## 10 Jewish                  &lt;$10k     19
-## # ... with 170 more rows</code></pre>
+## # … with 170 more rows</code></pre>
 <pre class="r"><code>fish_encounters</code></pre>
-<pre><code>## # A tibble: 114 x 3
+<pre><code>## # A tibble: 114 × 3
 ##    fish  station  seen
 ##    &lt;fct&gt; &lt;fct&gt;   &lt;int&gt;
 ##  1 4842  Release     1
@@ -429,9 +409,9 @@ relig_income</code></pre>
 ##  8 4842  BCE2        1
 ##  9 4842  BCW2        1
 ## 10 4842  MAE         1
-## # ... with 104 more rows</code></pre>
+## # … with 104 more rows</code></pre>
 <pre class="r"><code>fish_encounters %&gt;% pivot_wider(names_from = station, values_from = seen)</code></pre>
-<pre><code>## # A tibble: 19 x 12
+<pre><code>## # A tibble: 19 × 12
 ##    fish  Release I80_1 Lisbon  Rstr Base_TD   BCE   BCW  BCE2  BCW2   MAE   MAW
 ##    &lt;fct&gt;   &lt;int&gt; &lt;int&gt;  &lt;int&gt; &lt;int&gt;   &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;
 ##  1 4842        1     1      1     1       1     1     1     1     1     1     1
@@ -454,7 +434,7 @@ relig_income</code></pre>
 ## 18 4864        1     1     NA    NA      NA    NA    NA    NA    NA    NA    NA
 ## 19 4865        1     1      1    NA      NA    NA    NA    NA    NA    NA    NA</code></pre>
 <pre class="r"><code>fish_encounters %&gt;% spread(key = station, value = seen)</code></pre>
-<pre><code>## # A tibble: 19 x 12
+<pre><code>## # A tibble: 19 × 12
 ##    fish  Release I80_1 Lisbon  Rstr Base_TD   BCE   BCW  BCE2  BCW2   MAE   MAW
 ##    &lt;fct&gt;   &lt;int&gt; &lt;int&gt;  &lt;int&gt; &lt;int&gt;   &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;
 ##  1 4842        1     1      1     1       1     1     1     1     1     1     1
@@ -477,10 +457,16 @@ relig_income</code></pre>
 ## 18 4864        1     1     NA    NA      NA    NA    NA    NA    NA    NA    NA
 ## 19 4865        1     1      1    NA      NA    NA    NA    NA    NA    NA    NA</code></pre>
 </div>
-<div id="dplyr" class="section level1">
+<div id="dplyr" class="section level1" number="3">
 <h1><span class="header-section-number">3</span> dplyr</h1>
 <ul>
-<li>Please study the <em>dplyr</em> package through the following tutorial <a href="https://cran.r-project.org/web/packages/dplyr/vignettes/base.html" class="uri">https://cran.r-project.org/web/packages/dplyr/vignettes/base.html</a>. The tutorial includes a comparison betwwen commands of <em>dplyr</em> and the equivalent from base R. The following commands are especially useful
+<li>Please study the <em>dplyr</em> package through the following
+tutorial <a
+href="https://cran.r-project.org/web/packages/dplyr/vignettes/base.html"
+class="uri">https://cran.r-project.org/web/packages/dplyr/vignettes/base.html</a>.
+The tutorial includes a comparison betwwen commands of <em>dplyr</em>
+and the equivalent from base R. The following commands are especially
+useful
 <ul>
 <li>arrange: Arrange rows by variables</li>
 <li>filter: Return rows with matching conditions</li>
@@ -488,7 +474,12 @@ relig_income</code></pre>
 <li>select: Select variables by name</li>
 <li>summarise: Reduce multiple values down to a single value</li>
 </ul></li>
-<li>The above commands only handle a data frame. For the operations in two data frames. Please see <em>Combine Data Sets</em> of <a href="https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf" class="uri">https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf</a>. (This cheat sheet is also very useful as a future reference). In particular, the following four commands:
+<li>The above commands only handle a data frame. For the operations in
+two data frames. Please see <em>Combine Data Sets</em> of <a
+href="https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf"
+class="uri">https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf</a>.
+(This cheat sheet is also very useful as a future reference). In
+particular, the following four commands:
 <ul>
 <li>left_join</li>
 <li>right_join</li>
@@ -497,21 +488,28 @@ relig_income</code></pre>
 </ul></li>
 </ul>
 </div>
-<div id="an-example" class="section level1">
+<div id="an-example" class="section level1" number="4">
 <h1><span class="header-section-number">4</span> An Example</h1>
-<p>Suppose you want to plot all suburbs in City of Banyule. However, for suburbs shared with other LGAs, such as Bundoora, you want to plot the whole suburb, instead of the portion inside Banyule.</p>
-<p>First, you can <em>filter</em> all these suburbs from <em>VICSub</em>. Here, I used the variable <em>LC_PLY_PID</em> instead of suburb names, because there are actually two Bellfield in Vitoria (and only one is in City of Banyule).</p>
+<p>Suppose you want to plot all suburbs in City of Banyule. However, for
+suburbs shared with other LGAs, such as Bundoora, you want to plot the
+whole suburb, instead of the portion inside Banyule.</p>
+<p>First, you can <em>filter</em> all these suburbs from
+<em>VICSub</em>. Here, I used the variable <em>LC_PLY_PID</em> instead
+of suburb names, because there are actually two Bellfield in Vitoria
+(and only one is in City of Banyule).</p>
 <pre class="r"><code>library(sf)
 library(ggplot2)
 library(dplyr)
 load(&quot;datasets/BSub.Rdata&quot;)
 VICSub = st_read(dsn=&quot;datasets/VICSub/VIC_LOCALITY_POLYGON_shp.shp&quot;, &quot;VIC_LOCALITY_POLYGON_shp&quot;)</code></pre>
-<pre><code>## Reading layer `VIC_LOCALITY_POLYGON_shp&#39; from data source `C:\Users\tingjinc\Dropbox\2_MAST90122\90122LabGit\datasets\VICSub\VIC_LOCALITY_POLYGON_shp.shp&#39; using driver `ESRI Shapefile&#39;
+<pre><code>## Reading layer `VIC_LOCALITY_POLYGON_shp&#39; from data source 
+##   `C:\Users\tingjinc\Dropbox\2_MAST90122\90122LabGit\datasets\VICSub\VIC_LOCALITY_POLYGON_shp.shp&#39; 
+##   using driver `ESRI Shapefile&#39;
 ## Simple feature collection with 2973 features and 12 fields
-## geometry type:  POLYGON
-## dimension:      XY
-## bbox:           xmin: 140.9619 ymin: -39.13657 xmax: 149.9763 ymax: -33.98127
-## geographic CRS: GDA2020</code></pre>
+## Geometry type: POLYGON
+## Dimension:     XY
+## Bounding box:  xmin: 140.9619 ymin: -39.13657 xmax: 149.9763 ymax: -33.98127
+## Geodetic CRS:  GDA2020</code></pre>
 <pre class="r"><code>VICSub &lt;- st_transform(VICSub, 4326)
 
 BSub2 = VICSub %&gt;% filter(LC_PLY_PID %in% BSub$LC_PLY_PID)</code></pre>
@@ -549,7 +547,7 @@ $(document).ready(function () {
 
 $(document).ready(function () {
   $('.tabset-dropdown > .nav-tabs > li').click(function () {
-    $(this).parent().toggleClass('nav-tabs-open')
+    $(this).parent().toggleClass('nav-tabs-open');
   });
 });
 </script>
