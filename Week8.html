@@ -333,13 +333,16 @@ class="toc-section-number">4.1</span> Create geodata</a></li>
 <div style="margin-bottom:50px;">
 
 </div>
+<p><span style="color: red;">Due to the Easter Break, this Lab will be
+held in Week 9. </span></p>
 <div id="introduction" class="section level1" number="1">
 <h1><span class="header-section-number">1</span> Introduction</h1>
 <ul>
 <li>In this Lab, we will learn
 <ul>
-<li>Semivariogram</li>
-<li>MLE</li>
+<li>Semivariogram: Cp 4 – “Introduction and Semivariogram”</li>
+<li>MLE: Cp 4 – “Covariance and Semivariogram Models”, “Paramatric
+Modelling: MLE”; Cp 5 – “MLE”</li>
 </ul></li>
 </ul>
 </div>
@@ -354,12 +357,6 @@ in soil at <span class="math inline">\(\mathbf{s}\)</span>.</p>
 data(ca20)
 points(ca20,cex.min = 0.2, cex.max = 1.5, pch = 21)</code></pre>
 <p><img src="Week8_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
-<p>Note: The <em>geoR</em> package was archived by R, but you can still
-manually install the previous packages (<a
-href="https://cran.r-project.org/web/packages/geoR/index.html"
-class="uri">https://cran.r-project.org/web/packages/geoR/index.html</a>).
-I think (or hope) that the author will update the package and therefore
-the package will be un-archived. — Information on May 5th, 2022.</p>
 </div>
 <div id="semivariogram" class="section level2" number="2.2">
 <h2><span class="header-section-number">2.2</span> Semivariogram</h2>
@@ -451,6 +448,7 @@ class="math inline">\((\sigma^2, \phi, \tau^2)\)</span></li>
 m1$cov.pars
 # partial sill 
 m1$sigmasq
+# the range parameter
 m1$phi
 # nugget
 m1$nugget</code></pre>
@@ -516,6 +514,8 @@ logLik(m1)</code></pre>
 ## [1] 1273.191
 ## [1] 477.7842
 ## &#39;log Lik.&#39; -632.5953 (df=4)</code></pre>
+<p>You can also study possible covariance functions by reading details
+(accessed by typing “?cov.spatial”)</p>
 </div>
 <div id="spatial-trend" class="section level2" number="3.3">
 <h2><span class="header-section-number">3.3</span> Spatial Trend</h2>

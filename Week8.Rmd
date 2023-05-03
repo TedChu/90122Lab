@@ -9,11 +9,14 @@ knitr::opts_chunk$set(echo = TRUE)
 
 </div>
 
+<span style="color: red;">Due to the Easter Break, this Lab will be held in Week 9. </span>
+
+
 # Introduction
 
 * In this Lab, we will learn
-  + Semivariogram
-  + MLE
+  + Semivariogram: Cp 4 -- "Introduction and Semivariogram"
+  + MLE: Cp 4 -- "Covariance and Semivariogram Models", "Paramatric Modelling: MLE"; Cp 5 -- "MLE"
 
 
 
@@ -29,7 +32,7 @@ data(ca20)
 points(ca20,cex.min = 0.2, cex.max = 1.5, pch = 21)
 ```
 
-Note: The *geoR* package was archived by R, but you can still manually install the previous packages (https://cran.r-project.org/web/packages/geoR/index.html). I think (or hope) that the author will update the package and therefore the package will be un-archived. --- Information on May 5th, 2022.   
+
 
 
 ## Semivariogram
@@ -91,6 +94,7 @@ The output of MLE
 m1$cov.pars
 # partial sill 
 m1$sigmasq
+# the range parameter
 m1$phi
 # nugget
 m1$nugget
@@ -133,7 +137,7 @@ AIC(m1)
 m1$practicalRange
 logLik(m1)
 ```
-
+You can also study possible covariance functions by reading details (accessed by typing "?cov.spatial")
   
 ## Spatial Trend
 
