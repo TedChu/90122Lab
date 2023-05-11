@@ -143,12 +143,6 @@ augment(fit5) %>% features(.innov, ljung_box, lag = 10, dof = 3)
 
 ## Fit 6 
 ```{r, echo=TRUE, fig.align="center"}
-fitX <- melb_sel[1:2208, ] %>% 
-  model(ARIMA(counts ~ pdq(,1,) + PDQ(0,1,0, period = 168)))
-report(fitX)
-fitY <- melb_sel[1:2208, ] %>% 
-  model(ARIMA(counts ~ pdq(,0,) + PDQ(0,1,0, period = 168)))
-report(fitY)
 ## The following codes take quite a while to run
 #fit6 <- melb_sel[1:2208, ] %>% 
 #  model(ARIMA(counts ~ pdq(,1,) + PDQ(,1,, period = 168)))
@@ -201,3 +195,17 @@ ggplot(data = melb_sel[idx, ], aes(x = date, y = counts)) + geom_line() +
   geom_line(aes(x = date, y = tf3, color = "Fit 3: no diff")) + 
   scale_color_manual(name = "colour", values = c("Fit 1/4: diff + auto" = "red", "Fit 2/5: diff" = "green", "Fit 3: no diff" = "blue"))
 ```
+
+
+# Automatic Procedure
+```{r, echo=TRUE, fig.align="center"}
+fitX <- melb_sel[1:2208, ] %>% 
+  model(ARIMA(counts ~ pdq(,1,) + PDQ(0,1,0, period = 168)))
+report(fitX)
+fitY <- melb_sel[1:2208, ] %>% 
+  model(ARIMA(counts ~ pdq(,0,) + PDQ(0,1,0, period = 168)))
+report(fitY)
+```
+
+
+
