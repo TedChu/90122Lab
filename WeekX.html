@@ -558,6 +558,32 @@ report(fit5)</code></pre>
 </div>
 <div id="fit-6" class="section level2" number="3.3">
 <h2><span class="header-section-number">3.3</span> Fit 6</h2>
+<pre class="r"><code>fitX &lt;- melb_sel[1:2208, ] %&gt;% 
+  model(ARIMA(counts ~ pdq(,1,) + PDQ(0,1,0, period = 168)))
+report(fitX)</code></pre>
+<pre><code>## Series: counts 
+## Model: ARIMA(2,1,1)(0,1,0)[168] 
+## 
+## Coefficients:
+##          ar1     ar2      ma1
+##       0.4163  0.1600  -0.9743
+## s.e.  0.0230  0.0229   0.0066
+## 
+## sigma^2 estimated as 0.03655:  log likelihood=477.25
+## AIC=-946.5   AICc=-946.48   BIC=-924.02</code></pre>
+<pre class="r"><code>fitY &lt;- melb_sel[1:2208, ] %&gt;% 
+  model(ARIMA(counts ~ pdq(,0,) + PDQ(0,1,0, period = 168)))
+report(fitY)</code></pre>
+<pre><code>## Series: counts 
+## Model: ARIMA(3,0,1)(0,1,0)[168] 
+## 
+## Coefficients:
+##          ar1      ar2      ar3      ma1
+##       1.3945  -0.2491  -0.1534  -0.9568
+## s.e.  0.0266   0.0377   0.0230   0.0145
+## 
+## sigma^2 estimated as 0.03637:  log likelihood=487.43
+## AIC=-964.85   AICc=-964.83   BIC=-936.75</code></pre>
 <pre class="r"><code>## The following codes take quite a while to run
 #fit6 &lt;- melb_sel[1:2208, ] %&gt;% 
 #  model(ARIMA(counts ~ pdq(,1,) + PDQ(,1,, period = 168)))
