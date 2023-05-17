@@ -9,6 +9,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 </div>
 
+<span style="color: red;">Due to the Easter Break, this Lab will be held in Week 11. </span>
+
 
 
 # Median House Price Example
@@ -19,9 +21,6 @@ knitr::opts_chunk$set(echo = TRUE)
   + dis: distance to Melbourne (in km)
   + off: totoal offences per 1000 population
   + inc: median household income weekly
-
-*The goal of this example is not to analyze Melbourne housing price. The goal is to show you an example using spatial lag model. I prefer to use (if possible) some example close to Melbourne/Victoria rather than Crime data in ohio, USA.*
-
 
 
 ```{r, echo=TRUE, fig.width=6, fig.align="center", message = FALSE, warning = F}
@@ -82,7 +81,9 @@ mlag = spatialreg::lagsarlm(log(price)~dis+off + inc, data=gmel2,
 ```
 
 
-The output
+* The output
+  + LR test: Likelihood Ratio Test in Slide 20 of Cp6.
+  + Wald: Wald Test in Slide 20 of Cp6.
 
 ```{r, echo=TRUE, fig.width=6, fig.align="center", hold=TRUE}
 # Just like lm output. distance and income are significant, while offense is not.
