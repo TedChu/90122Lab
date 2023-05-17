@@ -13,22 +13,36 @@
 
 <title>Week 11: Visulization of Spatio-Temporal Data (Optional)</title>
 
-<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<script src="site_libs/header-attrs-2.19/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 
-<style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
-  pre:not([class]) {
-    background-color: white;
-  }
-</style>
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
 <script type="text/javascript">
 if (window.hljs) {
   hljs.configure({languages: []});
@@ -41,32 +55,8 @@ if (window.hljs) {
 
 
 
-<style type="text/css">
-h1 {
-  font-size: 34px;
-}
-h1.title {
-  font-size: 38px;
-}
-h2 {
-  font-size: 30px;
-}
-h3 {
-  font-size: 24px;
-}
-h4 {
-  font-size: 18px;
-}
-h5 {
-  font-size: 16px;
-}
-h6 {
-  font-size: 12px;
-}
-.table th:not([align]) {
-  text-align: left;
-}
-</style>
+
+
 
 
 
@@ -76,10 +66,6 @@ h6 {
   max-width: 940px;
   margin-left: auto;
   margin-right: auto;
-}
-code {
-  color: inherit;
-  background-color: rgba(0, 0, 0, 0.04);
 }
 img {
   max-width:100%;
@@ -96,40 +82,16 @@ button.code-folding-btn:focus {
 summary {
   display: list-item;
 }
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
 </style>
 
 
 <style type="text/css">
-/* padding for bootstrap navbar */
-body {
-  padding-top: 51px;
-  padding-bottom: 40px;
-}
-/* offset scroll position for anchor links (for fixed navbar)  */
-.section h1 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h2 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h3 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h4 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h5 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h6 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
 .dropdown-submenu {
   position: relative;
 }
@@ -157,7 +119,7 @@ body {
   margin-right: -10px;
 }
 .dropdown-submenu:hover>a:after {
-  border-left-color: #ffffff;
+  border-left-color: #adb5bd;
 }
 .dropdown-submenu.pull-left {
   float: none;
@@ -169,7 +131,7 @@ body {
 }
 </style>
 
-<script>
+<script type="text/javascript">
 // manage active state of menu based on current page
 $(document).ready(function () {
   // active menu anchor
@@ -179,11 +141,28 @@ $(document).ready(function () {
     href = "index.html";
   var menuAnchor = $('a[href="' + href + '"]');
 
-  // mark it active
-  menuAnchor.parent().addClass('active');
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
 
-  // if it's got a parent navbar menu mark it active as well
-  menuAnchor.closest('li.dropdown').addClass('active');
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
 });
 </script>
 
@@ -195,13 +174,12 @@ $(document).ready(function () {
   max-height: 500px;
   min-height: 44px;
   overflow-y: auto;
-  background: white;
   border: 1px solid #ddd;
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -209,16 +187,9 @@ $(document).ready(function () {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "&#xe258;";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
+  content: "\e258";
   font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
+  border: none;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -262,7 +233,7 @@ $(document).ready(function () {
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -304,6 +275,9 @@ $(document).ready(function () {
 <li>
   <a href="Week11.html">Week 11</a>
 </li>
+<li>
+  <a href="WeekX.html">WeekX</a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         
@@ -312,35 +286,45 @@ $(document).ready(function () {
   </div><!--/.container -->
 </div><!--/.navbar -->
 
-<div class="fluid-row" id="header">
+<div id="header">
 
 
 
-<h1 class="title toc-ignore">Week 11: Visulization of Spatio-Temporal Data (Optional)</h1>
+<h1 class="title toc-ignore">Week 11: Visulization of Spatio-Temporal
+Data (Optional)</h1>
 
 </div>
 
 <div id="TOC">
 <ul>
-<li><a href="#introduction"><span class="toc-section-number">1</span> Introduction</a></li>
-<li><a href="#spatial-plots"><span class="toc-section-number">2</span> Spatial Plots</a></li>
-<li><a href="#time-series-plots"><span class="toc-section-number">3</span> Time-Series Plots</a></li>
+<li><a href="#introduction" id="toc-introduction"><span
+class="toc-section-number">1</span> Introduction</a></li>
+<li><a href="#spatial-plots" id="toc-spatial-plots"><span
+class="toc-section-number">2</span> Spatial Plots</a></li>
+<li><a href="#time-series-plots" id="toc-time-series-plots"><span
+class="toc-section-number">3</span> Time-Series Plots</a></li>
 </ul>
 </div>
 
 <div style="margin-bottom:50px;">
 
 </div>
-<div id="introduction" class="section level1">
+<p><span style="color: red;">Due to the Easter Break, this Lab will be
+held in Week 12. </span></p>
+<div id="introduction" class="section level1" number="1">
 <h1><span class="header-section-number">1</span> Introduction</h1>
 <ul>
-<li>In Lab 11, we will follow Lab 2.2 of <em>Spatio-Temporal Statistics with R</em>. You can download the electronic pdf through <a href="https://spacetimewithr.org/" class="uri">https://spacetimewithr.org/</a>.
+<li>In Lab 11, we will follow Lab 2.2 of <em>Spatio-Temporal Statistics
+with R</em>. You can download the electronic pdf through <a
+href="https://spacetimewithr.org/"
+class="uri">https://spacetimewithr.org/</a>.
 <ul>
-<li>In this document, I will only highlight some important points; that is, the visulization of spatio-temporal data.</li>
+<li>In this document, I will only highlight some important points; that
+is, the visulization of spatio-temporal data.</li>
 </ul></li>
 </ul>
 </div>
-<div id="spatial-plots" class="section level1">
+<div id="spatial-plots" class="section level1" number="2">
 <h1><span class="header-section-number">2</span> Spatial Plots</h1>
 <ul>
 <li>First, we load the dataset.
@@ -366,10 +350,13 @@ head(Tmax)</code></pre>
 ## 5 728054 1993     5   5 3804 73 Tmax 39.35 -81.43333 1993-05-05 5
 ## 6 728055 1993     5   6 3804 78 Tmax 39.35 -81.43333 1993-05-06 6</code></pre>
 <ul>
-<li>Next, the plot will be produced by package <em>ggplot2</em>. The new function here
+<li>Next, the plot will be produced by package <em>ggplot2</em>. The new
+function here
 <ul>
-<li>geom_path: add US states map. You can replace these US map with Australia ones from Week 7 Lab.</li>
-<li>facet_grid(~date): for each date (1, 15 and 30), produce a plot.</li>
+<li>geom_path: add US states map. You can replace these US map with
+Australia ones from Week 7 Lab.</li>
+<li>facet_grid(~date): for each date (1, 15 and 30), produce a
+plot.</li>
 </ul></li>
 </ul>
 <pre class="r"><code>Tmax_1 = Tmax %&gt;% filter(t %in% c(1, 15, 30))  # extract data
@@ -393,7 +380,7 @@ NOAA_plot &lt;- ggplot(Tmax_1) +                              # plot points
 NOAA_plot</code></pre>
 <p><img src="Week11_files/figure-html/unnamed-chunk-2-1.png" width="576" style="display: block; margin: auto;" /></p>
 </div>
-<div id="time-series-plots" class="section level1">
+<div id="time-series-plots" class="section level1" number="3">
 <h1><span class="header-section-number">3</span> Time-Series Plots</h1>
 <p>First, we randomly select 10 station for visualization.</p>
 <pre class="r"><code>UIDs &lt;- unique(Tmax$id)                     # extract IDs
@@ -401,12 +388,12 @@ UIDs_sub &lt;- sample(UIDs, 10)                # sample 10 IDs
 Tmax_sub &lt;- filter(Tmax, id %in% UIDs_sub)  # subset data
 head(Tmax_sub)</code></pre>
 <pre><code>##   julian year month day   id  z proc      lat       lon       date t
-## 1 728050 1993     5   1 3969 78 Tmax 32.21667 -98.18333 1993-05-01 1
-## 2 728051 1993     5   2 3969 59 Tmax 32.21667 -98.18333 1993-05-02 2
-## 3 728052 1993     5   3 3969 76 Tmax 32.21667 -98.18333 1993-05-03 3
-## 4 728053 1993     5   4 3969 79 Tmax 32.21667 -98.18333 1993-05-04 4
-## 5 728054 1993     5   5 3969 69 Tmax 32.21667 -98.18333 1993-05-05 5
-## 6 728055 1993     5   6 3969 78 Tmax 32.21667 -98.18333 1993-05-06 6</code></pre>
+## 1 728050 1993     5   1 3810 78 Tmax 35.73333 -81.38333 1993-05-01 1
+## 2 728051 1993     5   2 3810 75 Tmax 35.73333 -81.38333 1993-05-02 2
+## 3 728052 1993     5   3 3810 72 Tmax 35.73333 -81.38333 1993-05-03 3
+## 4 728053 1993     5   4 3810 68 Tmax 35.73333 -81.38333 1993-05-04 4
+## 5 728054 1993     5   5 3810 81 Tmax 35.73333 -81.38333 1993-05-05 5
+## 6 728055 1993     5   6 3810 84 Tmax 35.73333 -81.38333 1993-05-06 6</code></pre>
 <p>Next, time-series is plotted.</p>
 <pre class="r"><code>## ------------------------------------------------------------------------
 TmaxTS &lt;- ggplot(Tmax_sub) +
@@ -431,7 +418,7 @@ TmaxTS</code></pre>
 
 // add bootstrap table styles to pandoc tables
 function bootstrapStylePandocTables() {
-  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
 }
 $(document).ready(function () {
   bootstrapStylePandocTables();
@@ -449,7 +436,7 @@ $(document).ready(function () {
 
 $(document).ready(function () {
   $('.tabset-dropdown > .nav-tabs > li').click(function () {
-    $(this).parent().toggleClass('nav-tabs-open')
+    $(this).parent().toggleClass('nav-tabs-open');
   });
 });
 </script>
