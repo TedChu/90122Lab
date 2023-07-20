@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Geostatistical Data Example: Yearly Precipitation Anomaly Data</title>
+
+<script src="site_libs/header-attrs-2.19/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">MAST90122 Lab</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="Week2.html">Week 2</a>
+</li>
+<li>
+  <a href="Week3.html">Week 3</a>
+</li>
+<li>
+  <a href="Week4.html">Week 4</a>
+</li>
+<li>
+  <a href="Week5.html">Week 5</a>
+</li>
+<li>
+  <a href="Week6.html">Week 6</a>
+</li>
+<li>
+  <a href="Week7.html">Week 7</a>
+</li>
+<li>
+  <a href="Week8.html">Week 8</a>
+</li>
+<li>
+  <a href="Week9.html">Week 9</a>
+</li>
+<li>
+  <a href="Week10.html">Week 10</a>
+</li>
+<li>
+  <a href="Week11.html">Week 11</a>
+</li>
+<li>
+  <a href="WeekX.html">WeekX</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Geostatistical Data Example: Yearly
+Precipitation Anomaly Data</h1>
+
+</div>
+
+<div id="TOC">
+<ul>
+<li><a href="#dataset" id="toc-dataset"><span
+class="toc-section-number">1</span> Dataset</a></li>
+<li><a href="#model-1" id="toc-model-1"><span
+class="toc-section-number">2</span> Model 1</a>
+<ul>
+<li><a href="#variogram-and-initial-value-for-mle"
+id="toc-variogram-and-initial-value-for-mle"><span
+class="toc-section-number">2.1</span> Variogram and Initial Value for
+MLE</a></li>
+<li><a href="#model-specification" id="toc-model-specification"><span
+class="toc-section-number">2.2</span> Model Specification</a></li>
+<li><a href="#model-fitting" id="toc-model-fitting"><span
+class="toc-section-number">2.3</span> Model Fitting</a></li>
+<li><a href="#the-results" id="toc-the-results"><span
+class="toc-section-number">2.4</span> The Results</a></li>
+</ul></li>
+<li><a href="#other-models" id="toc-other-models"><span
+class="toc-section-number">3</span> Other Models</a></li>
+<li><a href="#kriging" id="toc-kriging"><span
+class="toc-section-number">4</span> Kriging</a>
+<ul>
+<li><a href="#simple-kriging" id="toc-simple-kriging"><span
+class="toc-section-number">4.1</span> Simple Kriging</a></li>
+<li><a href="#ordinary-kriging" id="toc-ordinary-kriging"><span
+class="toc-section-number">4.2</span> Ordinary Kriging</a></li>
+<li><a href="#universal-kriging" id="toc-universal-kriging"><span
+class="toc-section-number">4.3</span> Universal Kriging</a></li>
+</ul></li>
+</ul>
+</div>
+
+<div style="margin-bottom:50px;">
+
+</div>
+<div id="dataset" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> Dataset</h1>
+<pre class="r"><code>library(sp)
+library(ggplot2)
+library(maps)
+library(mapdata)
+library(geoR)</code></pre>
+<ul>
+<li>Visualisation
+<ul>
+<li>936 weather stations across Great Plains that are north of 40
+degrees latitude</li>
+<li>z: yearly precipitation anomaly in 1962</li>
+</ul></li>
+</ul>
+<pre class="r"><code>dfgeo = readRDS(&quot;datasets/dfgeo.rds&quot;)
+states &lt;- map_data(&quot;state&quot;)
+plain &lt;- subset(states, region %in% c(&quot;nebraska&quot;, &quot;kansas&quot;, &quot;colorado&quot;,&quot;wyoming&quot;, 
+                                      &quot;south dakota&quot;, &quot;north dakota&quot;, &quot;montana&quot;,
+                                      &quot;iowa&quot;, &quot;minnesota&quot;, &quot;missouri&quot;))
+gg2 = ggplot(data = plain) + 
+  geom_polygon(aes(x = long, y = lat, group = group), fill = NA, color = &quot;black&quot;) + 
+  coord_fixed(1.4)
+gg2 + geom_point(data = dfgeo, aes(x = long, y = lat, color = z), size = 1)</code></pre>
+<p><img src="EgGeo_files/figure-html/unnamed-chunk-2-1.png" width="768" style="display: block; margin: auto;" /></p>
+<ul>
+<li>About the distance
+<ul>
+<li>1 degree in latitude = 111 km</li>
+<li>1 degree longitude at 45 degree latitude <span
+class="math inline">\(\approx\)</span> 79 km</li>
+<li>If you want a more accurate distance than the above approximation,
+you need to use the function <em>rdist.earth</em>.</li>
+</ul></li>
+</ul>
+<pre class="r"><code>dfgeo$x = dfgeo$long * 79
+dfgeo$y = dfgeo$lat * 111</code></pre>
+<p>The dataset is divided into two part, where <em>dfgeo_train</em> is
+used for modelling, and <em>dfgeo_test</em> is for kriging.</p>
+<pre class="r"><code>idx = seq(1, length(dfgeo$x), 5)
+dfgeo_test = dfgeo[idx, ]
+dfgeo_train = dfgeo[-idx,]</code></pre>
+</div>
+<div id="model-1" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> Model 1</h1>
+<ul>
+<li>For Model 1: <span class="math display">\[
+Z(\mathbf{s}_i)=\mu+U(\mathbf{s}_i)+\nu(\mathbf{s}_i)
+%\sum_{j=1}^p \beta_j d_j(x)+S(x)+Z(x) \]</span>
+<ul>
+<li>Constant mean: <span class="math inline">\(\mu\)</span></li>
+<li>Covariance function: exponential</li>
+</ul></li>
+</ul>
+<div id="variogram-and-initial-value-for-mle" class="section level2"
+number="2.1">
+<h2><span class="header-section-number">2.1</span> Variogram and Initial
+Value for MLE</h2>
+<ul>
+<li>The function <em>variog</em> is used to calculate the semivariogram
+in our slides.
+<ul>
+<li>option: “bin”</li>
+<li>max.dist: maximum distance for the semivariogram</li>
+</ul></li>
+</ul>
+<pre class="r"><code>dfgeodata =  as.geodata(dfgeo_train, coords.col=5:6, data.col=4, covar.col = 1:3)
+plot(variog(dfgeodata, option=&quot;bin&quot;, max.dist=900), 
+     xlab = &quot;h&quot;, ylab = &quot;variogram&quot;)</code></pre>
+<pre><code>## variog: computing omnidirectional variogram</code></pre>
+<p><img src="EgGeo_files/figure-html/unnamed-chunk-5-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p>For the initial value, you first need to decide what type of
+covariance function you want to use. Here, we use the exponential
+covariance function (i.e., the matern class with <span
+class="math inline">\(\kappa = 0.5\)</span>.)</p>
+<p>For the exponential covariance function, we choose the initial value
+<span class="math inline">\((\sigma^2, \phi, \tau^2) = (0.8, 200,
+0.1)\)</span>. Since the line roughly follow the circles (the
+semivariograms), <span class="math inline">\((\sigma^2, \phi, \tau^2) =
+(0.8, 200, 0.1)\)</span> is an appropriate initial value.</p>
+<pre class="r"><code>plot(variog(dfgeodata, option=&quot;bin&quot;, max.dist=900), 
+     xlab = &quot;h&quot;, ylab = &quot;variogram&quot;)</code></pre>
+<pre><code>## variog: computing omnidirectional variogram</code></pre>
+<pre class="r"><code>lines.variomodel(seq(0, 900, l = 100), 
+                 cov.pars = c(0.8, 200),           
+                 cov.model = &quot;mat&quot;, kap = 0.5, nug = 0.1)</code></pre>
+<p><img src="EgGeo_files/figure-html/unnamed-chunk-6-1.png" width="768" style="display: block; margin: auto;" /></p>
+</div>
+<div id="model-specification" class="section level2" number="2.2">
+<h2><span class="header-section-number">2.2</span> Model
+Specification</h2>
+<ul>
+<li>The likfit function is used for MLE and REML for the geostatistical
+model. To understand how the covariance function is specified, you first
+need to know the <em>default</em> setting.
+<ul>
+<li>cov.model= “matern”: matern class</li>
+<li>kappa = 0.5</li>
+<li>fix.kappa = TRUE: the kappa parameter is fixed at kappa = 0.5</li>
+</ul></li>
+<li>Therefore, if you do not write anything in the function, the default
+covariance function is the exponential covariance function, as shown in
+Model 1.</li>
+</ul>
+<ul>
+<li>Next, whether to estimate the nugget effect <span
+class="math inline">\(\tau^2\)</span>. The default setting is
+<ul>
+<li>fix.nugget = FALSE: the nugget effect is estimated. If you want to
+fix the nugget effect, you need to write <em>fix.nugget =
+TRUE</em>.</li>
+</ul></li>
+<li>Therefore,
+<ul>
+<li>nug = 0.1: the nugget effect is estimated, and the initial value is
+0.1, as shown in Model 1.</li>
+<li>fix.nugget = FALSE, nug = 0.1: the same as the above.</li>
+<li>fix.nugget = TRUE, nug = 0.1: the nugget effect is fixed (NOT
+estimated) and the value is fixed at 0.1.</li>
+</ul></li>
+</ul>
+</div>
+<div id="model-fitting" class="section level2" number="2.3">
+<h2><span class="header-section-number">2.3</span> Model Fitting</h2>
+<pre class="r"><code>## MLE: constant trend + exponential covariance function. 
+m1 = likfit(dfgeodata, ini = c(0.8, 200), nug = 0.1)</code></pre>
+<pre><code>## ---------------------------------------------------------------
+## likfit: likelihood maximisation using the function optim.
+## likfit: Use control() to pass additional
+##          arguments for the maximisation function.
+##         For further details see documentation for optim.
+## likfit: It is highly advisable to run this function several
+##         times with different initial values for the parameters.
+## likfit: WARNING: This step can be time demanding!
+## ---------------------------------------------------------------
+## likfit: end of numerical maximisation.</code></pre>
+<p>First, check the convergence message, that is, $convergence = 0
+indicates a successful convergence. (The likfit uses the <em>optim</em>
+funciton to minimize, that is, the message is the same as the message
+from the <em>optim</em> function)</p>
+<pre class="r"><code>m1$info.minimisation.function</code></pre>
+<pre><code>## $par
+## [1] 152.6097182   0.1641731
+## 
+## $value
+## [1] 644.579
+## 
+## $counts
+## function gradient 
+##       24       24 
+## 
+## $convergence
+## [1] 0
+## 
+## $message
+## [1] &quot;CONVERGENCE: REL_REDUCTION_OF_F &lt;= FACTR*EPSMCH&quot;</code></pre>
+<p>Second, whether the model improves over the linear model. At the
+bottom of the summary table, there are two rows: <em>Maximised
+Likelihood</em> (for the spatial model) and <em>non spatial
+model</em>.</p>
+</div>
+<div id="the-results" class="section level2" number="2.4">
+<h2><span class="header-section-number">2.4</span> The Results</h2>
+<p>Summary table includes most of information.</p>
+<pre class="r"><code>summary(m1)</code></pre>
+<pre><code>## Summary of the parameter estimation
+## -----------------------------------
+## Estimation method: maximum likelihood 
+## 
+## Parameters of the mean component (trend):
+##    beta 
+## -0.2176 
+## 
+## Parameters of the spatial component:
+##    correlation function: exponential
+##       (estimated) variance parameter sigmasq (partial sill) =  0.7136
+##       (estimated) cor. fct. parameter phi (range parameter)  =  152.6
+##    anisotropy parameters:
+##       (fixed) anisotropy angle = 0  ( 0 degrees )
+##       (fixed) anisotropy ratio = 1
+## 
+## Parameter of the error component:
+##       (estimated) nugget =  0.1172
+## 
+## Transformation parameter:
+##       (fixed) Box-Cox parameter = 1 (no transformation)
+## 
+## Practical Range with cor=0.05 for asymptotic range: 457.1779
+## 
+## Maximised Likelihood:
+##    log.L n.params      AIC      BIC 
+## &quot;-644.6&quot;      &quot;4&quot;   &quot;1297&quot;   &quot;1316&quot; 
+## 
+## non spatial model:
+##    log.L n.params      AIC      BIC 
+##   &quot;-968&quot;      &quot;2&quot;   &quot;1940&quot;   &quot;1949&quot; 
+## 
+## Call:
+## likfit(geodata = dfgeodata, ini.cov.pars = c(0.8, 200), nugget = 0.1)</code></pre>
+<ul>
+<li>The <span class="math inline">\(\mu\)</span> part
+<ul>
+<li>in the summary table, it is denoted as *. In our example, <span
+class="math inline">\(\hat \mu = -0.2176\)</span>.</li>
+<li>It can also obtained by <em>m1$beta</em></li>
+<li>The estimated asymptotic variance (matrix) is
+<em>m1$beta.var</em></li>
+<li>A confidence interval or hypothesis testing can be conducted.</li>
+<li>For example, <span class="math inline">\(H_0 = 1\)</span> versus
+<span class="math inline">\(H_1 \neq 1\)</span>. The test statistic =
+<em>(m1$beta - 1)/sqrt(m1$beta.var)</em> (approximately)<span
+class="math inline">\(\sim\)</span> N(0,1).</li>
+</ul></li>
+</ul>
+<pre class="r"><code>m1$beta
+# the estimated covariance matrix of beta. 
+m1$beta.var
+# test statistic for the example
+(m1$beta - 1)/sqrt(m1$beta.var)</code></pre>
+<pre><code>## [1] -0.2175513
+## [1] 0.04546281
+## [1] -5.710303</code></pre>
+<ul>
+<li>The <span class="math inline">\(\mathbf\theta\)</span> part
+<ul>
+<li>The estimate can be found in the summary table or via the codes
+below.</li>
+<li>The estimated asymptotic covariance matrix can be calculated using
+the formula in our slides, but it is not available through the
+<em>likfit</em> function.</li>
+</ul></li>
+</ul>
+<pre class="r"><code># cov.pars
+m1$cov.pars
+# partial sill 
+m1$sigmasq
+# the range parameter
+m1$phi
+# nugget
+m1$nugget</code></pre>
+<pre><code>## [1]   0.7136275 152.6097182
+## [1] 0.7136275
+## [1] 152.6097
+## [1] 0.1171584</code></pre>
+<ul>
+<li>Other information</li>
+</ul>
+<pre class="r"><code># AIC of the model
+AIC(m1)
+# and others...
+m1$practicalRange
+logLik(m1)</code></pre>
+<pre><code>## [1] 1297.158
+## [1] 457.1779
+## &#39;log Lik.&#39; -644.579 (df=4)</code></pre>
+</div>
+</div>
+<div id="other-models" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> Other Models</h1>
+<ul>
+<li>For Model 2: <span class="math display">\[
+Z(\mathbf{s}_i)=\mu+U(\mathbf{s}_i)+\nu(\mathbf{s}_i)
+%\sum_{j=1}^p \beta_j d_j(x)+S(x)+Z(x) \]</span>
+<ul>
+<li>Constant mean: <span class="math inline">\(\mu\)</span></li>
+<li>Covariance function: matern class with kappa = 1.5</li>
+</ul></li>
+</ul>
+<p>Some key codes</p>
+<pre class="r"><code>## MLE: constant trend + matern class with kappa = 1.5
+#plot(variog(dfgeodata, option=&quot;bin&quot;, max.dist=900), 
+#     xlab = &quot;h&quot;, ylab = &quot;variogram&quot;)
+#lines.variomodel(seq(0, 900, l = 100), 
+#                 cov.pars = c(0.8, 150),           
+#                 cov.model = &quot;mat&quot;, kap = 1.5, nug = 0.1)
+
+
+#m2 = likfit(dfgeodata, ini = c(0.8, 150), nug = 0.1, cov.model = &quot;mat&quot;, kap = 1.5)
+#m2$info.minimisation.function$convergence
+#summary(m2)</code></pre>
+<ul>
+<li>For Model 3: <span class="math display">\[
+Z(\mathbf{s}_i)=\beta_0+x_1(\mathbf{s}_i)\beta_1+\nu(\mathbf{s}_i)
+%\sum_{j=1}^p \beta_j d_j(x)+S(x)+Z(x) \]</span>
+<ul>
+<li>Linear trend: <span class="math inline">\(x_1\)</span> is the
+elevation</li>
+<li>Covariance function: exponential</li>
+</ul></li>
+</ul>
+<p>The model is fitted using the REML method.</p>
+<p>Some key codes</p>
+<pre class="r"><code>## The variogram, note ``trend = ~elev&quot;
+#plot(variog(dfgeodata, option=&quot;bin&quot;, max.dist=900, trend = ~elev), 
+#     xlab = &quot;h&quot;, ylab = &quot;variogram&quot;)
+#lines.variomodel(seq(0, 900, l = 100), 
+#                 cov.pars = c(0.8, 200),           
+#                 cov.model = &quot;mat&quot;, kap = 0.5, nug = 0.1)
+
+#m3 = likfit(dfgeodata, ini = c(0.8, 200), nug = 0.1, trend = ~ elev, lik.method = &quot;REML&quot;)</code></pre>
+</div>
+<div id="kriging" class="section level1" number="4">
+<h1><span class="header-section-number">4</span> Kriging</h1>
+<p>There are two key functions for the kriging + krige.control: specify
+the parameter for kriging, no computing involved. + krige.conv: to
+compute</p>
+<ul>
+<li>Usage
+<ul>
+<li>krige.control(type.krige = “ok”, obj.model = NULL)</li>
+<li>Type of krige: “sk”, “ok” (default)
+<ul>
+<li>sk: simple kriging</li>
+<li>ok: ordinary kriging and universal kriging</li>
+</ul></li>
+<li>obj.model: typically an output of <em>likefit</em></li>
+</ul></li>
+</ul>
+<ul>
+<li>Usage
+<ul>
+<li>krige.conv(geodata, locations, krige)</li>
+<li>geodata: the dataset for the model fitting</li>
+<li>locations: locations for predicting <span
+class="math inline">\(\mathbf s_0\)</span>, data.frame (can be multiple
+locations.)</li>
+<li>krige: output of krige.control.</li>
+</ul></li>
+</ul>
+<div id="simple-kriging" class="section level2" number="4.1">
+<h2><span class="header-section-number">4.1</span> Simple Kriging</h2>
+<pre class="r"><code>kc1 = krige.control(obj.model = m1, type.krige = &quot;SK&quot;)
+m1krig_sk = krige.conv(dfgeodata, krige = kc1, locations = dfgeo_test[,5:6])</code></pre>
+<pre><code>## krige.conv: model with constant mean
+## krige.conv: Kriging performed using global neighbourhood</code></pre>
+</div>
+<div id="ordinary-kriging" class="section level2" number="4.2">
+<h2><span class="header-section-number">4.2</span> Ordinary Kriging</h2>
+<pre class="r"><code>kc2 = krige.control(obj.model = m1)
+m1krig_ok = krige.conv(dfgeodata, krige = kc2, locations = dfgeo_test[,5:6])</code></pre>
+<pre><code>## krige.conv: model with constant mean
+## krige.conv: Kriging performed using global neighbourhood</code></pre>
+<pre class="r"><code># The kriging predictors are the same
+rbind(m1krig_sk$predict[1:5], m1krig_ok$predict[1:5])
+# The kriging variances are different
+rbind(m1krig_sk$krige.var[1:5], m1krig_ok$krige.var[1:5])</code></pre>
+<pre><code>##             [,1]       [,2]       [,3]      [,4]       [,5]
+## [1,] -0.05046874 -0.1163721 -0.9951614 0.5528769 -0.3275821
+## [2,] -0.05046874 -0.1163721 -0.9951614 0.5528769 -0.3275821
+##           [,1]      [,2]      [,3]      [,4]      [,5]
+## [1,] 0.3099821 0.2691624 0.3907208 0.3571768 0.3054627
+## [2,] 0.3101195 0.2691632 0.3920374 0.3574023 0.3054643</code></pre>
+</div>
+<div id="universal-kriging" class="section level2" number="4.3">
+<h2><span class="header-section-number">4.3</span> Universal
+Kriging</h2>
+<ul>
+<li>We need to provide <span class="math inline">\(x_1(\mathbf s_0),
+\ldots, x_p(\mathbf s_0)\)</span> for the function
+<ul>
+<li>in function <em>krige.control</em></li>
+<li>trend.d: specify data trend</li>
+<li>trend.l: specify prediction trend</li>
+</ul></li>
+</ul>
+<p>We take Model 3 as an example</p>
+<pre class="r"><code>#kc3 = krige.control(type.krige = &quot;ok&quot;, obj.model = m3, trend.d = ~elev, trend.l = ~dfgeo_test[,3])
+#m3pred = krige.conv(dfgeodata, krige = kc3, locations = dfgeo_test[,5:6])</code></pre>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

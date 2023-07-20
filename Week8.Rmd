@@ -41,12 +41,12 @@ plot(variog(ca20, option="bin", max.dist=510),
      xlab = "h", ylab = "gamma(h)")
 ```
 
-Here, the function *variog* is ued to calcuate the semivariogram in our slides. 
+Here, the function *variog* is used to calculate the semivariogram in our slides. 
 
 
 * Function: variog
   + argument
-  + opition: "bin"
+  + option: "bin"
   + max.dist: maximum distance for the semivariogram
   
 
