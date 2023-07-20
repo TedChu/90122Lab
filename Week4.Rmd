@@ -1,5 +1,5 @@
 ---
-title: 'Week 5: Spatial Point Process -- spatstat'
+title: 'Week 4: Spatial Point Process -- spatstat'
 ---
 
 <div style="margin-bottom:50px;">
