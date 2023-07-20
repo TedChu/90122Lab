@@ -1,5 +1,5 @@
 ---
-title: 'Extra 1: Data Wrangling -- tidyr and dplyr'
+title: 'Extra 1: Visualisation of Spatial Data (4) -- Data Wrangling using tidyr and dplyr'
 ---
 
 <div style="margin-bottom:50px;">

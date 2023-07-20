@@ -1,5 +1,5 @@
 ---
-title: 'Week 6: Visualisation of Spatial Data -- Maps'
+title: 'Week 6: Visualisation of Spatial Data (3) -- Maps'
 ---
 
 <div style="margin-bottom:50px;">
