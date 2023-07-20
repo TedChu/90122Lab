@@ -11,7 +11,7 @@
 
 
 
-<title>Week 9: Geostatistics–Kriging</title>
+<title>Week 9: Moran’s I, LISA</title>
 
 <script src="site_libs/header-attrs-2.19/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -290,27 +290,37 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Week 9: Geostatistics–Kriging</h1>
+<h1 class="title toc-ignore">Week 9: Moran’s I, LISA</h1>
 
 </div>
 
 <div id="TOC">
 <ul>
-<li><a href="#introduction" id="toc-introduction"><span
-class="toc-section-number">1</span> Introduction</a></li>
-<li><a href="#ordinary-kriging" id="toc-ordinary-kriging"><span
-class="toc-section-number">2</span> Ordinary Kriging</a></li>
-<li><a href="#universal-kriging" id="toc-universal-kriging"><span
-class="toc-section-number">3</span> Universal Kriging</a>
+<li><a href="#spatialpolygonsdataframe"
+id="toc-spatialpolygonsdataframe"><span
+class="toc-section-number">1</span> SpatialPolygonsDataFrame</a>
 <ul>
-<li><a href="#universal-kriging-polynomial-of-coordinates"
-id="toc-universal-kriging-polynomial-of-coordinates"><span
-class="toc-section-number">3.1</span> Universal Kriging: Polynomial of
-coordinates</a></li>
-<li><a href="#universal-kriging-covariates"
-id="toc-universal-kriging-covariates"><span
-class="toc-section-number">3.2</span> Universal Kriging:
-covariates</a></li>
+<li><a href="#create-polygon" id="toc-create-polygon"><span
+class="toc-section-number">1.1</span> Create Polygon</a></li>
+<li><a href="#create-polygons" id="toc-create-polygons"><span
+class="toc-section-number">1.2</span> Create Polygons</a></li>
+<li><a href="#create-spatialpolygons"
+id="toc-create-spatialpolygons"><span
+class="toc-section-number">1.3</span> Create SpatialPolygons</a></li>
+<li><a href="#create-spatialpolygonsdataframe"
+id="toc-create-spatialpolygonsdataframe"><span
+class="toc-section-number">1.4</span> Create
+SpatialPolygonsDataFrame</a></li>
+</ul></li>
+<li><a href="#morans-i" id="toc-morans-i"><span
+class="toc-section-number">2</span> Moran’s I</a>
+<ul>
+<li><a href="#create-weight-matrix" id="toc-create-weight-matrix"><span
+class="toc-section-number">2.1</span> Create Weight Matrix</a></li>
+<li><a href="#morans-i-test" id="toc-morans-i-test"><span
+class="toc-section-number">2.2</span> Moran’s I test</a></li>
+<li><a href="#lisa" id="toc-lisa"><span
+class="toc-section-number">2.3</span> LISA</a></li>
 </ul></li>
 </ul>
 </div>
@@ -318,141 +328,217 @@ covariates</a></li>
 <div style="margin-bottom:50px;">
 
 </div>
-<p><span style="color: red;">Due to the Easter Break, this Lab will be
-held in Week 10. </span></p>
-<div id="introduction" class="section level1" number="1">
-<h1><span class="header-section-number">1</span> Introduction</h1>
+<div id="spatialpolygonsdataframe" class="section level1" number="1">
+<h1><span class="header-section-number">1</span>
+SpatialPolygonsDataFrame</h1>
 <ul>
-<li>In this Lab, we will learn two key functions
+<li>There are two ways to represent spatial shapes
 <ul>
-<li>krige.control: specify the parameter for kriging, no computing
-involved.</li>
-<li>krige.conv: to compute</li>
+<li>ggplot2 + sf: our preference</li>
+<li>sp class: SpatialPoints(DataFrame), SpatialLines(DataFrame),
+SpatialPolygons(DataFrame). Although it is not our focus, we have to
+know some basics since some R packages depend on sp class.</li>
 </ul></li>
 </ul>
-<ul>
-<li>Usage
-<ul>
-<li>krige.control(type.krige = “ok”, obj.model = NULL)</li>
-<li>Type of krige: “sk”, “ok” (default)</li>
-<li>obj.model: typically an output of <em>likefit</em></li>
-</ul></li>
-</ul>
-<ul>
-<li>Usage
-<ul>
-<li>krige.conv(geodata, locations, krige)</li>
-<li>geodata</li>
-<li>locations: <span class="math inline">\(\mathbf s_0\)</span>,
-data.frame, multiple locations.</li>
-<li>krige: output of krige.control.</li>
-</ul></li>
-</ul>
-</div>
-<div id="ordinary-kriging" class="section level1" number="2">
-<h1><span class="header-section-number">2</span> Ordinary Kriging</h1>
-<p>First, we fit the model <span class="math display">\[Z(\mathbf{s}) =
-\mu + U(\mathbf{s}) + \nu(\mathbf{s}).\]</span> Here <em>trend =
-“cte”</em> specifies that the trend <span
-class="math inline">\(\mu(\mathbf{s})\)</span> is a constant (<span
-class="math inline">\(\mu(\mathbf{s})=\mu\)</span>).</p>
-<pre class="r"><code>library(geoR)
-data(ca20)
-fit = likfit(ca20, ini = c(100, 60), trend = &quot;cte&quot;)</code></pre>
-<p>Secod, we setup the Ordinary Kriging.</p>
-<pre class="r"><code>gr = pred_grid(ca20$borders, by = 10)   # new locations s_0 created
-head(gr)     ## Here are the first six locations, where the first locations is (4920, 4800). </code></pre>
-<pre><code>##   Var1 Var2
-## 1 4920 4800
-## 2 4930 4800
-## 3 4940 4800
-## 4 4950 4800
-## 5 4960 4800
-## 6 4970 4800</code></pre>
-<pre class="r"><code>dim(gr)      ## There are a total of 10908 new locations to predict. </code></pre>
-<pre><code>## [1] 10908     2</code></pre>
-<pre class="r"><code>KC = krige.control(obj.model = fit)</code></pre>
-<p>Third, we make predictions on all locations on <em>gr</em></p>
-<pre class="r"><code>ca20pred = krige.conv(ca20, loc = gr, krige = KC)</code></pre>
-<ul>
-<li>The output includes
-<ul>
-<li>ca20pred$predict: the kriging estimates for all locations specified
-at <em>loc</em>.</li>
-<li>ca20pred$krige.var: the kriging variance for all locations specified
-at <em>loc</em>.</li>
-</ul></li>
-</ul>
-<p>Last, we visualise both Kriging estimates and Kriging variances.</p>
-<pre class="r"><code>color = function(x)rev(heat.colors(x)) 
-image(ca20pred, loc = gr, x.leg = c(4930, 5350)
-      , y.leg = c(4790, 4840), col=color(15))</code></pre>
-<p><img src="Week9_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
-<p>Kriging Variances</p>
-<pre class="r"><code>image(ca20pred, loc = gr, val=sqrt(ca20pred$krige.var)
-      , x.leg = c(4930, 5350), y.leg = c(4790, 4840)
-      , col=color(15))</code></pre>
-<p><img src="Week9_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
-<p>Kriging weights</p>
-<pre class="r"><code>coords = cbind(c(0.2, 0.25, 0.6, 0.7), 
-               c(0.1, 0.8, 0.9, 0.3))   # data
-KC = krige.control(ty = &quot;ok&quot;, cov.model = &quot;mat&quot;, 
-                   kap = 1.5, nug = 0.1, 
-                   cov.pars = c(1, 0.1))    # model parameter
-# Weights
-krweights(coords, c(0.5, 0.5), KC)                              </code></pre>
-<pre><code>## [1] 0.1935404 0.2301559 0.2125838 0.3637199</code></pre>
-<p>Convert to SpatialPointsDataFrame</p>
+<p>Due to time constrain, I will only talk
+<em>SpatialPolygonsDataFrame</em>.</p>
+<p>First, the diagram
+<img src="pics/SpPnDF.png" width="590" style="display: block; margin: auto;" /></p>
+<div id="create-polygon" class="section level2" number="1.1">
+<h2><span class="header-section-number">1.1</span> Create Polygon</h2>
+<p>Here, we will create Polygon class. For example, <em>Sr1</em> has the
+vertices <span class="math inline">\((2,2)\)</span>, <span
+class="math inline">\((4,3)\)</span>, <span
+class="math inline">\((4,5)\)</span> and <span
+class="math inline">\((1,4)\)</span>. Note that <span
+class="math inline">\((2,2)\)</span> needs to be written twice, since it
+is both the starting vertex and the ending vertex.</p>
 <pre class="r"><code>library(sp)
-gr0 = polygrid(gr, borders = ca20$border, bound = T)
-capred = data.frame(gr0, ypred=ca20pred$predict)
-coordinates(capred) = ~ Var1 + Var2
-class(capred)                            </code></pre>
-<pre><code>## [1] &quot;SpatialPointsDataFrame&quot;
-## attr(,&quot;package&quot;)
-## [1] &quot;sp&quot;</code></pre>
-<p>We can visualize using all functions related to SpatialPoints.</p>
+#getClass(&quot;Polygon&quot;)
+Sr1 = Polygon(cbind(c(2,4,4,1,2),c(2,3,5,4,2)))
+Sr2 = Polygon(cbind(c(5,4,2,5),c(2,3,2,2)))
+Sr3 = Polygon(cbind(c(4,4,5,10,4),c(5,3,2,5,5)))
+Sr4 = Polygon(cbind(c(5,6,6,5,5),c(4,4,3,3,4)), hole = TRUE)</code></pre>
 </div>
-<div id="universal-kriging" class="section level1" number="3">
-<h1><span class="header-section-number">3</span> Universal Kriging</h1>
-<p><span style="color: red;">Both ordinary kriging and universal
-kriging</span> using setting <em>type.krige = “ok”</em>. Once you put
-the trend in, the function will distinguish two types of kriging.</p>
-<div id="universal-kriging-polynomial-of-coordinates"
-class="section level2" number="3.1">
-<h2><span class="header-section-number">3.1</span> Universal Kriging:
-Polynomial of coordinates</h2>
+<div id="create-polygons" class="section level2" number="1.2">
+<h2><span class="header-section-number">1.2</span> Create Polygons</h2>
+<p>A Polygons can contain any number of Polygon (including only 1
+Polygon).</p>
+<p>Why do we need polygons? Imagine you want to draw world map. Each
+Polygons can represent a country, while a Polygon cannot. For example,
+New Zealand comprises two major islands, and you need two polygons,
+which is a Polygons.</p>
+<pre class="r"><code>#getClass(&quot;Polygons&quot;)
+Srs1 = Polygons(list(Sr1), &quot;s1&quot;)
+Srs2 = Polygons(list(Sr2), &quot;s2&quot;)
+Srs3 = Polygons(list(Sr3, Sr4), &quot;s3/4&quot;)</code></pre>
+</div>
+<div id="create-spatialpolygons" class="section level2" number="1.3">
+<h2><span class="header-section-number">1.3</span> Create
+SpatialPolygons</h2>
+<pre class="r"><code>#getClass(&quot;SpatialPolygons&quot;)
+SpP = SpatialPolygons(list(Srs1,Srs2,Srs3), 1:3)
+plot(SpP, col = 1:3, bg=&quot;yellow&quot;)</code></pre>
+<p><img src="Week9_files/figure-html/unnamed-chunk-4-1.png" width="576" style="display: block; margin: auto;" />
+Note that there is a hole in one of Polygons</p>
+</div>
+<div id="create-spatialpolygonsdataframe" class="section level2"
+number="1.4">
+<h2><span class="header-section-number">1.4</span> Create
+SpatialPolygonsDataFrame</h2>
+<pre class="r"><code>#getClass(&quot;SpatialPolygons&quot;)
+df = data.frame(z1 = c(1.2,1.3,1.6), z2 = c(2.2,2.8,3.9), row.names = row.names(SpP))
+SpPDF = SpatialPolygonsDataFrame(Sr = SpP, data = df)
+spplot(SpPDF, zcol = &quot;z1&quot;)</code></pre>
+<p><img src="Week9_files/figure-html/unnamed-chunk-5-1.png" width="576" style="display: block; margin: auto;" />
+The argument “row.names = row.names(SpP)” is needed.</p>
+</div>
+</div>
+<div id="morans-i" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> Moran’s I</h1>
+<div id="create-weight-matrix" class="section level2" number="2.1">
+<h2><span class="header-section-number">2.1</span> Create Weight
+Matrix</h2>
+<p>The dataset is <em>gmel2</em>, and it can be downloaded at <a
+href="https://github.com/TedChu/90122Lab/tree/master/datasets"
+class="uri">https://github.com/TedChu/90122Lab/tree/master/datasets</a>.</p>
+<pre class="r"><code>library(spdep)
+load(&quot;datasets/gmel2.Rdata&quot;)</code></pre>
+<p>R function <em>poly2nb</em> produces a spatial weight matrix from a
+SpatialPolygons(DataFrame) object.</p>
+<pre class="r"><code>## Convert gmel2 to SpatialPolygonsDataFrame, since the following packages require SpatialPolygonsDataFrame
+gmel.sp = as(gmel2, &quot;Spatial&quot;)
+Wqueen = poly2nb(gmel.sp)
+Wrook = poly2nb(gmel.sp, queen=FALSE)
+plot(gmel.sp,border=&quot;grey60&quot;, axes=TRUE)</code></pre>
+<pre><code>## Please note that rgdal will be retired during October 2023,
+## plan transition to sf/stars/terra functions using GDAL and PROJ
+## at your earliest convenience.
+## See https://r-spatial.org/r/2023/05/15/evolution4.html and https://github.com/r-spatial/evolution
+## rgdal: version: 1.6-7, (SVN revision 1203)
+## Geospatial Data Abstraction Library extensions to R successfully loaded
+## Loaded GDAL runtime: GDAL 3.5.2, released 2022/09/02
+## Path to GDAL shared files: C:/Users/tingjinc/AppData/Local/Programs/R/R-4.2.2/library/rgdal/gdal
+## GDAL binary built with GEOS: TRUE 
+## Loaded PROJ runtime: Rel. 8.2.1, January 1st, 2022, [PJ_VERSION: 821]
+## Path to PROJ shared files: C:/Users/tingjinc/AppData/Local/Programs/R/R-4.2.2/library/rgdal/proj
+## PROJ CDN enabled: FALSE
+## Linking to sp version:1.6-1
+## To mute warnings of possible GDAL/OSR exportToProj4() degradation,
+## use options(&quot;rgdal_show_exportToProj4_warnings&quot;=&quot;none&quot;) before loading sp or rgdal.</code></pre>
+<pre class="r"><code>plot(Wqueen, coordinates(gmel.sp), pch=19, cex=0.6, add=TRUE,col=&quot;red&quot;)
+plot(Wrook, coordinates(gmel.sp), pch=19, cex=0.6, add=TRUE)</code></pre>
+<p><img src="Week9_files/figure-html/unnamed-chunk-7-1.png" width="576" style="display: block; margin: auto;" /></p>
 <ul>
-<li>We need to provide <span class="math inline">\(x_1(\mathbf s_0),
-\ldots, x_p(\mathbf s_0)\)</span> for the function
+<li>There are three potential class for spatial weight matrix:
+<em>nb</em> (neighborhood) class, <em>mat</em> (matrix) class, and
+<em>listw</em> class.
 <ul>
-<li>in function <em>krige.control</em></li>
-<li>trend.d: specify data trend</li>
-<li>trend.l: specify prediction trend</li>
+<li>They all store the same information, but in different formats.</li>
+<li>Different functions may require different formats. For example,
+<em>moran.test</em> requires the <em>listw</em> class. You can find
+these information in help files of these functions.</li>
+<li>Functions to transform between these three formats:
+<em>nb2listw</em>, <em>nb2mat</em>, <em>mat2nb</em>, etc.</li>
 </ul></li>
 </ul>
-<p>Work with polynomial.</p>
-<pre class="r"><code>fit = likfit(ca20, ini = c(100, 60), trend = &quot;1st&quot;)
-gr = pred_grid(ca20$borders, by = 10)
-KC = krige.control(obj.model = fit, trend.l=&quot;1st&quot;, 
-                   trend.d=&quot;1st&quot;)
-ca20pred = krige.conv(ca20, loc = gr, krige = KC)</code></pre>
+<p>Can you see the difference between <em>queen</em> rule and
+<em>rook</em> rule?</p>
 </div>
-<div id="universal-kriging-covariates" class="section level2"
-number="3.2">
-<h2><span class="header-section-number">3.2</span> Universal Kriging:
-covariates</h2>
-<pre class="r"><code>fit2 = likfit(ca20, ini = c(100, 60), trend = ~altitude)
-gr = pred_grid(ca20$borders, by = 10)
-graltitude = rnorm(10908,mean=5.5)
-KC2 = krige.control(type.krige = &quot;ok&quot;, obj.model=fit2, 
-                    trend.d=~altitude, trend.l=~graltitude)
-ca20pred2 = krige.conv(ca20, loc = gr, krige = KC2)</code></pre>
-<p>In universal kriging, we need to know <span
-class="math inline">\(x(\mathbf s_0)\)</span>. In the above code, I
-randomly generated <span class="math inline">\(x(\mathbf s_0)\)</span>
-from <em>graltitude = rnorm(10908,mean=5.5)</em>. In practice, you shall
-know <span class="math inline">\(x(\mathbf s_0)\)</span> in advance.</p>
+<div id="morans-i-test" class="section level2" number="2.2">
+<h2><span class="header-section-number">2.2</span> Moran’s I test</h2>
+<p>A Moran’s I test is performed on the variable <em>price</em>. More
+information about Moran’s I codes can be found in Cp1C – 8.</p>
+<pre class="r"><code>## plot
+moran.test(x=gmel2$price, nb2listw(Wqueen), alternative=&quot;two.sided&quot;)</code></pre>
+<pre><code>## 
+##  Moran I test under randomisation
+## 
+## data:  gmel2$price  
+## weights: nb2listw(Wqueen)    
+## 
+## Moran I statistic standard deviate = 5.8472, p-value = 5e-09
+## alternative hypothesis: two.sided
+## sample estimates:
+## Moran I statistic       Expectation          Variance 
+##        0.59027230       -0.03333333        0.01137440</code></pre>
+<p>Since the p-value &lt; 0.05, we conclude that there is spatial
+autocorrelation for the house price in Greater Melbourne.</p>
+<ul>
+<li>Comments
+<ul>
+<li>The function requires <em>listw</em> form for spatial weight
+matrix</li>
+<li>Argument <em>alternative</em>
+<ul>
+<li>What will you do if the alternative test is “There is positive
+spatial autocorrelation”.</li>
+</ul></li>
+<li>The above test is <em>Moran I test under randomisation</em>.
+<ul>
+<li>What does this mean?</li>
+<li>If you want to take analytical approach mentioned in lectures, what
+should you do?</li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+<div id="lisa" class="section level2" number="2.3">
+<h2><span class="header-section-number">2.3</span> LISA</h2>
+<p>LISA is performed on <em>price</em> variable.</p>
+<pre class="r"><code>resI = localmoran(gmel2$price, nb2listw(Wqueen), alternative=&quot;two.sided&quot;)
+round(head(resI),3)</code></pre>
+<pre><code>##       Ii   E.Ii Var.Ii   Z.Ii Pr(z != E(Ii))
+## 1 -0.123 -0.002  0.009 -1.239          0.215
+## 2  1.407 -0.100  0.864  1.621          0.105
+## 3  1.927 -0.239  0.777  2.457          0.014
+## 4  0.497 -0.029  0.100  1.666          0.096
+## 5  0.736 -0.030  0.125  2.169          0.030
+## 6  0.665 -0.038  0.194  1.596          0.111</code></pre>
+<ul>
+<li>For the lisa output
+<ul>
+<li>First column: the value of local moran’s I</li>
+<li>Second column: the expected value calculated using numerical
+approach. Therefore, the results is different from the theoretical
+result from the lecture (which is <span
+class="math inline">\(-1/(n-1)\)</span>).</li>
+<li>Third column: the variance of local moran’s I</li>
+<li>Fourth column <span class="math inline">\(=\frac{(Ii -
+E.Ii)}{\sqrt{Var.Ii}}\)</span></li>
+<li>Fifth column: the p-value.</li>
+</ul></li>
+</ul>
+<p> </p>
+<p>Next, some visualisation for the above results.</p>
+<pre class="r"><code>####
+gmellisa = gmel2
+gmellisa$lisa = resI[,1]
+gmellisa$pvalue = resI[,5]
+### Spatial plots with LISA value
+library(ggplot2)
+ggplot() + geom_sf(data=gmellisa, aes(fill = lisa))</code></pre>
+<p><img src="Week9_files/figure-html/unnamed-chunk-10-1.png" width="576" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot() + geom_sf(data=gmellisa, aes(fill = pvalue))</code></pre>
+<p><img src="Week9_files/figure-html/unnamed-chunk-10-2.png" width="576" style="display: block; margin: auto;" /></p>
+<p>Suppose we want to know which LGAs have significant local spatial
+autocorrelation (<span class="math inline">\(\alpha =
+0.05\)</span>).</p>
+<pre class="r"><code>gmellisa$name2[gmellisa$pvalue &lt; 0.05]</code></pre>
+<pre><code>## [1] &quot;Boroondara&quot;   &quot;Casey&quot;        &quot;Glen Eira&quot;    &quot;Monash&quot;       &quot;Port Phillip&quot;
+## [6] &quot;Stonnington&quot;  &quot;Yarra&quot;</code></pre>
+<p>They all have positive LISA values. If you want to formally test
+whether there are positive local autocorrelation, you will need to
+change <em>alternative</em> to <em>greater</em>.</p>
+<p>You can also highlight these cities.</p>
+<pre class="r"><code>gmellisa2 = gmellisa[gmellisa$pvalue &lt; 0.05, ]
+ggplot() + geom_sf(data=gmellisa, aes(fill = pvalue)) + 
+  geom_sf(data = gmellisa2, color = &quot;red&quot;, alpha = 0) + 
+  geom_sf_label(data = gmellisa2, aes(label = name2))</code></pre>
+<p><img src="Week9_files/figure-html/unnamed-chunk-12-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p>Or</p>
+<pre class="r"><code>ggplot() + geom_sf(data=gmellisa, aes(fill = lisa, color = (pvalue &lt; 0.05)))</code></pre>
+<p><img src="Week9_files/figure-html/unnamed-chunk-13-1.png" width="768" style="display: block; margin: auto;" /></p>
 </div>
 </div>
 

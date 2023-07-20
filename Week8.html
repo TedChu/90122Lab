@@ -11,7 +11,7 @@
 
 
 
-<title>Week 8: Geostatistics–Estimation</title>
+<title>Week 8: Geostatistics–Kriging</title>
 
 <script src="site_libs/header-attrs-2.19/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -290,7 +290,7 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Week 8: Geostatistics–Estimation</h1>
+<h1 class="title toc-ignore">Week 8: Geostatistics–Kriging</h1>
 
 </div>
 
@@ -298,34 +298,19 @@ $(document).ready(function () {
 <ul>
 <li><a href="#introduction" id="toc-introduction"><span
 class="toc-section-number">1</span> Introduction</a></li>
-<li><a href="#soil-data-semivariogram"
-id="toc-soil-data-semivariogram"><span
-class="toc-section-number">2</span> Soil Data &amp; Semivariogram</a>
+<li><a href="#ordinary-kriging" id="toc-ordinary-kriging"><span
+class="toc-section-number">2</span> Ordinary Kriging</a></li>
+<li><a href="#universal-kriging" id="toc-universal-kriging"><span
+class="toc-section-number">3</span> Universal Kriging</a>
 <ul>
-<li><a href="#soil-example" id="toc-soil-example"><span
-class="toc-section-number">2.1</span> Soil Example</a></li>
-<li><a href="#semivariogram" id="toc-semivariogram"><span
-class="toc-section-number">2.2</span> Semivariogram</a></li>
-</ul></li>
-<li><a href="#mle" id="toc-mle"><span
-class="toc-section-number">3</span> MLE</a>
-<ul>
-<li><a href="#mle-initial-value" id="toc-mle-initial-value"><span
-class="toc-section-number">3.1</span> MLE: Initial Value</a></li>
-<li><a href="#mle-function" id="toc-mle-function"><span
-class="toc-section-number">3.2</span> MLE: Function</a></li>
-<li><a href="#spatial-trend" id="toc-spatial-trend"><span
-class="toc-section-number">3.3</span> Spatial Trend</a>
-<ul>
-<li><a href="#two-ways" id="toc-two-ways"><span
-class="toc-section-number">3.3.1</span> Two ways</a></li>
-</ul></li>
-</ul></li>
-<li><a href="#geodata-format" id="toc-geodata-format"><span
-class="toc-section-number">4</span> Geodata format</a>
-<ul>
-<li><a href="#create-geodata" id="toc-create-geodata"><span
-class="toc-section-number">4.1</span> Create geodata</a></li>
+<li><a href="#universal-kriging-polynomial-of-coordinates"
+id="toc-universal-kriging-polynomial-of-coordinates"><span
+class="toc-section-number">3.1</span> Universal Kriging: Polynomial of
+coordinates</a></li>
+<li><a href="#universal-kriging-covariates"
+id="toc-universal-kriging-covariates"><span
+class="toc-section-number">3.2</span> Universal Kriging:
+covariates</a></li>
 </ul></li>
 </ul>
 </div>
@@ -334,251 +319,140 @@ class="toc-section-number">4.1</span> Create geodata</a></li>
 
 </div>
 <p><span style="color: red;">Due to the Easter Break, this Lab will be
-held in Week 9. </span></p>
+held in Week 10. </span></p>
 <div id="introduction" class="section level1" number="1">
 <h1><span class="header-section-number">1</span> Introduction</h1>
 <ul>
-<li>In this Lab, we will learn
+<li>In this Lab, we will learn two key functions
 <ul>
-<li>Semivariogram: Cp 4 – “Introduction and Semivariogram”</li>
-<li>MLE: Cp 4 – “Covariance and Semivariogram Models”, “Paramatric
-Modelling: MLE”; Cp 5 – “MLE”</li>
+<li>krige.control: specify the parameter for kriging, no computing
+involved.</li>
+<li>krige.conv: to compute</li>
+</ul></li>
+</ul>
+<ul>
+<li>Usage
+<ul>
+<li>krige.control(type.krige = “ok”, obj.model = NULL)</li>
+<li>Type of krige: “sk”, “ok” (default)</li>
+<li>obj.model: typically an output of <em>likefit</em></li>
+</ul></li>
+</ul>
+<ul>
+<li>Usage
+<ul>
+<li>krige.conv(geodata, locations, krige)</li>
+<li>geodata</li>
+<li>locations: <span class="math inline">\(\mathbf s_0\)</span>,
+data.frame, multiple locations.</li>
+<li>krige: output of krige.control.</li>
 </ul></li>
 </ul>
 </div>
-<div id="soil-data-semivariogram" class="section level1" number="2">
-<h1><span class="header-section-number">2</span> Soil Data &amp;
-Semivariogram</h1>
-<div id="soil-example" class="section level2" number="2.1">
-<h2><span class="header-section-number">2.1</span> Soil Example</h2>
-<p><span class="math inline">\(Z(\mathbf{s})\)</span>: calcium content
-in soil at <span class="math inline">\(\mathbf{s}\)</span>.</p>
+<div id="ordinary-kriging" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> Ordinary Kriging</h1>
+<p>First, we fit the model <span class="math display">\[Z(\mathbf{s}) =
+\mu + U(\mathbf{s}) + \nu(\mathbf{s}).\]</span> Here <em>trend =
+“cte”</em> specifies that the trend <span
+class="math inline">\(\mu(\mathbf{s})\)</span> is a constant (<span
+class="math inline">\(\mu(\mathbf{s})=\mu\)</span>).</p>
 <pre class="r"><code>library(geoR)
 data(ca20)
-points(ca20,cex.min = 0.2, cex.max = 1.5, pch = 21)</code></pre>
-<p><img src="Week8_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+fit = likfit(ca20, ini = c(100, 60), trend = &quot;cte&quot;)</code></pre>
+<p>Secod, we setup the Ordinary Kriging.</p>
+<pre class="r"><code>gr = pred_grid(ca20$borders, by = 10)   # new locations s_0 created
+head(gr)     ## Here are the first six locations, where the first locations is (4920, 4800). </code></pre>
+<pre><code>##   Var1 Var2
+## 1 4920 4800
+## 2 4930 4800
+## 3 4940 4800
+## 4 4950 4800
+## 5 4960 4800
+## 6 4970 4800</code></pre>
+<pre class="r"><code>dim(gr)      ## There are a total of 10908 new locations to predict. </code></pre>
+<pre><code>## [1] 10908     2</code></pre>
+<pre class="r"><code>KC = krige.control(obj.model = fit)</code></pre>
+<p>Third, we make predictions on all locations on <em>gr</em></p>
+<pre class="r"><code>ca20pred = krige.conv(ca20, loc = gr, krige = KC)</code></pre>
+<ul>
+<li>The output includes
+<ul>
+<li>ca20pred$predict: the kriging estimates for all locations specified
+at <em>loc</em>.</li>
+<li>ca20pred$krige.var: the kriging variance for all locations specified
+at <em>loc</em>.</li>
+</ul></li>
+</ul>
+<p>Last, we visualise both Kriging estimates and Kriging variances.</p>
+<pre class="r"><code>color = function(x)rev(heat.colors(x)) 
+image(ca20pred, loc = gr, x.leg = c(4930, 5350)
+      , y.leg = c(4790, 4840), col=color(15))</code></pre>
+<p><img src="Week8_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>Kriging Variances</p>
+<pre class="r"><code>image(ca20pred, loc = gr, val=sqrt(ca20pred$krige.var)
+      , x.leg = c(4930, 5350), y.leg = c(4790, 4840)
+      , col=color(15))</code></pre>
+<p><img src="Week8_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p>Kriging weights</p>
+<pre class="r"><code>coords = cbind(c(0.2, 0.25, 0.6, 0.7), 
+               c(0.1, 0.8, 0.9, 0.3))   # data
+KC = krige.control(ty = &quot;ok&quot;, cov.model = &quot;mat&quot;, 
+                   kap = 1.5, nug = 0.1, 
+                   cov.pars = c(1, 0.1))    # model parameter
+# Weights
+krweights(coords, c(0.5, 0.5), KC)                              </code></pre>
+<pre><code>## [1] 0.1935404 0.2301559 0.2125838 0.3637199</code></pre>
+<p>Convert to SpatialPointsDataFrame</p>
+<pre class="r"><code>library(sp)
+gr0 = polygrid(gr, borders = ca20$border, bound = T)
+capred = data.frame(gr0, ypred=ca20pred$predict)
+coordinates(capred) = ~ Var1 + Var2
+class(capred)                            </code></pre>
+<pre><code>## [1] &quot;SpatialPointsDataFrame&quot;
+## attr(,&quot;package&quot;)
+## [1] &quot;sp&quot;</code></pre>
+<p>We can visualize using all functions related to SpatialPoints.</p>
 </div>
-<div id="semivariogram" class="section level2" number="2.2">
-<h2><span class="header-section-number">2.2</span> Semivariogram</h2>
-<pre class="r"><code>plot(variog(ca20, option=&quot;bin&quot;, max.dist=510), 
-     xlab = &quot;h&quot;, ylab = &quot;gamma(h)&quot;)</code></pre>
-<pre><code>## variog: computing omnidirectional variogram</code></pre>
-<p><img src="Week8_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
-<p>Here, the function <em>variog</em> is ued to calcuate the
-semivariogram in our slides.</p>
+<div id="universal-kriging" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> Universal Kriging</h1>
+<p><span style="color: red;">Both ordinary kriging and universal
+kriging</span> using setting <em>type.krige = “ok”</em>. Once you put
+the trend in, the function will distinguish two types of kriging.</p>
+<div id="universal-kriging-polynomial-of-coordinates"
+class="section level2" number="3.1">
+<h2><span class="header-section-number">3.1</span> Universal Kriging:
+Polynomial of coordinates</h2>
 <ul>
-<li>Function: variog
+<li>We need to provide <span class="math inline">\(x_1(\mathbf s_0),
+\ldots, x_p(\mathbf s_0)\)</span> for the function
 <ul>
-<li>argument</li>
-<li>opition: “bin”</li>
-<li>max.dist: maximum distance for the semivariogram</li>
+<li>in function <em>krige.control</em></li>
+<li>trend.d: specify data trend</li>
+<li>trend.l: specify prediction trend</li>
 </ul></li>
 </ul>
+<p>Work with polynomial.</p>
+<pre class="r"><code>fit = likfit(ca20, ini = c(100, 60), trend = &quot;1st&quot;)
+gr = pred_grid(ca20$borders, by = 10)
+KC = krige.control(obj.model = fit, trend.l=&quot;1st&quot;, 
+                   trend.d=&quot;1st&quot;)
+ca20pred = krige.conv(ca20, loc = gr, krige = KC)</code></pre>
 </div>
-</div>
-<div id="mle" class="section level1" number="3">
-<h1><span class="header-section-number">3</span> MLE</h1>
-<div id="mle-initial-value" class="section level2" number="3.1">
-<h2><span class="header-section-number">3.1</span> MLE: Initial
-Value</h2>
-<p><span style="color: red;">“Eye-fit”</span></p>
-<pre class="r"><code>plot(variog(ca20, option=&quot;bin&quot;, max.dist=510), 
-     xlab = &quot;h&quot;, ylab = &quot;gamma(h)&quot;)
-lines.variomodel(seq(0, 510, l = 100), 
-                 cov.pars = c(100, 120),           
-                 cov.model = &quot;mat&quot;, kap = 0.5, nug = 30)</code></pre>
-<p><img src="Week8_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
-<p>Based on the plot, the initial value <span
-class="math inline">\((\sigma^2, \phi, \tau^2) = (100, 120,
-30)\)</span>.</p>
-</div>
-<div id="mle-function" class="section level2" number="3.2">
-<h2><span class="header-section-number">3.2</span> MLE: Function</h2>
-<pre class="r"><code># trend - constant mean
-m1 = likfit(ca20, ini = c(100, 120), nug = 30)</code></pre>
-<pre class="r"><code># trend - constant mean
-summary(m1)</code></pre>
-<pre><code>## Summary of the parameter estimation
-## -----------------------------------
-## Estimation method: maximum likelihood 
-## 
-## Parameters of the mean component (trend):
-##    beta 
-## 50.0668 
-## 
-## Parameters of the spatial component:
-##    correlation function: exponential
-##       (estimated) variance parameter sigmasq (partial sill) =  135.2
-##       (estimated) cor. fct. parameter phi (range parameter)  =  159.5
-##    anisotropy parameters:
-##       (fixed) anisotropy angle = 0  ( 0 degrees )
-##       (fixed) anisotropy ratio = 1
-## 
-## Parameter of the error component:
-##       (estimated) nugget =  16.77
-## 
-## Transformation parameter:
-##       (fixed) Box-Cox parameter = 1 (no transformation)
-## 
-## Practical Range with cor=0.05 for asymptotic range: 477.7842
-## 
-## Maximised Likelihood:
-##    log.L n.params      AIC      BIC 
-## &quot;-632.6&quot;      &quot;4&quot;   &quot;1273&quot;   &quot;1286&quot; 
-## 
-## non spatial model:
-##    log.L n.params      AIC      BIC 
-## &quot;-680.2&quot;      &quot;2&quot;   &quot;1364&quot;   &quot;1371&quot; 
-## 
-## Call:
-## likfit(geodata = ca20, ini.cov.pars = c(100, 120), nugget = 30)</code></pre>
-<ul>
-<li>Results of output
-<ul>
-<li>Spatial-dependence parameter estiamtes: <span
-class="math inline">\((\sigma^2, \phi, \tau^2)\)</span></li>
-<li>no standard error is provided.</li>
-<li>cov.pars: <span class="math inline">\((\sigma^2, \phi)\)</span></li>
-<li>nugget: <span class="math inline">\(\tau^2\)</span></li>
-<li>kappa</li>
-</ul></li>
-</ul>
-<p>The output of MLE</p>
-<pre class="r"><code># cov.pars
-m1$cov.pars
-# partial sill 
-m1$sigmasq
-# the range parameter
-m1$phi
-# nugget
-m1$nugget</code></pre>
-<pre><code>## [1] 135.1726 159.4883
-## [1] 135.1726
-## [1] 159.4883
-## [1] 16.76523</code></pre>
-<ul>
-<li><span style="color: red;">The arguments of function</span>
-<em>likfit</em>
-<ul>
-<li>argument</li>
-<li>cov.model: “exp” (default), more options see cov.pars</li>
-<li>Fixed or Estimated: fix.nugget = FALSE, fix.kappa = TRUE, kappa
-=0.5</li>
-<li>Initial value: ini.cov.pars, nugget</li>
-</ul></li>
-</ul>
-<ul>
-<li>Remarks: we have 4 parameters: nugget <span
-class="math inline">\(\tau^2\)</span>, partial sill <span
-class="math inline">\(\sigma^2\)</span>, range parameter <span
-class="math inline">\(\phi\)</span>, smooth parameter <span
-class="math inline">\(\kappa\)</span> ( <span
-class="math inline">\(\nu\)</span> in our slide. )
-<ul>
-<li>Function allow us either to pre-specify (fix) or estimate it</li>
-<li>Most of the time, <span class="math inline">\(\kappa\)</span> is
-fixed.</li>
-</ul></li>
-</ul>
-<p>Here are some exmaple:</p>
-<ul>
-<li>Example 1: no specification. “likfit(ca20, ini = c(100, 200), nug =
-50)”
-<ul>
-<li>Exp model (<span class="math inline">\(\kappa\)</span> = 0.5
-fixed).</li>
-<li>To estimate: <span class="math inline">\(\tau^2\)</span>, <span
-class="math inline">\(\sigma^2\)</span>, <span
-class="math inline">\(\phi\)</span></li>
-</ul></li>
-</ul>
-<ul>
-<li>Example 2: no specification. “likfit(ca20, ini = c(100, 200), nug =
-50, fix.nugget=TRUE)”
-<ul>
-<li>Fixed: <span class="math inline">\(\kappa\)</span> = 0.5, nugget
-<span class="math inline">\(\tau^2 = 50\)</span></li>
-<li>To estiamte: <span class="math inline">\(\sigma^2\)</span>, <span
-class="math inline">\(\phi\)</span></li>
-</ul></li>
-</ul>
-<p>Many other informatons can be obtained.</p>
-<pre class="r"><code># the estimated covariance matrix of beta. 
-m1$beta.var
-# AIC of the model
-AIC(m1)
-# and others...
-m1$practicalRange
-logLik(m1)</code></pre>
-<pre><code>## [1] 16.54567
-## [1] 1273.191
-## [1] 477.7842
-## &#39;log Lik.&#39; -632.5953 (df=4)</code></pre>
-<p>You can also study possible covariance functions by reading details
-(accessed by typing “?cov.spatial”)</p>
-</div>
-<div id="spatial-trend" class="section level2" number="3.3">
-<h2><span class="header-section-number">3.3</span> Spatial Trend</h2>
-<div id="two-ways" class="section level3" number="3.3.1">
-<h3><span class="header-section-number">3.3.1</span> Two ways</h3>
-<ul>
-<li>Specify directly in function like “likfit”:
-<code>fit = likfit(ca20, ini = c(100, 60), trend = ~altitude)</code></li>
-<li>Specify it through function “trend.spatial”: See below</li>
-</ul>
-<ul>
-<li>Usage: only to specify, not computing involved in this function.
-<ul>
-<li><code>trend.spatial(trend, geodata)</code></li>
-</ul></li>
-</ul>
-<ul>
-<li>Argument <em>trend</em>
-<ul>
-<li>trend = “cte”: constant mean</li>
-<li>trend = ~altitude: <span
-class="math inline">\(\mu(s)=\beta_0+\beta_1 altitude\)</span></li>
-<li>Other options: “1st”, “2nd”, see help files for more details</li>
-</ul></li>
-</ul>
-</div>
-</div>
-</div>
-<div id="geodata-format" class="section level1" number="4">
-<h1><span class="header-section-number">4</span> Geodata format</h1>
-<p>The package <em>geoR</em> requires <em>geodata</em> object, and in
-this part, we show how to create geodata object</p>
-<ul>
-<li>geodata object: a list with two obligatory components
-<ul>
-<li>coords: a matrix with the two-dimensional coordinates of the
-sampling locations</li>
-<li>data: a vector (vectors) giving the corresponding measured value(s)
-at each of sampling location.</li>
-</ul></li>
-</ul>
-<div id="create-geodata" class="section level2" number="4.1">
-<h2><span class="header-section-number">4.1</span> Create geodata</h2>
-<ul>
-<li><span style="color: red;">Converting a data.frame to geodata</span>:
-many functions in geoR requires geodata format.
-<ul>
-<li><em>as.geodata(obj, coords.col = 1:2, data.col = 3, covar.col =
-NULL, covar.names = “obj.names”)</em></li>
-<li>coords.col = 1:2 (default): the first two columns are x-axis and
-y-axis.</li>
-<li>data.col = 3 (default): the column for the response (<span
-class="math inline">\(Z(\mathbf{s})\)</span>). The default is the third
-column, but you can specify it. In the following example, the 5th column
-is for the response.</li>
-<li>covar.col: columns for covariates.</li>
-</ul></li>
-</ul>
-<pre class="r"><code>library(geoR)
-data(camg)     # data.frame format
-# geodata format
-geocamg = as.geodata(camg, data.col=5, covar.col=c(3,6), 
-                     covar.names = c(&quot;elevation&quot;, &quot;mg20&quot;))    </code></pre>
+<div id="universal-kriging-covariates" class="section level2"
+number="3.2">
+<h2><span class="header-section-number">3.2</span> Universal Kriging:
+covariates</h2>
+<pre class="r"><code>fit2 = likfit(ca20, ini = c(100, 60), trend = ~altitude)
+gr = pred_grid(ca20$borders, by = 10)
+graltitude = rnorm(10908,mean=5.5)
+KC2 = krige.control(type.krige = &quot;ok&quot;, obj.model=fit2, 
+                    trend.d=~altitude, trend.l=~graltitude)
+ca20pred2 = krige.conv(ca20, loc = gr, krige = KC2)</code></pre>
+<p>In universal kriging, we need to know <span
+class="math inline">\(x(\mathbf s_0)\)</span>. In the above code, I
+randomly generated <span class="math inline">\(x(\mathbf s_0)\)</span>
+from <em>graltitude = rnorm(10908,mean=5.5)</em>. In practice, you shall
+know <span class="math inline">\(x(\mathbf s_0)\)</span> in advance.</p>
 </div>
 </div>
 

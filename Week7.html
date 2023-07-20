@@ -11,7 +11,7 @@
 
 
 
-<title>Week 7: Data Wrangling – tidyr and dplyr</title>
+<title>Week 7: Geostatistics–Estimation</title>
 
 <script src="site_libs/header-attrs-2.19/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -290,8 +290,7 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Week 7: Data Wrangling – tidyr and
-dplyr</h1>
+<h1 class="title toc-ignore">Week 7: Geostatistics–Estimation</h1>
 
 </div>
 
@@ -299,12 +298,35 @@ dplyr</h1>
 <ul>
 <li><a href="#introduction" id="toc-introduction"><span
 class="toc-section-number">1</span> Introduction</a></li>
-<li><a href="#tidyr" id="toc-tidyr"><span
-class="toc-section-number">2</span> tidyr</a></li>
-<li><a href="#dplyr" id="toc-dplyr"><span
-class="toc-section-number">3</span> dplyr</a></li>
-<li><a href="#an-example" id="toc-an-example"><span
-class="toc-section-number">4</span> An Example</a></li>
+<li><a href="#soil-data-semivariogram"
+id="toc-soil-data-semivariogram"><span
+class="toc-section-number">2</span> Soil Data &amp; Semivariogram</a>
+<ul>
+<li><a href="#soil-example" id="toc-soil-example"><span
+class="toc-section-number">2.1</span> Soil Example</a></li>
+<li><a href="#semivariogram" id="toc-semivariogram"><span
+class="toc-section-number">2.2</span> Semivariogram</a></li>
+</ul></li>
+<li><a href="#mle" id="toc-mle"><span
+class="toc-section-number">3</span> MLE</a>
+<ul>
+<li><a href="#mle-initial-value" id="toc-mle-initial-value"><span
+class="toc-section-number">3.1</span> MLE: Initial Value</a></li>
+<li><a href="#mle-function" id="toc-mle-function"><span
+class="toc-section-number">3.2</span> MLE: Function</a></li>
+<li><a href="#spatial-trend" id="toc-spatial-trend"><span
+class="toc-section-number">3.3</span> Spatial Trend</a>
+<ul>
+<li><a href="#two-ways" id="toc-two-ways"><span
+class="toc-section-number">3.3.1</span> Two ways</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#geodata-format" id="toc-geodata-format"><span
+class="toc-section-number">4</span> Geodata format</a>
+<ul>
+<li><a href="#create-geodata" id="toc-create-geodata"><span
+class="toc-section-number">4.1</span> Create geodata</a></li>
+</ul></li>
 </ul>
 </div>
 
@@ -312,212 +334,252 @@ class="toc-section-number">4</span> An Example</a></li>
 
 </div>
 <p><span style="color: red;">Due to the Easter Break, this Lab will be
-held in Week 8. </span></p>
+held in Week 9. </span></p>
 <div id="introduction" class="section level1" number="1">
 <h1><span class="header-section-number">1</span> Introduction</h1>
-<p>In previous labs, we studied how to visualise the spatial objects. In
-this lab, we will study operations on the data frame (and therefore, sf
-object).</p>
-<p>Two R packages, <em>tidyr</em> and <em>dplyr</em>, are designed to
-simplify the data cleaning and preparation.</p>
-</div>
-<div id="tidyr" class="section level1" number="2">
-<h1><span class="header-section-number">2</span> tidyr</h1>
 <ul>
-<li>Please study the <em>tidyr</em> package through the following
-tutorial <a href="https://uc-r.github.io/tidyr"
-class="uri">https://uc-r.github.io/tidyr</a>. There are five commands
+<li>In this Lab, we will learn
 <ul>
-<li>%&gt;%: the pipe operator</li>
-<li>gather</li>
-<li>spread</li>
-<li>separate</li>
-<li>unite</li>
-</ul></li>
-</ul>
-<p>The function <em>gather</em> and <em>spread</em> has been retired,
-but it is still widely used in many books/blogs. The <em>gather</em>
-function is replaced by <em>pivot_longer</em>, and <em>spread</em>
-function is replaced by <em>pivot_wider</em></p>
-<pre class="r"><code>library(tidyr)
-relig_income</code></pre>
-<pre><code>## # A tibble: 18 × 11
-##    religion      `&lt;$10k` $10-2…¹ $20-3…² $30-4…³ $40-5…⁴ $50-7…⁵ $75-1…⁶ $100-…⁷
-##    &lt;chr&gt;           &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
-##  1 Agnostic           27      34      60      81      76     137     122     109
-##  2 Atheist            12      27      37      52      35      70      73      59
-##  3 Buddhist           27      21      30      34      33      58      62      39
-##  4 Catholic          418     617     732     670     638    1116     949     792
-##  5 Don’t know/r…      15      14      15      11      10      35      21      17
-##  6 Evangelical …     575     869    1064     982     881    1486     949     723
-##  7 Hindu               1       9       7       9      11      34      47      48
-##  8 Historically…     228     244     236     238     197     223     131      81
-##  9 Jehovah&#39;s Wi…      20      27      24      24      21      30      15      11
-## 10 Jewish             19      19      25      25      30      95      69      87
-## 11 Mainline Prot     289     495     619     655     651    1107     939     753
-## 12 Mormon             29      40      48      51      56     112      85      49
-## 13 Muslim              6       7       9      10       9      23      16       8
-## 14 Orthodox           13      17      23      32      32      47      38      42
-## 15 Other Christ…       9       7      11      13      13      14      18      14
-## 16 Other Faiths       20      33      40      46      49      63      46      40
-## 17 Other World …       5       2       3       4       2       7       3       4
-## 18 Unaffiliated      217     299     374     365     341     528     407     321
-## # … with 2 more variables: `&gt;150k` &lt;dbl&gt;, `Don&#39;t know/refused` &lt;dbl&gt;, and
-## #   abbreviated variable names ¹​`$10-20k`, ²​`$20-30k`, ³​`$30-40k`, ⁴​`$40-50k`,
-## #   ⁵​`$50-75k`, ⁶​`$75-100k`, ⁷​`$100-150k`</code></pre>
-<pre class="r"><code>relig_income %&gt;% pivot_longer(!religion, names_to = &quot;income&quot;, values_to = &quot;count&quot;)</code></pre>
-<pre><code>## # A tibble: 180 × 3
-##    religion income             count
-##    &lt;chr&gt;    &lt;chr&gt;              &lt;dbl&gt;
-##  1 Agnostic &lt;$10k                 27
-##  2 Agnostic $10-20k               34
-##  3 Agnostic $20-30k               60
-##  4 Agnostic $30-40k               81
-##  5 Agnostic $40-50k               76
-##  6 Agnostic $50-75k              137
-##  7 Agnostic $75-100k             122
-##  8 Agnostic $100-150k            109
-##  9 Agnostic &gt;150k                 84
-## 10 Agnostic Don&#39;t know/refused    96
-## # … with 170 more rows</code></pre>
-<pre class="r"><code>relig_income %&gt;% gather(key = income, value = count, -religion)</code></pre>
-<pre><code>## # A tibble: 180 × 3
-##    religion                income count
-##    &lt;chr&gt;                   &lt;chr&gt;  &lt;dbl&gt;
-##  1 Agnostic                &lt;$10k     27
-##  2 Atheist                 &lt;$10k     12
-##  3 Buddhist                &lt;$10k     27
-##  4 Catholic                &lt;$10k    418
-##  5 Don’t know/refused      &lt;$10k     15
-##  6 Evangelical Prot        &lt;$10k    575
-##  7 Hindu                   &lt;$10k      1
-##  8 Historically Black Prot &lt;$10k    228
-##  9 Jehovah&#39;s Witness       &lt;$10k     20
-## 10 Jewish                  &lt;$10k     19
-## # … with 170 more rows</code></pre>
-<pre class="r"><code>fish_encounters</code></pre>
-<pre><code>## # A tibble: 114 × 3
-##    fish  station  seen
-##    &lt;fct&gt; &lt;fct&gt;   &lt;int&gt;
-##  1 4842  Release     1
-##  2 4842  I80_1       1
-##  3 4842  Lisbon      1
-##  4 4842  Rstr        1
-##  5 4842  Base_TD     1
-##  6 4842  BCE         1
-##  7 4842  BCW         1
-##  8 4842  BCE2        1
-##  9 4842  BCW2        1
-## 10 4842  MAE         1
-## # … with 104 more rows</code></pre>
-<pre class="r"><code>fish_encounters %&gt;% pivot_wider(names_from = station, values_from = seen)</code></pre>
-<pre><code>## # A tibble: 19 × 12
-##    fish  Release I80_1 Lisbon  Rstr Base_TD   BCE   BCW  BCE2  BCW2   MAE   MAW
-##    &lt;fct&gt;   &lt;int&gt; &lt;int&gt;  &lt;int&gt; &lt;int&gt;   &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;
-##  1 4842        1     1      1     1       1     1     1     1     1     1     1
-##  2 4843        1     1      1     1       1     1     1     1     1     1     1
-##  3 4844        1     1      1     1       1     1     1     1     1     1     1
-##  4 4845        1     1      1     1       1    NA    NA    NA    NA    NA    NA
-##  5 4847        1     1      1    NA      NA    NA    NA    NA    NA    NA    NA
-##  6 4848        1     1      1     1      NA    NA    NA    NA    NA    NA    NA
-##  7 4849        1     1     NA    NA      NA    NA    NA    NA    NA    NA    NA
-##  8 4850        1     1     NA     1       1     1     1    NA    NA    NA    NA
-##  9 4851        1     1     NA    NA      NA    NA    NA    NA    NA    NA    NA
-## 10 4854        1     1     NA    NA      NA    NA    NA    NA    NA    NA    NA
-## 11 4855        1     1      1     1       1    NA    NA    NA    NA    NA    NA
-## 12 4857        1     1      1     1       1     1     1     1     1    NA    NA
-## 13 4858        1     1      1     1       1     1     1     1     1     1     1
-## 14 4859        1     1      1     1       1    NA    NA    NA    NA    NA    NA
-## 15 4861        1     1      1     1       1     1     1     1     1     1     1
-## 16 4862        1     1      1     1       1     1     1     1     1    NA    NA
-## 17 4863        1     1     NA    NA      NA    NA    NA    NA    NA    NA    NA
-## 18 4864        1     1     NA    NA      NA    NA    NA    NA    NA    NA    NA
-## 19 4865        1     1      1    NA      NA    NA    NA    NA    NA    NA    NA</code></pre>
-<pre class="r"><code>fish_encounters %&gt;% spread(key = station, value = seen)</code></pre>
-<pre><code>## # A tibble: 19 × 12
-##    fish  Release I80_1 Lisbon  Rstr Base_TD   BCE   BCW  BCE2  BCW2   MAE   MAW
-##    &lt;fct&gt;   &lt;int&gt; &lt;int&gt;  &lt;int&gt; &lt;int&gt;   &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;
-##  1 4842        1     1      1     1       1     1     1     1     1     1     1
-##  2 4843        1     1      1     1       1     1     1     1     1     1     1
-##  3 4844        1     1      1     1       1     1     1     1     1     1     1
-##  4 4845        1     1      1     1       1    NA    NA    NA    NA    NA    NA
-##  5 4847        1     1      1    NA      NA    NA    NA    NA    NA    NA    NA
-##  6 4848        1     1      1     1      NA    NA    NA    NA    NA    NA    NA
-##  7 4849        1     1     NA    NA      NA    NA    NA    NA    NA    NA    NA
-##  8 4850        1     1     NA     1       1     1     1    NA    NA    NA    NA
-##  9 4851        1     1     NA    NA      NA    NA    NA    NA    NA    NA    NA
-## 10 4854        1     1     NA    NA      NA    NA    NA    NA    NA    NA    NA
-## 11 4855        1     1      1     1       1    NA    NA    NA    NA    NA    NA
-## 12 4857        1     1      1     1       1     1     1     1     1    NA    NA
-## 13 4858        1     1      1     1       1     1     1     1     1     1     1
-## 14 4859        1     1      1     1       1    NA    NA    NA    NA    NA    NA
-## 15 4861        1     1      1     1       1     1     1     1     1     1     1
-## 16 4862        1     1      1     1       1     1     1     1     1    NA    NA
-## 17 4863        1     1     NA    NA      NA    NA    NA    NA    NA    NA    NA
-## 18 4864        1     1     NA    NA      NA    NA    NA    NA    NA    NA    NA
-## 19 4865        1     1      1    NA      NA    NA    NA    NA    NA    NA    NA</code></pre>
-</div>
-<div id="dplyr" class="section level1" number="3">
-<h1><span class="header-section-number">3</span> dplyr</h1>
-<ul>
-<li>Please study the <em>dplyr</em> package through the following
-tutorial <a
-href="https://cran.r-project.org/web/packages/dplyr/vignettes/base.html"
-class="uri">https://cran.r-project.org/web/packages/dplyr/vignettes/base.html</a>.
-The tutorial includes a comparison betwwen commands of <em>dplyr</em>
-and the equivalent from base R. The following commands are especially
-useful
-<ul>
-<li>arrange: Arrange rows by variables</li>
-<li>filter: Return rows with matching conditions</li>
-<li>mutate: Create or transform variables</li>
-<li>select: Select variables by name</li>
-<li>summarise: Reduce multiple values down to a single value</li>
-</ul></li>
-<li>The above commands only handle a data frame. For the operations in
-two data frames. Please see <em>Combine Data Sets</em> of <a
-href="https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf"
-class="uri">https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf</a>.
-(This cheat sheet is also very useful as a future reference). In
-particular, the following four commands:
-<ul>
-<li>left_join</li>
-<li>right_join</li>
-<li>inner_join</li>
-<li>full_join</li>
+<li>Semivariogram: Cp 4 – “Introduction and Semivariogram”</li>
+<li>MLE: Cp 4 – “Covariance and Semivariogram Models”, “Paramatric
+Modelling: MLE”; Cp 5 – “MLE”</li>
 </ul></li>
 </ul>
 </div>
-<div id="an-example" class="section level1" number="4">
-<h1><span class="header-section-number">4</span> An Example</h1>
-<p>Suppose you want to plot all suburbs in City of Banyule. However, for
-suburbs shared with other LGAs, such as Bundoora, you want to plot the
-whole suburb, instead of the portion inside Banyule.</p>
-<p>First, you can <em>filter</em> all these suburbs from
-<em>VICSub</em>. Here, I used the variable <em>LC_PLY_PID</em> instead
-of suburb names, because there are actually two Bellfield in Vitoria
-(and only one is in City of Banyule).</p>
-<pre class="r"><code>library(sf)
-library(ggplot2)
-library(dplyr)
-load(&quot;datasets/BSub.Rdata&quot;)
-VICSub = st_read(dsn=&quot;datasets/VICSub/VIC_LOCALITY_POLYGON_shp.shp&quot;, &quot;VIC_LOCALITY_POLYGON_shp&quot;)</code></pre>
-<pre><code>## Reading layer `VIC_LOCALITY_POLYGON_shp&#39; from data source 
-##   `C:\Users\tingjinc\Dropbox\2_MAST90122\90122LabGit\datasets\VICSub\VIC_LOCALITY_POLYGON_shp.shp&#39; 
-##   using driver `ESRI Shapefile&#39;
-## Simple feature collection with 2973 features and 12 fields
-## Geometry type: POLYGON
-## Dimension:     XY
-## Bounding box:  xmin: 140.9619 ymin: -39.13657 xmax: 149.9763 ymax: -33.98127
-## Geodetic CRS:  GDA2020</code></pre>
-<pre class="r"><code>VICSub &lt;- st_transform(VICSub, 4326)
-
-BSub2 = VICSub %&gt;% filter(LC_PLY_PID %in% BSub$LC_PLY_PID)</code></pre>
-<p>Afterward, you can visualise your results.</p>
-<pre class="r"><code>ggplot() + geom_sf(data = BSub2, aes(fill = VIC_LOCA_2)) + 
-  geom_sf_label(data = BSub2, aes(label = VIC_LOCA_2), size = 2.1) + 
-  theme(legend.position=&quot;none&quot;)</code></pre>
-<p><img src="Week7_files/figure-html/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
+<div id="soil-data-semivariogram" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> Soil Data &amp;
+Semivariogram</h1>
+<div id="soil-example" class="section level2" number="2.1">
+<h2><span class="header-section-number">2.1</span> Soil Example</h2>
+<p><span class="math inline">\(Z(\mathbf{s})\)</span>: calcium content
+in soil at <span class="math inline">\(\mathbf{s}\)</span>.</p>
+<pre class="r"><code>library(geoR)
+data(ca20)
+points(ca20,cex.min = 0.2, cex.max = 1.5, pch = 21)</code></pre>
+<p><img src="Week7_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+</div>
+<div id="semivariogram" class="section level2" number="2.2">
+<h2><span class="header-section-number">2.2</span> Semivariogram</h2>
+<pre class="r"><code>plot(variog(ca20, option=&quot;bin&quot;, max.dist=510), 
+     xlab = &quot;h&quot;, ylab = &quot;gamma(h)&quot;)</code></pre>
+<pre><code>## variog: computing omnidirectional variogram</code></pre>
+<p><img src="Week7_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p>Here, the function <em>variog</em> is used to calculate the
+semivariogram in our slides.</p>
+<ul>
+<li>Function: variog
+<ul>
+<li>argument</li>
+<li>option: “bin”</li>
+<li>max.dist: maximum distance for the semivariogram</li>
+</ul></li>
+</ul>
+</div>
+</div>
+<div id="mle" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> MLE</h1>
+<div id="mle-initial-value" class="section level2" number="3.1">
+<h2><span class="header-section-number">3.1</span> MLE: Initial
+Value</h2>
+<p><span style="color: red;">“Eye-fit”</span></p>
+<pre class="r"><code>plot(variog(ca20, option=&quot;bin&quot;, max.dist=510), 
+     xlab = &quot;h&quot;, ylab = &quot;gamma(h)&quot;)
+lines.variomodel(seq(0, 510, l = 100), 
+                 cov.pars = c(100, 120),           
+                 cov.model = &quot;mat&quot;, kap = 0.5, nug = 30)</code></pre>
+<p><img src="Week7_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>Based on the plot, the initial value <span
+class="math inline">\((\sigma^2, \phi, \tau^2) = (100, 120,
+30)\)</span>.</p>
+</div>
+<div id="mle-function" class="section level2" number="3.2">
+<h2><span class="header-section-number">3.2</span> MLE: Function</h2>
+<pre class="r"><code># trend - constant mean
+m1 = likfit(ca20, ini = c(100, 120), nug = 30)</code></pre>
+<pre class="r"><code># trend - constant mean
+summary(m1)</code></pre>
+<pre><code>## Summary of the parameter estimation
+## -----------------------------------
+## Estimation method: maximum likelihood 
+## 
+## Parameters of the mean component (trend):
+##    beta 
+## 50.0668 
+## 
+## Parameters of the spatial component:
+##    correlation function: exponential
+##       (estimated) variance parameter sigmasq (partial sill) =  135.2
+##       (estimated) cor. fct. parameter phi (range parameter)  =  159.5
+##    anisotropy parameters:
+##       (fixed) anisotropy angle = 0  ( 0 degrees )
+##       (fixed) anisotropy ratio = 1
+## 
+## Parameter of the error component:
+##       (estimated) nugget =  16.77
+## 
+## Transformation parameter:
+##       (fixed) Box-Cox parameter = 1 (no transformation)
+## 
+## Practical Range with cor=0.05 for asymptotic range: 477.7842
+## 
+## Maximised Likelihood:
+##    log.L n.params      AIC      BIC 
+## &quot;-632.6&quot;      &quot;4&quot;   &quot;1273&quot;   &quot;1286&quot; 
+## 
+## non spatial model:
+##    log.L n.params      AIC      BIC 
+## &quot;-680.2&quot;      &quot;2&quot;   &quot;1364&quot;   &quot;1371&quot; 
+## 
+## Call:
+## likfit(geodata = ca20, ini.cov.pars = c(100, 120), nugget = 30)</code></pre>
+<ul>
+<li>Results of output
+<ul>
+<li>Spatial-dependence parameter estiamtes: <span
+class="math inline">\((\sigma^2, \phi, \tau^2)\)</span></li>
+<li>no standard error is provided.</li>
+<li>cov.pars: <span class="math inline">\((\sigma^2, \phi)\)</span></li>
+<li>nugget: <span class="math inline">\(\tau^2\)</span></li>
+<li>kappa</li>
+</ul></li>
+</ul>
+<p>The output of MLE</p>
+<pre class="r"><code># cov.pars
+m1$cov.pars
+# partial sill 
+m1$sigmasq
+# the range parameter
+m1$phi
+# nugget
+m1$nugget</code></pre>
+<pre><code>## [1] 135.1726 159.4883
+## [1] 135.1726
+## [1] 159.4883
+## [1] 16.76523</code></pre>
+<ul>
+<li><span style="color: red;">The arguments of function</span>
+<em>likfit</em>
+<ul>
+<li>argument</li>
+<li>cov.model: “exp” (default), more options see cov.pars</li>
+<li>Fixed or Estimated: fix.nugget = FALSE, fix.kappa = TRUE, kappa
+=0.5</li>
+<li>Initial value: ini.cov.pars, nugget</li>
+</ul></li>
+</ul>
+<ul>
+<li>Remarks: we have 4 parameters: nugget <span
+class="math inline">\(\tau^2\)</span>, partial sill <span
+class="math inline">\(\sigma^2\)</span>, range parameter <span
+class="math inline">\(\phi\)</span>, smooth parameter <span
+class="math inline">\(\kappa\)</span> ( <span
+class="math inline">\(\nu\)</span> in our slide. )
+<ul>
+<li>Function allow us either to pre-specify (fix) or estimate it</li>
+<li>Most of the time, <span class="math inline">\(\kappa\)</span> is
+fixed.</li>
+</ul></li>
+</ul>
+<p>Here are some exmaple:</p>
+<ul>
+<li>Example 1: no specification. “likfit(ca20, ini = c(100, 200), nug =
+50)”
+<ul>
+<li>Exp model (<span class="math inline">\(\kappa\)</span> = 0.5
+fixed).</li>
+<li>To estimate: <span class="math inline">\(\tau^2\)</span>, <span
+class="math inline">\(\sigma^2\)</span>, <span
+class="math inline">\(\phi\)</span></li>
+</ul></li>
+</ul>
+<ul>
+<li>Example 2: no specification. “likfit(ca20, ini = c(100, 200), nug =
+50, fix.nugget=TRUE)”
+<ul>
+<li>Fixed: <span class="math inline">\(\kappa\)</span> = 0.5, nugget
+<span class="math inline">\(\tau^2 = 50\)</span></li>
+<li>To estiamte: <span class="math inline">\(\sigma^2\)</span>, <span
+class="math inline">\(\phi\)</span></li>
+</ul></li>
+</ul>
+<p>Many other informatons can be obtained.</p>
+<pre class="r"><code># the estimated covariance matrix of beta. 
+m1$beta.var
+# AIC of the model
+AIC(m1)
+# and others...
+m1$practicalRange
+logLik(m1)</code></pre>
+<pre><code>## [1] 16.54567
+## [1] 1273.191
+## [1] 477.7842
+## &#39;log Lik.&#39; -632.5953 (df=4)</code></pre>
+<p>You can also study possible covariance functions by reading details
+(accessed by typing “?cov.spatial”)</p>
+</div>
+<div id="spatial-trend" class="section level2" number="3.3">
+<h2><span class="header-section-number">3.3</span> Spatial Trend</h2>
+<div id="two-ways" class="section level3" number="3.3.1">
+<h3><span class="header-section-number">3.3.1</span> Two ways</h3>
+<ul>
+<li>Specify directly in function like “likfit”:
+<code>fit = likfit(ca20, ini = c(100, 60), trend = ~altitude)</code></li>
+<li>Specify it through function “trend.spatial”: See below</li>
+</ul>
+<ul>
+<li>Usage: only to specify, not computing involved in this function.
+<ul>
+<li><code>trend.spatial(trend, geodata)</code></li>
+</ul></li>
+</ul>
+<ul>
+<li>Argument <em>trend</em>
+<ul>
+<li>trend = “cte”: constant mean</li>
+<li>trend = ~altitude: <span
+class="math inline">\(\mu(s)=\beta_0+\beta_1 altitude\)</span></li>
+<li>Other options: “1st”, “2nd”, see help files for more details</li>
+</ul></li>
+</ul>
+</div>
+</div>
+</div>
+<div id="geodata-format" class="section level1" number="4">
+<h1><span class="header-section-number">4</span> Geodata format</h1>
+<p>The package <em>geoR</em> requires <em>geodata</em> object, and in
+this part, we show how to create geodata object</p>
+<ul>
+<li>geodata object: a list with two obligatory components
+<ul>
+<li>coords: a matrix with the two-dimensional coordinates of the
+sampling locations</li>
+<li>data: a vector (vectors) giving the corresponding measured value(s)
+at each of sampling location.</li>
+</ul></li>
+</ul>
+<div id="create-geodata" class="section level2" number="4.1">
+<h2><span class="header-section-number">4.1</span> Create geodata</h2>
+<ul>
+<li><span style="color: red;">Converting a data.frame to geodata</span>:
+many functions in geoR requires geodata format.
+<ul>
+<li><em>as.geodata(obj, coords.col = 1:2, data.col = 3, covar.col =
+NULL, covar.names = “obj.names”)</em></li>
+<li>coords.col = 1:2 (default): the first two columns are x-axis and
+y-axis.</li>
+<li>data.col = 3 (default): the column for the response (<span
+class="math inline">\(Z(\mathbf{s})\)</span>). The default is the third
+column, but you can specify it. In the following example, the 5th column
+is for the response.</li>
+<li>covar.col: columns for covariates.</li>
+</ul></li>
+</ul>
+<pre class="r"><code>library(geoR)
+data(camg)     # data.frame format
+# geodata format
+geocamg = as.geodata(camg, data.col=5, covar.col=c(3,6), 
+                     covar.names = c(&quot;elevation&quot;, &quot;mg20&quot;))    </code></pre>
+</div>
 </div>
 
 

@@ -1,0 +1,186 @@
+---
+title: 'Week 7: Geostatistics--Estimation'
+---
+
+<div style="margin-bottom:50px;">
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+</div>
+
+<span style="color: red;">Due to the Easter Break, this Lab will be held in Week 9. </span>
+
+
+# Introduction
+
+* In this Lab, we will learn
+  + Semivariogram: Cp 4 -- "Introduction and Semivariogram"
+  + MLE: Cp 4 -- "Covariance and Semivariogram Models", "Paramatric Modelling: MLE"; Cp 5 -- "MLE"
+
+
+
+# Soil Data & Semivariogram
+
+
+## Soil Example
+
+$Z(\mathbf{s})$: calcium content in soil at $\mathbf{s}$. 
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+library(geoR)
+data(ca20)
+points(ca20,cex.min = 0.2, cex.max = 1.5, pch = 21)
+```
+
+
+
+
+## Semivariogram
+```{r echo=TRUE, message=FALSE, warning=FALSE, hold=TRUE}
+plot(variog(ca20, option="bin", max.dist=510), 
+     xlab = "h", ylab = "gamma(h)")
+```
+
+Here, the function *variog* is used to calculate the semivariogram in our slides. 
+
+
+* Function: variog
+  + argument
+  + option: "bin"
+  + max.dist: maximum distance for the semivariogram
+  
+
+
+# MLE
+
+
+## MLE: Initial Value
+
+<span style="color: red;">"Eye-fit"</span>
+
+```{r echo=TRUE, results='hide', message=FALSE, warning=FALSE, hold=TRUE}
+plot(variog(ca20, option="bin", max.dist=510), 
+     xlab = "h", ylab = "gamma(h)")
+lines.variomodel(seq(0, 510, l = 100), 
+                 cov.pars = c(100, 120),           
+                 cov.model = "mat", kap = 0.5, nug = 30)
+```
+
+Based on the plot, the initial value $(\sigma^2, \phi, \tau^2) = (100, 120, 30)$.
+
+
+## MLE: Function
+```{r echo=TRUE, results='hide', message=FALSE, warning=FALSE, hold=TRUE}
+# trend - constant mean
+m1 = likfit(ca20, ini = c(100, 120), nug = 30)
+```
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, hold=TRUE}
+# trend - constant mean
+summary(m1)
+```
+
+* Results of output
+  + Spatial-dependence parameter estiamtes: $(\sigma^2, \phi, \tau^2)$ 
+  + no standard error is provided.
+  + cov.pars: $(\sigma^2, \phi)$ 
+  + nugget: $\tau^2$
+  + kappa
+
+
+The output of MLE
+```{r echo=TRUE, message=FALSE, warning=FALSE, results="hold"}
+# cov.pars
+m1$cov.pars
+# partial sill 
+m1$sigmasq
+# the range parameter
+m1$phi
+# nugget
+m1$nugget
+```
+
+
+* <span style="color: red;">The arguments of function</span> *likfit*
+  + argument
+  + cov.model: "exp" (default), more options see cov.pars
+  + Fixed or Estimated: fix.nugget = FALSE, fix.kappa = TRUE, kappa =0.5
+  + Initial value: ini.cov.pars, nugget 
+
+\vspace{5pt}
+
+* Remarks: we have 4 parameters: nugget $\tau^2$, partial sill $\sigma^2$, range parameter $\phi$, smooth parameter $\kappa$ ( $\nu$ in our slide. )
+  + Function allow us either to pre-specify (fix) or estimate it
+  + Most of the time, $\kappa$ is fixed.
+  
+  
+Here are some exmaple: 
+
+* Example 1: no specification.  "likfit(ca20, ini = c(100, 200), nug = 50)"
+  + Exp model ($\kappa$ = 0.5 fixed). 
+  + To estimate: $\tau^2$, $\sigma^2$, $\phi$
+  
+\vspace{5pt}
+
+* Example 2: no specification.  "likfit(ca20, ini = c(100, 200), nug = 50, fix.nugget=TRUE)"
+  + Fixed: $\kappa$ = 0.5, nugget $\tau^2 = 50$
+  + To estiamte: $\sigma^2$, $\phi$
+
+
+Many other informatons can be obtained. 
+```{r echo=TRUE, message=FALSE, warning=FALSE, results="hold"}
+# the estimated covariance matrix of beta. 
+m1$beta.var
+# AIC of the model
+AIC(m1)
+# and others...
+m1$practicalRange
+logLik(m1)
+```
+You can also study possible covariance functions by reading details (accessed by typing "?cov.spatial")
+  
+## Spatial Trend
+
+### Two ways
+  + Specify directly in function like "likfit": `fit = likfit(ca20, ini = c(100, 60), trend = ~altitude)`
+  + Specify it through function "trend.spatial": See below
+
+\vspace{5pt}
+
+* Usage: only to specify, not computing involved in this function.
+  + `trend.spatial(trend, geodata)`
+
+\vspace{5pt}
+
+* Argument *trend*
+  + trend = "cte": constant mean
+  + trend = ~altitude: $\mu(s)=\beta_0+\beta_1 altitude$
+  + Other options: "1st", "2nd", see help files for more details
+
+
+
+
+
+# Geodata format
+
+The package *geoR* requires *geodata* object, and in this part, we show how to create geodata object
+
+* geodata object: a list with two obligatory components
+  + coords: a matrix with the two-dimensional coordinates of the sampling locations
+  + data: a vector (vectors) giving the corresponding measured value(s) at each of sampling location. 
+  
+
+## Create geodata
+
+* <span style="color: red;">Converting a data.frame to geodata</span>: many functions in geoR requires geodata format.
+  + *as.geodata(obj, coords.col = 1:2, data.col = 3, covar.col = NULL, covar.names = "obj.names")*
+  + coords.col = 1:2 (default): the first two columns are x-axis and y-axis. 
+  + data.col = 3 (default): the column for the response ($Z(\mathbf{s})$). The default is the third column, but you can specify it. In the following example, the 5th column is for the response. 
+  + covar.col: columns for covariates. 
+```{r message=TRUE, echo=TRUE, warning=FALSE}
+library(geoR)
+data(camg)     # data.frame format
+# geodata format
+geocamg = as.geodata(camg, data.col=5, covar.col=c(3,6), 
+                     covar.names = c("elevation", "mg20"))    
+```

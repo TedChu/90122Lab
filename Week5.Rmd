@@ -1,5 +1,5 @@
 ---
-title: 'Week 3: Visualisation of Spatial Data -- sf'
+title: 'Week 5: Visualisation of Spatial Data -- sf'
 ---
 
 <div style="margin-bottom:50px;">
@@ -32,7 +32,8 @@ For more details, see https://cran.r-project.org/web/packages/sf/vignettes/sf1.h
 
 ```{r, echo=TRUE, fig.width=6, fig.align="center", message = FALSE}
 library(sf)
-setwd("~/Dropbox/2_MAST90122/90122LabGit")
+#setwd("~/Dropbox/2_MAST90122/90122LabGit")
+setwd("C:/Users/tingjinc/Dropbox/2_MAST90122/90122LabGit")
 gmel = st_read(dsn = "datasets/Mel/Aus-Melbourne02.shp", "Aus-Melbourne02")
 ```
 
