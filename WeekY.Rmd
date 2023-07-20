@@ -1,0 +1,84 @@
+---
+title: 'Week 7: Data Wrangling -- tidyr and dplyr'
+---
+
+<div style="margin-bottom:50px;">
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+</div>
+
+<span style="color: red;">Due to the Easter Break, this Lab will be held in Week 8. </span>
+
+
+
+# Introduction
+In previous labs, we studied how to visualise the spatial objects. In this lab, we will study operations on the data frame (and therefore, sf object). 
+
+Two R packages, *tidyr* and *dplyr*, are designed to simplify the data cleaning and preparation. 
+
+# tidyr
+
+* Please study the *tidyr* package through the following tutorial
+https://uc-r.github.io/tidyr. There are five commands
+  + %>%: the pipe operator
+  + gather
+  + spread
+  + separate
+  + unite
+
+The function *gather* and *spread* has been retired, but it is still widely used in many books/blogs. The *gather* function is replaced by *pivot_longer*, and *spread* function is replaced by *pivot_wider*
+```{r, echo=TRUE, fig.width=7, fig.align="center", message = FALSE, warning = F}
+library(tidyr)
+relig_income
+relig_income %>% pivot_longer(!religion, names_to = "income", values_to = "count")
+relig_income %>% gather(key = income, value = count, -religion)
+
+fish_encounters
+fish_encounters %>% pivot_wider(names_from = station, values_from = seen)
+fish_encounters %>% spread(key = station, value = seen)
+```
+
+
+# dplyr
+
+* Please study the *dplyr* package through the following tutorial
+https://cran.r-project.org/web/packages/dplyr/vignettes/base.html. The tutorial includes a comparison betwwen commands of *dplyr* and the equivalent from base R. The following commands are especially useful
+  + arrange: Arrange rows by variables 
+  + filter: Return rows with matching conditions
+  + mutate: Create or transform variables
+  + select: Select variables by name
+  + summarise: Reduce multiple values down to a single value
+  
+* The above commands only handle a data frame. For the operations in two data frames. Please see *Combine Data Sets* of https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf. (This cheat sheet is also very useful as a future reference). In particular, the following four commands: 
+  + left_join
+  + right_join
+  + inner_join
+  + full_join
+
+
+# An Example
+
+Suppose you want to plot all suburbs in City of Banyule. However, for suburbs shared with other LGAs, such as Bundoora,  you want to plot the whole suburb, instead of the portion inside Banyule.
+
+First, you can *filter* all these suburbs from *VICSub*. Here, I used the variable *LC_PLY_PID* instead of suburb names, because there are actually two Bellfield in Vitoria (and only one is in City of Banyule). 
+
+```{r, echo=TRUE, fig.width=7, fig.align="center", message = FALSE, warning = F}
+library(sf)
+library(ggplot2)
+library(dplyr)
+load("datasets/BSub.Rdata")
+VICSub = st_read(dsn="datasets/VICSub/VIC_LOCALITY_POLYGON_shp.shp", "VIC_LOCALITY_POLYGON_shp")
+VICSub <- st_transform(VICSub, 4326)
+
+BSub2 = VICSub %>% filter(LC_PLY_PID %in% BSub$LC_PLY_PID)
+```
+
+Afterward, you can visualise your results. 
+```{r, echo=TRUE, fig.width=7, fig.align="center", message = FALSE, warning = F}
+ggplot() + geom_sf(data = BSub2, aes(fill = VIC_LOCA_2)) + 
+  geom_sf_label(data = BSub2, aes(label = VIC_LOCA_2), size = 2.1) + 
+  theme(legend.position="none")
+```
+
