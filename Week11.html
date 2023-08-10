@@ -276,7 +276,10 @@ $(document).ready(function () {
   <a href="Week11.html">Week 11</a>
 </li>
 <li>
-  <a href="WeekX.html">WeekX</a>
+  <a href="Example1.html">Example 1</a>
+</li>
+<li>
+  <a href="Extra1.html">Extra 1</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -309,8 +312,6 @@ class="toc-section-number">3</span> Time-Series Plots</a></li>
 <div style="margin-bottom:50px;">
 
 </div>
-<p><span style="color: red;">Due to the Easter Break, this Lab will be
-held in Week 12. </span></p>
 <div id="introduction" class="section level1" number="1">
 <h1><span class="header-section-number">1</span> Introduction</h1>
 <ul>
@@ -388,13 +389,13 @@ NOAA_plot</code></pre>
 UIDs_sub &lt;- sample(UIDs, 10)                # sample 10 IDs
 Tmax_sub &lt;- filter(Tmax, id %in% UIDs_sub)  # subset data
 head(Tmax_sub)</code></pre>
-<pre><code>##   julian year month day   id  z proc      lat       lon       date t
-## 1 728050 1993     5   1 3812 75 Tmax 35.43333 -82.48333 1993-05-01 1
-## 2 728051 1993     5   2 3812 72 Tmax 35.43333 -82.48333 1993-05-02 2
-## 3 728052 1993     5   3 3812 65 Tmax 35.43333 -82.48333 1993-05-03 3
-## 4 728053 1993     5   4 3812 73 Tmax 35.43333 -82.48333 1993-05-04 4
-## 5 728054 1993     5   5 3812 78 Tmax 35.43333 -82.48333 1993-05-05 5
-## 6 728055 1993     5   6 3812 80 Tmax 35.43333 -82.48333 1993-05-06 6</code></pre>
+<pre><code>##   julian year month day   id  z proc  lat       lon       date t
+## 1 728050 1993     5   1 3811 71 Tmax 35.6 -88.91666 1993-05-01 1
+## 2 728051 1993     5   2 3811 69 Tmax 35.6 -88.91666 1993-05-02 2
+## 3 728052 1993     5   3 3811 71 Tmax 35.6 -88.91666 1993-05-03 3
+## 4 728053 1993     5   4 3811 73 Tmax 35.6 -88.91666 1993-05-04 4
+## 5 728054 1993     5   5 3811 87 Tmax 35.6 -88.91666 1993-05-05 5
+## 6 728055 1993     5   6 3811 88 Tmax 35.6 -88.91666 1993-05-06 6</code></pre>
 <p>Next, time-series is plotted.</p>
 <pre class="r"><code>## ------------------------------------------------------------------------
 TmaxTS &lt;- ggplot(Tmax_sub) +
