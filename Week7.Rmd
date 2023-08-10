@@ -9,14 +9,11 @@ knitr::opts_chunk$set(echo = TRUE)
 
 </div>
 
-<span style="color: red;">Due to the Easter Break, this Lab will be held in Week 9. </span>
 
 
-# Introduction
 
-* In this Lab, we will learn
-  + Semivariogram: Cp 4 -- "Introduction and Semivariogram"
-  + MLE: Cp 4 -- "Covariance and Semivariogram Models", "Paramatric Modelling: MLE"; Cp 5 -- "MLE"
+
+This Lab corresponds to Cp 4: 1--8. 
 
 
 

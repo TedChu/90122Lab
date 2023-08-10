@@ -9,7 +9,6 @@ knitr::opts_chunk$set(echo = TRUE)
 
 </div>
 
-<span style="color: red;">Due to the Easter Break, this Lab will be held in Week 7. </span>
 
 # Introduction
 * In this Lab, we will learn to draw some maps. 

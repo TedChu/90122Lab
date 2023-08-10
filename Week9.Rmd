@@ -9,6 +9,9 @@ knitr::opts_chunk$set(echo = TRUE)
 
 </div>
 
+This Lab corresponds to Cp 5: 1--5.
+
+
 # SpatialPolygonsDataFrame
 
 * There are two ways to represent spatial shapes

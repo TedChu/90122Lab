@@ -276,7 +276,10 @@ $(document).ready(function () {
   <a href="Week11.html">Week 11</a>
 </li>
 <li>
-  <a href="WeekX.html">WeekX</a>
+  <a href="Example1.html">Example 1</a>
+</li>
+<li>
+  <a href="Extra1.html">Extra 1</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -296,36 +299,34 @@ $(document).ready(function () {
 
 <div id="TOC">
 <ul>
-<li><a href="#introduction" id="toc-introduction"><span
-class="toc-section-number">1</span> Introduction</a></li>
 <li><a href="#soil-data-semivariogram"
 id="toc-soil-data-semivariogram"><span
-class="toc-section-number">2</span> Soil Data &amp; Semivariogram</a>
+class="toc-section-number">1</span> Soil Data &amp; Semivariogram</a>
 <ul>
 <li><a href="#soil-example" id="toc-soil-example"><span
-class="toc-section-number">2.1</span> Soil Example</a></li>
+class="toc-section-number">1.1</span> Soil Example</a></li>
 <li><a href="#semivariogram" id="toc-semivariogram"><span
-class="toc-section-number">2.2</span> Semivariogram</a></li>
+class="toc-section-number">1.2</span> Semivariogram</a></li>
 </ul></li>
 <li><a href="#mle" id="toc-mle"><span
-class="toc-section-number">3</span> MLE</a>
+class="toc-section-number">2</span> MLE</a>
 <ul>
 <li><a href="#mle-initial-value" id="toc-mle-initial-value"><span
-class="toc-section-number">3.1</span> MLE: Initial Value</a></li>
+class="toc-section-number">2.1</span> MLE: Initial Value</a></li>
 <li><a href="#mle-function" id="toc-mle-function"><span
-class="toc-section-number">3.2</span> MLE: Function</a></li>
+class="toc-section-number">2.2</span> MLE: Function</a></li>
 <li><a href="#spatial-trend" id="toc-spatial-trend"><span
-class="toc-section-number">3.3</span> Spatial Trend</a>
+class="toc-section-number">2.3</span> Spatial Trend</a>
 <ul>
 <li><a href="#two-ways" id="toc-two-ways"><span
-class="toc-section-number">3.3.1</span> Two ways</a></li>
+class="toc-section-number">2.3.1</span> Two ways</a></li>
 </ul></li>
 </ul></li>
 <li><a href="#geodata-format" id="toc-geodata-format"><span
-class="toc-section-number">4</span> Geodata format</a>
+class="toc-section-number">3</span> Geodata format</a>
 <ul>
 <li><a href="#create-geodata" id="toc-create-geodata"><span
-class="toc-section-number">4.1</span> Create geodata</a></li>
+class="toc-section-number">3.1</span> Create geodata</a></li>
 </ul></li>
 </ul>
 </div>
@@ -333,24 +334,12 @@ class="toc-section-number">4.1</span> Create geodata</a></li>
 <div style="margin-bottom:50px;">
 
 </div>
-<p><span style="color: red;">Due to the Easter Break, this Lab will be
-held in Week 9. </span></p>
-<div id="introduction" class="section level1" number="1">
-<h1><span class="header-section-number">1</span> Introduction</h1>
-<ul>
-<li>In this Lab, we will learn
-<ul>
-<li>Semivariogram: Cp 4 – “Introduction and Semivariogram”</li>
-<li>MLE: Cp 4 – “Covariance and Semivariogram Models”, “Paramatric
-Modelling: MLE”; Cp 5 – “MLE”</li>
-</ul></li>
-</ul>
-</div>
-<div id="soil-data-semivariogram" class="section level1" number="2">
-<h1><span class="header-section-number">2</span> Soil Data &amp;
+<p>This Lab corresponds to Cp 4: 1–8.</p>
+<div id="soil-data-semivariogram" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> Soil Data &amp;
 Semivariogram</h1>
-<div id="soil-example" class="section level2" number="2.1">
-<h2><span class="header-section-number">2.1</span> Soil Example</h2>
+<div id="soil-example" class="section level2" number="1.1">
+<h2><span class="header-section-number">1.1</span> Soil Example</h2>
 <p><span class="math inline">\(Z(\mathbf{s})\)</span>: calcium content
 in soil at <span class="math inline">\(\mathbf{s}\)</span>.</p>
 <pre class="r"><code>library(geoR)
@@ -358,8 +347,8 @@ data(ca20)
 points(ca20,cex.min = 0.2, cex.max = 1.5, pch = 21)</code></pre>
 <p><img src="Week7_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
 </div>
-<div id="semivariogram" class="section level2" number="2.2">
-<h2><span class="header-section-number">2.2</span> Semivariogram</h2>
+<div id="semivariogram" class="section level2" number="1.2">
+<h2><span class="header-section-number">1.2</span> Semivariogram</h2>
 <pre class="r"><code>plot(variog(ca20, option=&quot;bin&quot;, max.dist=510), 
      xlab = &quot;h&quot;, ylab = &quot;gamma(h)&quot;)</code></pre>
 <pre><code>## variog: computing omnidirectional variogram</code></pre>
@@ -376,10 +365,10 @@ semivariogram in our slides.</p>
 </ul>
 </div>
 </div>
-<div id="mle" class="section level1" number="3">
-<h1><span class="header-section-number">3</span> MLE</h1>
-<div id="mle-initial-value" class="section level2" number="3.1">
-<h2><span class="header-section-number">3.1</span> MLE: Initial
+<div id="mle" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> MLE</h1>
+<div id="mle-initial-value" class="section level2" number="2.1">
+<h2><span class="header-section-number">2.1</span> MLE: Initial
 Value</h2>
 <p><span style="color: red;">“Eye-fit”</span></p>
 <pre class="r"><code>plot(variog(ca20, option=&quot;bin&quot;, max.dist=510), 
@@ -392,8 +381,8 @@ lines.variomodel(seq(0, 510, l = 100),
 class="math inline">\((\sigma^2, \phi, \tau^2) = (100, 120,
 30)\)</span>.</p>
 </div>
-<div id="mle-function" class="section level2" number="3.2">
-<h2><span class="header-section-number">3.2</span> MLE: Function</h2>
+<div id="mle-function" class="section level2" number="2.2">
+<h2><span class="header-section-number">2.2</span> MLE: Function</h2>
 <pre class="r"><code># trend - constant mean
 m1 = likfit(ca20, ini = c(100, 120), nug = 30)</code></pre>
 <pre class="r"><code># trend - constant mean
@@ -517,10 +506,10 @@ logLik(m1)</code></pre>
 <p>You can also study possible covariance functions by reading details
 (accessed by typing “?cov.spatial”)</p>
 </div>
-<div id="spatial-trend" class="section level2" number="3.3">
-<h2><span class="header-section-number">3.3</span> Spatial Trend</h2>
-<div id="two-ways" class="section level3" number="3.3.1">
-<h3><span class="header-section-number">3.3.1</span> Two ways</h3>
+<div id="spatial-trend" class="section level2" number="2.3">
+<h2><span class="header-section-number">2.3</span> Spatial Trend</h2>
+<div id="two-ways" class="section level3" number="2.3.1">
+<h3><span class="header-section-number">2.3.1</span> Two ways</h3>
 <ul>
 <li>Specify directly in function like “likfit”:
 <code>fit = likfit(ca20, ini = c(100, 60), trend = ~altitude)</code></li>
@@ -544,8 +533,8 @@ class="math inline">\(\mu(s)=\beta_0+\beta_1 altitude\)</span></li>
 </div>
 </div>
 </div>
-<div id="geodata-format" class="section level1" number="4">
-<h1><span class="header-section-number">4</span> Geodata format</h1>
+<div id="geodata-format" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> Geodata format</h1>
 <p>The package <em>geoR</em> requires <em>geodata</em> object, and in
 this part, we show how to create geodata object</p>
 <ul>
@@ -557,8 +546,8 @@ sampling locations</li>
 at each of sampling location.</li>
 </ul></li>
 </ul>
-<div id="create-geodata" class="section level2" number="4.1">
-<h2><span class="header-section-number">4.1</span> Create geodata</h2>
+<div id="create-geodata" class="section level2" number="3.1">
+<h2><span class="header-section-number">3.1</span> Create geodata</h2>
 <ul>
 <li><span style="color: red;">Converting a data.frame to geodata</span>:
 many functions in geoR requires geodata format.
