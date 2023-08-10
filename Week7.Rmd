@@ -22,7 +22,7 @@ This Lab corresponds to Cp 4: 1--8.
 
 ## Soil Example
 
-$Z(\mathbf{s})$: calcium content in soil at $\mathbf{s}$. 
+$Z(\mathbf{s})$: the calcium content in soil at $\mathbf{s}$. 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 library(geoR)
 data(ca20)
