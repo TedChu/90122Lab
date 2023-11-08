@@ -1,5 +1,5 @@
 ---
-title: 'Week 2: Spatial Data Classes -- package sp'
+title: 'Extra 2: Spatial Data Classes -- package sp'
 ---
 
 <div style="margin-bottom:50px;">
@@ -22,21 +22,21 @@ knitr::opts_chunk$set(echo = TRUE)
 # SpatialPointsDataFrame Class 
 
 
-*Information of spatial class can be found in class notes: Chpater 1--Visualisation.*
+*Information of spatial class can be found in class notes: Chpater 3--Visualisation.*
 
 The diagram will help
 ```{r, echo=FALSE, fig.width=8, fig.align="center"}
 #setwd("C:/Users/tingjinc/OneDrive - The University of Melbourne/Documents/GitFile/90122Lab")
 #setwd("~/Dropbox/1_MAST90122/2_Spatial_Lab/1_Visualisation_Lab23679/1_sp")
 #setwd("~/Dropbox/1-MAST90122/2_Spatial_Lab/1_Visualisation_Lab2367/1_sp")
-setwd("~/Dropbox/2_MAST90122/90122LabGit")
+#setwd("~/Dropbox/2_MAST90122/90122LabGit")
 knitr::include_graphics("pics/SpPtDF.png")
 ```
 
 ## Create Spatial Class
 * For Spatial class, we will need two components
   + bbox: it is the domain of spatial objects. In the following example, the domain is $[0,1]\times [0,1]$.
-  + CRS: coordinate reference sytem (See Cp1-4 for more details). In the following example, the CRS is WGS84. 
+  + CRS: coordinate reference sytem (See Cp3 for more details). In the following example, the CRS is WGS84. 
 ```{r, echo=TRUE, fig.width=8, fig.align="center"}
 library(sp)
 m=matrix(c(0,0,1,1),ncol=2, dimnames=list(NULL, c("min","max")))  
