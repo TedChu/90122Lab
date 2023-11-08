@@ -28,6 +28,8 @@ navbar:
       href: Example1.html   
     - text: "Extra 1"
       href: Extra1.html
+    - text: "Extra 2"
+      href: Extra2.html
 output_dir: "."
 output:
   html_document:
