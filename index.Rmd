@@ -6,6 +6,7 @@ There are labs between week 2--11.
 
 If you do not know R, please study *R introduction and reference guide* at https://mathstats.pages.gitlab.unimelb.edu.au/r-reference/ before week 2. 
 
+<p>&nbsp;</p>
 
 
 <p>&nbsp;</p>
