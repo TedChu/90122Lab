@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 </div>
 
 
-This Lab corresponds to Cp 2
+This Lab corresponds to Cp 2.
 
 
 # Dataset

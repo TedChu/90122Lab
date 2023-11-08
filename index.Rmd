@@ -4,7 +4,7 @@ title: "MAST90122 Lab"
 
 There are labs between week 2--11. 
 
-If you do not know R, please study *R introduction and reference guide* at https://mathstats.pages.gitlab.unimelb.edu.au/r-reference/ before week 2. 
+If you do not know R, please study *R introduction and reference guide* at https://mathstats.pages.gitlab.unimelb.edu.au/r-reference/ in week 1. 
 
 <p>&nbsp;</p>
 
