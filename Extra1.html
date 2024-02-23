@@ -13,7 +13,7 @@
 
 <title>Extra 1: Visualisation of Spatial Data (4) – Data Wrangling using tidyr and dplyr</title>
 
-<script src="site_libs/header-attrs-2.19/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -281,6 +281,9 @@ $(document).ready(function () {
 <li>
   <a href="Extra1.html">Extra 1</a>
 </li>
+<li>
+  <a href="Extra2.html">Extra 2</a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         
@@ -319,7 +322,7 @@ class="toc-section-number">4</span> An Example</a></li>
 <p>In previous labs, we studied how to visualise the spatial objects. In
 this lab, we will study operations on the data frame (and therefore, sf
 object).</p>
-<p>Two R packages, <em>tidyr</em> and <em>dplyr</em>, are designed to
+<p>Two R packages (<em>tidyr</em> and <em>dplyr</em>) are designed to
 simplify the data cleaning and preparation.</p>
 </div>
 <div id="tidyr" class="section level1" number="2">
@@ -343,29 +346,28 @@ function is replaced by <em>pivot_wider</em></p>
 <pre class="r"><code>library(tidyr)
 relig_income</code></pre>
 <pre><code>## # A tibble: 18 × 11
-##    religion      `&lt;$10k` $10-2…¹ $20-3…² $30-4…³ $40-5…⁴ $50-7…⁵ $75-1…⁶ $100-…⁷
-##    &lt;chr&gt;           &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
-##  1 Agnostic           27      34      60      81      76     137     122     109
-##  2 Atheist            12      27      37      52      35      70      73      59
-##  3 Buddhist           27      21      30      34      33      58      62      39
-##  4 Catholic          418     617     732     670     638    1116     949     792
-##  5 Don’t know/r…      15      14      15      11      10      35      21      17
-##  6 Evangelical …     575     869    1064     982     881    1486     949     723
-##  7 Hindu               1       9       7       9      11      34      47      48
-##  8 Historically…     228     244     236     238     197     223     131      81
-##  9 Jehovah&#39;s Wi…      20      27      24      24      21      30      15      11
-## 10 Jewish             19      19      25      25      30      95      69      87
-## 11 Mainline Prot     289     495     619     655     651    1107     939     753
-## 12 Mormon             29      40      48      51      56     112      85      49
-## 13 Muslim              6       7       9      10       9      23      16       8
-## 14 Orthodox           13      17      23      32      32      47      38      42
-## 15 Other Christ…       9       7      11      13      13      14      18      14
-## 16 Other Faiths       20      33      40      46      49      63      46      40
-## 17 Other World …       5       2       3       4       2       7       3       4
-## 18 Unaffiliated      217     299     374     365     341     528     407     321
-## # … with 2 more variables: `&gt;150k` &lt;dbl&gt;, `Don&#39;t know/refused` &lt;dbl&gt;, and
-## #   abbreviated variable names ¹​`$10-20k`, ²​`$20-30k`, ³​`$30-40k`, ⁴​`$40-50k`,
-## #   ⁵​`$50-75k`, ⁶​`$75-100k`, ⁷​`$100-150k`</code></pre>
+##    religion `&lt;$10k` `$10-20k` `$20-30k` `$30-40k` `$40-50k` `$50-75k` `$75-100k`
+##    &lt;chr&gt;      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;
+##  1 Agnostic      27        34        60        81        76       137        122
+##  2 Atheist       12        27        37        52        35        70         73
+##  3 Buddhist      27        21        30        34        33        58         62
+##  4 Catholic     418       617       732       670       638      1116        949
+##  5 Don’t k…      15        14        15        11        10        35         21
+##  6 Evangel…     575       869      1064       982       881      1486        949
+##  7 Hindu          1         9         7         9        11        34         47
+##  8 Histori…     228       244       236       238       197       223        131
+##  9 Jehovah…      20        27        24        24        21        30         15
+## 10 Jewish        19        19        25        25        30        95         69
+## 11 Mainlin…     289       495       619       655       651      1107        939
+## 12 Mormon        29        40        48        51        56       112         85
+## 13 Muslim         6         7         9        10         9        23         16
+## 14 Orthodox      13        17        23        32        32        47         38
+## 15 Other C…       9         7        11        13        13        14         18
+## 16 Other F…      20        33        40        46        49        63         46
+## 17 Other W…       5         2         3         4         2         7          3
+## 18 Unaffil…     217       299       374       365       341       528        407
+## # ℹ 3 more variables: `$100-150k` &lt;dbl&gt;, `&gt;150k` &lt;dbl&gt;,
+## #   `Don&#39;t know/refused` &lt;dbl&gt;</code></pre>
 <pre class="r"><code>relig_income %&gt;% pivot_longer(!religion, names_to = &quot;income&quot;, values_to = &quot;count&quot;)</code></pre>
 <pre><code>## # A tibble: 180 × 3
 ##    religion income             count
@@ -380,7 +382,7 @@ relig_income</code></pre>
 ##  8 Agnostic $100-150k            109
 ##  9 Agnostic &gt;150k                 84
 ## 10 Agnostic Don&#39;t know/refused    96
-## # … with 170 more rows</code></pre>
+## # ℹ 170 more rows</code></pre>
 <pre class="r"><code>relig_income %&gt;% gather(key = income, value = count, -religion)</code></pre>
 <pre><code>## # A tibble: 180 × 3
 ##    religion                income count
@@ -395,7 +397,7 @@ relig_income</code></pre>
 ##  8 Historically Black Prot &lt;$10k    228
 ##  9 Jehovah&#39;s Witness       &lt;$10k     20
 ## 10 Jewish                  &lt;$10k     19
-## # … with 170 more rows</code></pre>
+## # ℹ 170 more rows</code></pre>
 <pre class="r"><code>fish_encounters</code></pre>
 <pre><code>## # A tibble: 114 × 3
 ##    fish  station  seen
@@ -410,7 +412,7 @@ relig_income</code></pre>
 ##  8 4842  BCE2        1
 ##  9 4842  BCW2        1
 ## 10 4842  MAE         1
-## # … with 104 more rows</code></pre>
+## # ℹ 104 more rows</code></pre>
 <pre class="r"><code>fish_encounters %&gt;% pivot_wider(names_from = station, values_from = seen)</code></pre>
 <pre><code>## # A tibble: 19 × 12
 ##    fish  Release I80_1 Lisbon  Rstr Base_TD   BCE   BCW  BCE2  BCW2   MAE   MAW
@@ -504,7 +506,7 @@ library(dplyr)
 load(&quot;datasets/BSub.Rdata&quot;)
 VICSub = st_read(dsn=&quot;datasets/VICSub/VIC_LOCALITY_POLYGON_shp.shp&quot;, &quot;VIC_LOCALITY_POLYGON_shp&quot;)</code></pre>
 <pre><code>## Reading layer `VIC_LOCALITY_POLYGON_shp&#39; from data source 
-##   `C:\Users\tingjinc\Dropbox\2_MAST90122\90122LabGit\datasets\VICSub\VIC_LOCALITY_POLYGON_shp.shp&#39; 
+##   `C:\Users\tingjinc\OneDrive - The University of Melbourne\2_MAST90122\90122LabGit\datasets\VICSub\VIC_LOCALITY_POLYGON_shp.shp&#39; 
 ##   using driver `ESRI Shapefile&#39;
 ## Simple feature collection with 2973 features and 12 fields
 ## Geometry type: POLYGON

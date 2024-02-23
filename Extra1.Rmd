@@ -1,5 +1,6 @@
 ---
-title: 'Extra 1: Visualisation of Spatial Data (4) -- Data Wrangling using tidyr and dplyr'
+title: "Extra 1: Visualisation of Spatial Data (4) -- Data Wrangling using tidyr and
+  dplyr"
 ---
 
 <div style="margin-bottom:50px;">
@@ -16,7 +17,7 @@ knitr::opts_chunk$set(echo = TRUE)
 # Introduction
 In previous labs, we studied how to visualise the spatial objects. In this lab, we will study operations on the data frame (and therefore, sf object). 
 
-Two R packages, *tidyr* and *dplyr*, are designed to simplify the data cleaning and preparation. 
+Two R packages (*tidyr* and *dplyr*) are designed to simplify the data cleaning and preparation. 
 
 # tidyr
 
