@@ -13,7 +13,7 @@
 
 <title>Week 2: CBD Pedestrian Example for ARIMA Models</title>
 
-<script src="site_libs/header-attrs-2.19/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -335,7 +335,7 @@ class="toc-section-number">5</span> Automatic Procedure</a></li>
 <div style="margin-bottom:50px;">
 
 </div>
-<p>This Lab corresponds to Cp 2</p>
+<p>This Lab corresponds to Cp 2.</p>
 <div id="dataset" class="section level1" number="1">
 <h1><span class="header-section-number">1</span> Dataset</h1>
 <pre class="r"><code>library(tidyverse) # read_csv
@@ -394,7 +394,7 @@ it is greater than 0.1.”</p>
 <p>Although the <em>counts</em> is stationary, I will still consider a
 weekly difference + a lag 1 difference.</p>
 <pre class="r"><code># To determine the seasonal differencing. 
-melb_sel[1:2208, ] %&gt;% features(counts, unitroot_nsdiffs)</code></pre>
+melb_sel[1:2208, ] %&gt;% features(counts, unitroot_nsdiffs,.period = 168)</code></pre>
 <pre><code>## # A tibble: 1 × 1
 ##   nsdiffs
 ##     &lt;int&gt;
@@ -598,7 +598,7 @@ MSE4 = mean((tmp4$.mean - melb_sel$counts[idx])^2)
 MSE5 = mean((tmp5$.mean - melb_sel$counts[idx])^2)
 #MSE6 = mean((tmp6$.mean - melb_sel$counts[idx])^2)
 c(MSE3, MSE4, MSE5)</code></pre>
-<pre><code>## [1] 1.32308207 0.05927945 0.08740256</code></pre>
+<pre><code>## [1] 1.32308207 0.05927944 0.08740256</code></pre>
 <p>The plots</p>
 <pre class="r"><code>melb_sel$tf3 = NA
 melb_sel$tf4 = NA

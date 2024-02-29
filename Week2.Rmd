@@ -56,7 +56,7 @@ Although the *counts* is stationary, I will still consider a weekly difference +
 
 ```{r, echo=TRUE, fig.width=8, fig.align="center"}
 # To determine the seasonal differencing. 
-melb_sel[1:2208, ] %>% features(counts, unitroot_nsdiffs)
+melb_sel[1:2208, ] %>% features(counts, unitroot_nsdiffs,.period = 168)  # m = 168 for a week. Try a random number and see what happens
 melb_sel$diff_week <- difference(melb_sel$counts, lag=168) %>% difference(lag = 1)
 melb_sel[170:2208, ] %>% features(diff_week, unitroot_kpss)
 melb_sel[170:2208, ] %>% 
