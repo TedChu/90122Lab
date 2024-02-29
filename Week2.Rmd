@@ -75,7 +75,7 @@ It is hard to see which ARIMA model shall be used for the *counts*, while for th
 
 ```{r, echo=TRUE, fig.width=8, fig.align="center", results = 'hold'}
 fit1 <- melb_sel[170:2208, ] %>%
-  model(ARIMA(diff_week ~ PDQ(0,0,0)))
+  model(ARIMA(diff_week ~ PDQ(0,0,0), stepwise = TRUE))
 report(fit1)
 ```
 
@@ -102,7 +102,7 @@ augment(fit2) %>% features(.innov, ljung_box, lag = 10, dof = 3)
 
 ```{r, echo=TRUE, fig.width=8, fig.align="center"}
 fit3 <- melb_sel[1:2208,] %>% 
-  model(ARIMA(counts ~ PDQ(0,0,0)))
+  model(ARIMA(counts ~ PDQ(0,0,0), stepwise = TRUE))
 report(fit3)
 ```
 

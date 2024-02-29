@@ -394,7 +394,7 @@ it is greater than 0.1.”</p>
 <p>Although the <em>counts</em> is stationary, I will still consider a
 weekly difference + a lag 1 difference.</p>
 <pre class="r"><code># To determine the seasonal differencing. 
-melb_sel[1:2208, ] %&gt;% features(counts, unitroot_nsdiffs,.period = 168)</code></pre>
+melb_sel[1:2208, ] %&gt;% features(counts, unitroot_nsdiffs,.period = 168)  # m = 168 for a week. Try a random number and see what happens</code></pre>
 <pre><code>## # A tibble: 1 × 1
 ##   nsdiffs
 ##     &lt;int&gt;
@@ -422,7 +422,7 @@ is MA(3).</p>
 <div id="fit-1" class="section level2" number="2.1">
 <h2><span class="header-section-number">2.1</span> Fit 1</h2>
 <pre class="r"><code>fit1 &lt;- melb_sel[170:2208, ] %&gt;%
-  model(ARIMA(diff_week ~ PDQ(0,0,0)))
+  model(ARIMA(diff_week ~ PDQ(0,0,0), stepwise = TRUE))
 report(fit1)</code></pre>
 <pre><code>## Series: diff_week 
 ## Model: ARIMA(2,0,1) 
@@ -439,9 +439,9 @@ report(fit1)</code></pre>
 <p><img src="Week2_files/figure-html/unnamed-chunk-6-1.png" width="768" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>augment(fit1) %&gt;% features(.innov, ljung_box, lag = 10, dof = 3)</code></pre>
 <pre><code>## # A tibble: 1 × 3
-##   .model                          lb_stat lb_pvalue
-##   &lt;chr&gt;                             &lt;dbl&gt;     &lt;dbl&gt;
-## 1 ARIMA(diff_week ~ PDQ(0, 0, 0))    5.10     0.647</code></pre>
+##   .model                                           lb_stat lb_pvalue
+##   &lt;chr&gt;                                              &lt;dbl&gt;     &lt;dbl&gt;
+## 1 ARIMA(diff_week ~ PDQ(0, 0, 0), stepwise = TRUE)    5.10     0.647</code></pre>
 </div>
 <div id="fit-2" class="section level2" number="2.2">
 <h2><span class="header-section-number">2.2</span> Fit 2</h2>
@@ -470,7 +470,7 @@ report(fit2)</code></pre>
 <div id="fit-3" class="section level2" number="2.3">
 <h2><span class="header-section-number">2.3</span> Fit 3</h2>
 <pre class="r"><code>fit3 &lt;- melb_sel[1:2208,] %&gt;% 
-  model(ARIMA(counts ~ PDQ(0,0,0)))
+  model(ARIMA(counts ~ PDQ(0,0,0), stepwise = TRUE))
 report(fit3)</code></pre>
 <pre><code>## Series: counts 
 ## Model: ARIMA(2,0,3) w/ mean 
@@ -487,9 +487,9 @@ report(fit3)</code></pre>
 <p><img src="Week2_files/figure-html/unnamed-chunk-10-1.png" width="768" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>augment(fit3) %&gt;% features(.innov, ljung_box, lag = 10, dof = 3)</code></pre>
 <pre><code>## # A tibble: 1 × 3
-##   .model                       lb_stat lb_pvalue
-##   &lt;chr&gt;                          &lt;dbl&gt;     &lt;dbl&gt;
-## 1 ARIMA(counts ~ PDQ(0, 0, 0))    122.         0</code></pre>
+##   .model                                        lb_stat lb_pvalue
+##   &lt;chr&gt;                                           &lt;dbl&gt;     &lt;dbl&gt;
+## 1 ARIMA(counts ~ PDQ(0, 0, 0), stepwise = TRUE)    122.         0</code></pre>
 <ul>
 <li>Fit 1 appears to be the best, although there are still some
 problems. Here is my personal opinion
