@@ -120,8 +120,8 @@ augment(fit3) %>% features(.innov, ljung_box, lag = 10, dof = 3)
 
 * I will consider the following model
   + fit4: (2,1,1)(0,1,0)$_{168}$ for the *counts*, it is the same model as fit1
-  + fit4: (0,1,3)(0,1,0)$_{168}$ for the *counts*, it is the same model as fit2
-  + fit5: automatic selection for ( ,1, )(,1, )$_168$ for the *counts*
+  + fit5: (0,1,3)(0,1,0)$_{168}$ for the *counts*, it is the same model as fit2
+  + fit6: automatic selection for ( ,1, )(,1, )$_168$ for the *counts*
 
 ## Fit 4 
 $\phi$'s and $\theta$s are the same as Fit 1, but AIC, BIC and AICc are different. 
