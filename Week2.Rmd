@@ -42,7 +42,7 @@ autoplot(melb_sel[1:336, ], counts) +
 
 # ARIMA
 
-First, we test whether the dataset is stationary. As you can see, KPSS fails to reject null hypothesis, meaning the dataset is stationary. Although it is stationary, I will still consider a weekly difference + a lag 1 difference. 
+First, we test whether the dataset is stationary. As you can see, KPSS fails to reject null hypothesis, meaning the dataset is stationary. 
 ```{r, echo=TRUE, fig.width=8, fig.align="center"}
 melb_sel[1:2208, ] %>% features(counts, unitroot_kpss)
 melb_sel[1:2208, ] %>% features(counts, unitroot_ndiffs)
@@ -66,12 +66,12 @@ melb_sel[170:2208, ] %>%
 It is hard to see which ARIMA model shall be used for the *counts*, while for the *diff_week*, a possible candidates is MA(3).
 
 * I will build three model.
-  + fit1: automatic procedure for the *diff_week*
-  + fit2: MA(3) for the *diff_week*
-  + fit3: automatic procedure for the *counts*
+  + Model 1: automatic procedure for the *diff_week*
+  + Model 2: MA(3) for the *diff_week*
+  + Model 3: automatic procedure for the *counts*
 
 
-## Fit 1 
+## Model 1 
 
 ```{r, echo=TRUE, fig.width=8, fig.align="center", results = 'hold'}
 fit1 <- melb_sel[170:2208, ] %>%
@@ -85,7 +85,7 @@ fit1 %>% gg_tsresiduals()
 augment(fit1) %>% features(.innov, ljung_box, lag = 10, dof = 3)
 ```
 
-## Fit 2
+## Model 2
 ```{r, echo=TRUE, fig.width=8, fig.align="center"}
 fit2 <- melb_sel[170:2208, ] %>% 
   model(ARIMA(diff_week ~ pdq(0,0,3) + PDQ(0,0,0)))
@@ -98,7 +98,7 @@ fit2 %>% gg_tsresiduals()
 augment(fit2) %>% features(.innov, ljung_box, lag = 10, dof = 3)
 ```
 
-## Fit 3
+## Model 3
 
 ```{r, echo=TRUE, fig.width=8, fig.align="center"}
 fit3 <- melb_sel[1:2208,] %>% 
@@ -111,7 +111,7 @@ ACF is over the thereshold at multiple lags
 fit3 %>% gg_tsresiduals()
 augment(fit3) %>% features(.innov, ljung_box, lag = 10, dof = 3)
 ```
-* Fit 1 appears to be the best, although there are still some problems. Here is my personal opinion
+* Model 1 appears to be the best, although there are still some problems. Here is my personal opinion
   + In the real-world dataset, the result is often not as good as the example in the book (e.g. Central African Republic exports in Cp 9.7)
   + lag = 24 means some daily seasonality: maybe fixable with another difference with (lag = 24). 
 
@@ -119,12 +119,12 @@ augment(fit3) %>% features(.innov, ljung_box, lag = 10, dof = 3)
 # Seasonal ARIMA
 
 * I will consider the following model
-  + fit4: (2,1,1)(0,1,0)$_{168}$ for the *counts*, it is the same model as fit1
-  + fit5: (0,1,3)(0,1,0)$_{168}$ for the *counts*, it is the same model as fit2
-  + fit6: automatic selection for ( ,1, )(,1, )$_168$ for the *counts*
+  + Model 4: (2,1,1)(0,1,0)$_{168}$ for the *counts*, it is the same model as Model 1
+  + Model 5: (0,1,3)(0,1,0)$_{168}$ for the *counts*, it is the same model as Model 2
+  + Model 6: automatic selection for ( ,1, )(,1, )$_{168}$ for the *counts*
 
-## Fit 4 
-$\phi$'s and $\theta$s are the same as Fit 1, but AIC, BIC and AICc are different. 
+## Model 4 
+$\phi$'s and $\theta$s are the same as Model 1, but AIC, BIC and AICc are different. 
 ```{r, echo=TRUE, fig.width=8, fig.align="center"}
 fit4 <- melb_sel[1:2208, ] %>% 
   model(ARIMA(counts ~ pdq(2,1,1) + PDQ(0,1,0, period = 168)))
@@ -133,7 +133,7 @@ fit4 %>% gg_tsresiduals()
 augment(fit4) %>% features(.innov, ljung_box, lag = 10, dof = 3)
 ```  
 
-## Fit 5 
+## Model 5 
 ```{r, echo=TRUE, fig.width=8, fig.align="center"}
 fit5 <- melb_sel[1:2208, ] %>% 
   model(ARIMA(counts ~ pdq(0,1,3) + PDQ(0,1,0, period = 168)))
@@ -143,7 +143,7 @@ augment(fit5) %>% features(.innov, ljung_box, lag = 10, dof = 3)
 ```  
 
 
-## Fit 6 
+## Model 6 
 ```{r, echo=TRUE, fig.align="center"}
 ## The following codes take quite a while to run
 #fit6 <- melb_sel[1:2208, ] %>% 
@@ -163,7 +163,7 @@ forecast(fit3, h = 24) %>%
   autoplot(melb_sel[2209:2233,])
 ```  
 
-I will not recommend you to use Fit1/Fit2 for the forecasting the *counts*, since it is difficult to transform the prediction interval. Instead, using the corresponding seasonal-ARIMA model if you can. 
+I will not recommend you to use Model 1/Model 2 for the forecasting the *counts*, since it is difficult to transform the prediction interval. Instead, using the corresponding seasonal-ARIMA model if you can. 
 
 MSE
 ```{r, echo=TRUE, fig.width=8, fig.align="center"}
@@ -192,10 +192,10 @@ melb_sel$tf4[idx] = tmp4$.mean
 melb_sel$tf5[idx] = tmp5$.mean
 
 ggplot(data = melb_sel[idx, ], aes(x = date, y = counts)) + geom_line() +
-  geom_line(aes(x = date, y = tf4, color = "Fit 1/4: diff + auto")) + 
-  geom_line(aes(x = date, y = tf5, color = "Fit 2/5: diff")) + 
-  geom_line(aes(x = date, y = tf3, color = "Fit 3: no diff")) + 
-  scale_color_manual(name = "colour", values = c("Fit 1/4: diff + auto" = "red", "Fit 2/5: diff" = "green", "Fit 3: no diff" = "blue"))
+  geom_line(aes(x = date, y = tf4, color = "Model 1/4: diff + auto")) + 
+  geom_line(aes(x = date, y = tf5, color = "Model 2/5: diff")) + 
+  geom_line(aes(x = date, y = tf3, color = "Model 3: no diff")) + 
+  scale_color_manual(name = "colour", values = c("Model 1/4: diff + auto" = "red", "Model 2/5: diff" = "green", "Model 3: no diff" = "blue"))
 ```
 
 

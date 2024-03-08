@@ -308,22 +308,22 @@ class="toc-section-number">1</span> Dataset</a></li>
 <li><a href="#arima" id="toc-arima"><span
 class="toc-section-number">2</span> ARIMA</a>
 <ul>
-<li><a href="#fit-1" id="toc-fit-1"><span
-class="toc-section-number">2.1</span> Fit 1</a></li>
-<li><a href="#fit-2" id="toc-fit-2"><span
-class="toc-section-number">2.2</span> Fit 2</a></li>
-<li><a href="#fit-3" id="toc-fit-3"><span
-class="toc-section-number">2.3</span> Fit 3</a></li>
+<li><a href="#model-1" id="toc-model-1"><span
+class="toc-section-number">2.1</span> Model 1</a></li>
+<li><a href="#model-2" id="toc-model-2"><span
+class="toc-section-number">2.2</span> Model 2</a></li>
+<li><a href="#model-3" id="toc-model-3"><span
+class="toc-section-number">2.3</span> Model 3</a></li>
 </ul></li>
 <li><a href="#seasonal-arima" id="toc-seasonal-arima"><span
 class="toc-section-number">3</span> Seasonal ARIMA</a>
 <ul>
-<li><a href="#fit-4" id="toc-fit-4"><span
-class="toc-section-number">3.1</span> Fit 4</a></li>
-<li><a href="#fit-5" id="toc-fit-5"><span
-class="toc-section-number">3.2</span> Fit 5</a></li>
-<li><a href="#fit-6" id="toc-fit-6"><span
-class="toc-section-number">3.3</span> Fit 6</a></li>
+<li><a href="#model-4" id="toc-model-4"><span
+class="toc-section-number">3.1</span> Model 4</a></li>
+<li><a href="#model-5" id="toc-model-5"><span
+class="toc-section-number">3.2</span> Model 5</a></li>
+<li><a href="#model-6" id="toc-model-6"><span
+class="toc-section-number">3.3</span> Model 6</a></li>
 </ul></li>
 <li><a href="#forecasting" id="toc-forecasting"><span
 class="toc-section-number">4</span> Forecasting</a></li>
@@ -374,9 +374,8 @@ autoplot(melb_sel[1:336, ], counts) +
 <div id="arima" class="section level1" number="2">
 <h1><span class="header-section-number">2</span> ARIMA</h1>
 <p>First, we test whether the dataset is stationary. As you can see,
-KPSS fails to reject null hypothesis, meaning the dataset is stationary.
-Although it is stationary, I will still consider a weekly difference + a
-lag 1 difference.</p>
+KPSS fails to reject null hypothesis, meaning the dataset is
+stationary.</p>
 <pre class="r"><code>melb_sel[1:2208, ] %&gt;% features(counts, unitroot_kpss)</code></pre>
 <pre><code>## # A tibble: 1 × 2
 ##   kpss_stat kpss_pvalue
@@ -414,13 +413,13 @@ is MA(3).</p>
 <ul>
 <li>I will build three model.
 <ul>
-<li>fit1: automatic procedure for the <em>diff_week</em></li>
-<li>fit2: MA(3) for the <em>diff_week</em></li>
-<li>fit3: automatic procedure for the <em>counts</em></li>
+<li>Model 1: automatic procedure for the <em>diff_week</em></li>
+<li>Model 2: MA(3) for the <em>diff_week</em></li>
+<li>Model 3: automatic procedure for the <em>counts</em></li>
 </ul></li>
 </ul>
-<div id="fit-1" class="section level2" number="2.1">
-<h2><span class="header-section-number">2.1</span> Fit 1</h2>
+<div id="model-1" class="section level2" number="2.1">
+<h2><span class="header-section-number">2.1</span> Model 1</h2>
 <pre class="r"><code>fit1 &lt;- melb_sel[170:2208, ] %&gt;%
   model(ARIMA(diff_week ~ PDQ(0,0,0), stepwise = TRUE))
 report(fit1)</code></pre>
@@ -443,8 +442,8 @@ report(fit1)</code></pre>
 ##   &lt;chr&gt;                                              &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 ARIMA(diff_week ~ PDQ(0, 0, 0), stepwise = TRUE)    5.10     0.647</code></pre>
 </div>
-<div id="fit-2" class="section level2" number="2.2">
-<h2><span class="header-section-number">2.2</span> Fit 2</h2>
+<div id="model-2" class="section level2" number="2.2">
+<h2><span class="header-section-number">2.2</span> Model 2</h2>
 <pre class="r"><code>fit2 &lt;- melb_sel[170:2208, ] %&gt;% 
   model(ARIMA(diff_week ~ pdq(0,0,3) + PDQ(0,0,0)))
 report(fit2)</code></pre>
@@ -467,8 +466,8 @@ report(fit2)</code></pre>
 ##   &lt;chr&gt;                                            &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 ARIMA(diff_week ~ pdq(0, 0, 3) + PDQ(0, 0, 0))    59.4  2.03e-10</code></pre>
 </div>
-<div id="fit-3" class="section level2" number="2.3">
-<h2><span class="header-section-number">2.3</span> Fit 3</h2>
+<div id="model-3" class="section level2" number="2.3">
+<h2><span class="header-section-number">2.3</span> Model 3</h2>
 <pre class="r"><code>fit3 &lt;- melb_sel[1:2208,] %&gt;% 
   model(ARIMA(counts ~ PDQ(0,0,0), stepwise = TRUE))
 report(fit3)</code></pre>
@@ -491,7 +490,7 @@ report(fit3)</code></pre>
 ##   &lt;chr&gt;                                           &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 ARIMA(counts ~ PDQ(0, 0, 0), stepwise = TRUE)    122.         0</code></pre>
 <ul>
-<li>Fit 1 appears to be the best, although there are still some
+<li>Model 1 appears to be the best, although there are still some
 problems. Here is my personal opinion
 <ul>
 <li>In the real-world dataset, the result is often not as good as the
@@ -508,18 +507,18 @@ difference with (lag = 24).</li>
 <ul>
 <li>I will consider the following model
 <ul>
-<li>fit4: (2,1,1)(0,1,0)<span class="math inline">\(_{168}\)</span> for
-the <em>counts</em>, it is the same model as fit1</li>
-<li>fit5: (0,1,3)(0,1,0)<span class="math inline">\(_{168}\)</span> for
-the <em>counts</em>, it is the same model as fit2</li>
-<li>fit6: automatic selection for ( ,1, )(,1, )<span
-class="math inline">\(_168\)</span> for the <em>counts</em></li>
+<li>Model 4: (2,1,1)(0,1,0)<span class="math inline">\(_{168}\)</span>
+for the <em>counts</em>, it is the same model as Model 1</li>
+<li>Model 5: (0,1,3)(0,1,0)<span class="math inline">\(_{168}\)</span>
+for the <em>counts</em>, it is the same model as Model 2</li>
+<li>Model 6: automatic selection for ( ,1, )(,1, )<span
+class="math inline">\(_{168}\)</span> for the <em>counts</em></li>
 </ul></li>
 </ul>
-<div id="fit-4" class="section level2" number="3.1">
-<h2><span class="header-section-number">3.1</span> Fit 4</h2>
+<div id="model-4" class="section level2" number="3.1">
+<h2><span class="header-section-number">3.1</span> Model 4</h2>
 <p><span class="math inline">\(\phi\)</span>’s and <span
-class="math inline">\(\theta\)</span>s are the same as Fit 1, but AIC,
+class="math inline">\(\theta\)</span>s are the same as Model 1, but AIC,
 BIC and AICc are different.</p>
 <pre class="r"><code>fit4 &lt;- melb_sel[1:2208, ] %&gt;% 
   model(ARIMA(counts ~ pdq(2,1,1) + PDQ(0,1,0, period = 168)))
@@ -542,8 +541,8 @@ report(fit4)</code></pre>
 ##   &lt;chr&gt;                                                       &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 ARIMA(counts ~ pdq(2, 1, 1) + PDQ(0, 1, 0, period = 168))    5.46     0.604</code></pre>
 </div>
-<div id="fit-5" class="section level2" number="3.2">
-<h2><span class="header-section-number">3.2</span> Fit 5</h2>
+<div id="model-5" class="section level2" number="3.2">
+<h2><span class="header-section-number">3.2</span> Model 5</h2>
 <pre class="r"><code>fit5 &lt;- melb_sel[1:2208, ] %&gt;% 
   model(ARIMA(counts ~ pdq(0,1,3) + PDQ(0,1,0, period = 168)))
 report(fit5)</code></pre>
@@ -565,8 +564,8 @@ report(fit5)</code></pre>
 ##   &lt;chr&gt;                                                       &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 ARIMA(counts ~ pdq(0, 1, 3) + PDQ(0, 1, 0, period = 168))    64.0  2.37e-11</code></pre>
 </div>
-<div id="fit-6" class="section level2" number="3.3">
-<h2><span class="header-section-number">3.3</span> Fit 6</h2>
+<div id="model-6" class="section level2" number="3.3">
+<h2><span class="header-section-number">3.3</span> Model 6</h2>
 <pre class="r"><code>## The following codes take quite a while to run
 #fit6 &lt;- melb_sel[1:2208, ] %&gt;% 
 #  model(ARIMA(counts ~ pdq(,1,) + PDQ(,1,, period = 168)))
@@ -581,8 +580,8 @@ report(fit5)</code></pre>
 <pre class="r"><code>forecast(fit3, h = 24) %&gt;%
   autoplot(melb_sel[2209:2233,])</code></pre>
 <p><img src="Week2_files/figure-html/unnamed-chunk-14-1.png" width="768" style="display: block; margin: auto;" /></p>
-<p>I will not recommend you to use Fit1/Fit2 for the forecasting the
-<em>counts</em>, since it is difficult to transform the prediction
+<p>I will not recommend you to use Model 1/Model 2 for the forecasting
+the <em>counts</em>, since it is difficult to transform the prediction
 interval. Instead, using the corresponding seasonal-ARIMA model if you
 can.</p>
 <p>MSE</p>
@@ -609,10 +608,10 @@ melb_sel$tf4[idx] = tmp4$.mean
 melb_sel$tf5[idx] = tmp5$.mean
 
 ggplot(data = melb_sel[idx, ], aes(x = date, y = counts)) + geom_line() +
-  geom_line(aes(x = date, y = tf4, color = &quot;Fit 1/4: diff + auto&quot;)) + 
-  geom_line(aes(x = date, y = tf5, color = &quot;Fit 2/5: diff&quot;)) + 
-  geom_line(aes(x = date, y = tf3, color = &quot;Fit 3: no diff&quot;)) + 
-  scale_color_manual(name = &quot;colour&quot;, values = c(&quot;Fit 1/4: diff + auto&quot; = &quot;red&quot;, &quot;Fit 2/5: diff&quot; = &quot;green&quot;, &quot;Fit 3: no diff&quot; = &quot;blue&quot;))</code></pre>
+  geom_line(aes(x = date, y = tf4, color = &quot;Model 1/4: diff + auto&quot;)) + 
+  geom_line(aes(x = date, y = tf5, color = &quot;Model 2/5: diff&quot;)) + 
+  geom_line(aes(x = date, y = tf3, color = &quot;Model 3: no diff&quot;)) + 
+  scale_color_manual(name = &quot;colour&quot;, values = c(&quot;Model 1/4: diff + auto&quot; = &quot;red&quot;, &quot;Model 2/5: diff&quot; = &quot;green&quot;, &quot;Model 3: no diff&quot; = &quot;blue&quot;))</code></pre>
 <p><img src="Week2_files/figure-html/unnamed-chunk-16-1.png" width="768" style="display: block; margin: auto;" /></p>
 </div>
 <div id="automatic-procedure" class="section level1" number="5">
