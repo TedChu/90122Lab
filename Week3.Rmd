@@ -1,5 +1,5 @@
 ---
-title: 'Week 3: Visualisation of Spatial Data (1) -- ggplot2'
+title: "Week 3: Visualisation of Spatial Data (1) -- ggplot2"
 ---
 
 <div style="margin-bottom:50px;">
@@ -25,3 +25,13 @@ It is a general framework for data visualisation, and in this class, we will use
   + ggplot, geom_point, geom_line
   + Cheat Sheet: https://github.com/rstudio/cheatsheets/blob/main/data-visualization-2.1.pdf
   + color, fill, alpha
+
+
+An Example
+```{r, echo=TRUE, fig.width=8, fig.align="center", results = 'hold'}
+library(tidyverse)
+f = lm(hwy~displ, data = mpg)
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy)) +
+  geom_abline(slope = f$coef[2], intercept = f$coef[1])
+```
