@@ -11,7 +11,6 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 
-This Lab corresponds to Cp 3. 
 
 
 
@@ -76,20 +75,6 @@ What do you conclude from the above plot?
 
 
 
-## ppp class
-
-As mentioned earlier, package *spatstat* uses ppp class. We can transform between *SpatialPoints* class in *sp* package and *ppp* class using the function *as* in package *maptools*
-
-```{r message=TRUE, echo=TRUE, warning=FALSE}
-library(sp)
-library(maptools)
-# from ppp class to SpatialPoints class 
-spdata1=as(data1, "SpatialPoints")
-class(spdata1)  
-# from SpatialPoints class to ppp class
-pppdata1=as(spdata1, "ppp")
-class(pppdata1) 
-```
 
 # Spatial Point Models
 
