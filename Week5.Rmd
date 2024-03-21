@@ -14,7 +14,6 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 Here, *sf* (simple feature) is a type of data class. First, we use package *sf* to read shapefiles. 
-For more details, see https://cran.r-project.org/web/packages/sf/vignettes/sf1.html
 
 # Shapefile
 
@@ -24,7 +23,7 @@ For more details, see https://cran.r-project.org/web/packages/sf/vignettes/sf1.h
   + .shx:  	an index file to the geometries
   + .dbf:	  storing attribute data
 
-* The shapefile here is named *Aus-Melbourne02*, which records information from all LGA in Greater Melbourne. It is downloaded from https://www.igismap.com/australia-shapefile-download/ (This website also has shapefile of other Australian regions and cities). Here is some extra information: 
+* The shapefile here is named *Aus-Melbourne02*, which records information from all LGA in Greater Melbourne. 
   + All datasets can be downloaded at https://github.com/TedChu/90122Lab/tree/master/datasets. 
   + First, set the working directory through *setwd*. Remember you need to use forward-slash (/) or double slash (\\\\), but NOT backslash (\\).
   + I will not recommend you to have space between your folder titles. That is, to write *setwd("..../90122Lab")*, Not *setwd("..../90122 Lab")*
@@ -33,7 +32,7 @@ For more details, see https://cran.r-project.org/web/packages/sf/vignettes/sf1.h
 ```{r, echo=TRUE, fig.width=6, fig.align="center", message = FALSE}
 library(sf)
 #setwd("~/Dropbox/2_MAST90122/90122LabGit")
-setwd("C:/Users/tingjinc/Dropbox/2_MAST90122/90122LabGit")
+#setwd("C:/Users/tingjinc/Dropbox/2_MAST90122/90122LabGit")
 gmel = st_read(dsn = "datasets/Mel/Aus-Melbourne02.shp", "Aus-Melbourne02")
 ```
 

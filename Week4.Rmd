@@ -42,7 +42,7 @@ Here, we will use R package *spatstat*
 quadrat.test(data1, nx = 4, ny= 4, alternative = "two.sided", method = "Chisq")
 ```
 * Argument: 
-  + pp: the dataset must be a "ppp" class, see section *ppp* below for more details. 
+  + pp: the dataset must be a "ppp" class. 
   + <span style="color: red;">nx=4, ny =4</span>: number of block on x-axis and y-axis. Here, we have 4*4=16 blocks. 
   + alternative: alternative hypothesis. You can choose one of "two.sided", "regular", "clustered".
   + method: the method used to compute p-value. "Chisq" (analytical way), "MonteCarlo"
@@ -55,13 +55,13 @@ Since p-value is bigger than 0.05, we fail to reject $H_0$.
 
 ```{r echo=TRUE, warning=FALSE, message = FALSE}
 r=seq(0,sqrt(2), by=0.005)
-Gtest=envelope(data1,fun=Gest, r=r, nrank=2, nsim=99)
+Gtest=envelope(data1,fun=Gest, r=r, nrank=5, nsim=200)
 ```
 * Argument: 
   + nsim: the number of simulated datasets
   + nrank: similar to deciding the significant level
-    + Note that (2+2+1)/(99+1) = 0.05, and therefore, it is a similar to test at <span style="color: red;">"significant level"</span> = 0.05 
-    + That is, if you want to ensure $\alpha$ (significant level), you need to set $(2nrank+1)/(nsim+1) = \alpha$. 
+    + Note that (5+5)/200 = 0.05, and therefore, it is a similar to test at <span style="color: red;">"significant level"</span> = 0.05 
+    + That is, if you want to ensure $\alpha$ (significant level), you need to set $(2nrank)/nsim = \alpha$. 
   + fun: Gest
   + r: where the G function will be evaluated. ($h$ in our slides.)
 
