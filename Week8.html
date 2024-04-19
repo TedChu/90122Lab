@@ -13,7 +13,7 @@
 
 <title>Week 8: Geostatistics–Kriging</title>
 
-<script src="site_libs/header-attrs-2.19/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.26/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -281,6 +281,9 @@ $(document).ready(function () {
 <li>
   <a href="Extra1.html">Extra 1</a>
 </li>
+<li>
+  <a href="Extra2.html">Extra 2</a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         
@@ -362,20 +365,18 @@ class="math inline">\(\mu(\mathbf{s})=\mu\)</span>).</p>
 data(ca20)
 fit = likfit(ca20, ini = c(100, 60), trend = &quot;cte&quot;)</code></pre>
 <p>Secod, we setup the Ordinary Kriging.</p>
-<pre class="r"><code>gr = pred_grid(ca20$borders, by = 10)   # new locations s_0 created
-head(gr)     ## Here are the first six locations, where the first locations is (4920, 4800). </code></pre>
-<pre><code>##   Var1 Var2
-## 1 4920 4800
-## 2 4930 4800
-## 3 4940 4800
-## 4 4950 4800
-## 5 4960 4800
-## 6 4970 4800</code></pre>
-<pre class="r"><code>dim(gr)      ## There are a total of 10908 new locations to predict. </code></pre>
-<pre><code>## [1] 10908     2</code></pre>
+<pre class="r"><code>pred_locs = expand.grid(x = seq(5300, 5800, 10), y = seq(5000,5600, 10))   # new locations s_0 created
+head(pred_locs)     ## Here are the first six locations</code></pre>
+<pre><code>##      x    y
+## 1 5300 5000
+## 2 5310 5000
+## 3 5320 5000
+## 4 5330 5000
+## 5 5340 5000
+## 6 5350 5000</code></pre>
 <pre class="r"><code>KC = krige.control(obj.model = fit)</code></pre>
 <p>Third, we make predictions on all locations on <em>gr</em></p>
-<pre class="r"><code>ca20pred = krige.conv(ca20, loc = gr, krige = KC)</code></pre>
+<pre class="r"><code>ca20pred = krige.conv(ca20, loc = pred_locs, krige = KC)</code></pre>
 <ul>
 <li>The output includes
 <ul>
@@ -385,15 +386,17 @@ at <em>loc</em>.</li>
 at <em>loc</em>.</li>
 </ul></li>
 </ul>
-<p>Last, we visualise both Kriging estimates and Kriging variances.</p>
-<pre class="r"><code>color = function(x)rev(heat.colors(x)) 
-image(ca20pred, loc = gr, x.leg = c(4930, 5350)
-      , y.leg = c(4790, 4840), col=color(15))</code></pre>
+<p>Last, we visualise both Kriging estimates and Kriging variances. The
+function to use is <em>geom_tile</em></p>
+<pre class="r"><code>ca20_res = data.frame(x = pred_locs[,1], y = pred_locs[,2], 
+                      krige = ca20pred$predict, krige_var = ca20pred$krige.var)
+
+
+library(ggplot2)
+ggplot(ca20_res) + geom_tile(aes(x = x, y = y, fill = krige))</code></pre>
 <p><img src="Week8_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
 <p>Kriging Variances</p>
-<pre class="r"><code>image(ca20pred, loc = gr, val=sqrt(ca20pred$krige.var)
-      , x.leg = c(4930, 5350), y.leg = c(4790, 4840)
-      , col=color(15))</code></pre>
+<pre class="r"><code>ggplot(ca20_res) + geom_tile(aes(x = x, y = y, fill = krige_var))</code></pre>
 <p><img src="Week8_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 <p>Kriging weights</p>
 <pre class="r"><code>coords = cbind(c(0.2, 0.25, 0.6, 0.7), 
@@ -404,16 +407,6 @@ KC = krige.control(ty = &quot;ok&quot;, cov.model = &quot;mat&quot;,
 # Weights
 krweights(coords, c(0.5, 0.5), KC)                              </code></pre>
 <pre><code>## [1] 0.1935404 0.2301559 0.2125838 0.3637199</code></pre>
-<p>Convert to SpatialPointsDataFrame</p>
-<pre class="r"><code>library(sp)
-gr0 = polygrid(gr, borders = ca20$border, bound = T)
-capred = data.frame(gr0, ypred=ca20pred$predict)
-coordinates(capred) = ~ Var1 + Var2
-class(capred)                            </code></pre>
-<pre><code>## [1] &quot;SpatialPointsDataFrame&quot;
-## attr(,&quot;package&quot;)
-## [1] &quot;sp&quot;</code></pre>
-<p>We can visualize using all functions related to SpatialPoints.</p>
 </div>
 <div id="universal-kriging" class="section level1" number="3">
 <h1><span class="header-section-number">3</span> Universal Kriging</h1>

@@ -52,35 +52,35 @@ fit = likfit(ca20, ini = c(100, 60), trend = "cte")
 
 Secod, we setup the Ordinary Kriging. 
 ```{r echo=TRUE, message=FALSE, warning=FALSE, hold=FALSE}
-gr = pred_grid(ca20$borders, by = 10)   # new locations s_0 created
-head(gr)     ## Here are the first six locations, where the first locations is (4920, 4800). 
-dim(gr)      ## There are a total of 10908 new locations to predict. 
+pred_locs = expand.grid(x = seq(5300, 5800, 10), y = seq(5000,5600, 10))   # new locations s_0 created
+head(pred_locs)     ## Here are the first six locations
 KC = krige.control(obj.model = fit)
 ```
 
 Third, we make predictions on all locations on *gr*
 ```{r echo=TRUE, results='hide', message=FALSE, warning=FALSE, hold=TRUE}
-ca20pred = krige.conv(ca20, loc = gr, krige = KC)
+ca20pred = krige.conv(ca20, loc = pred_locs, krige = KC)
 ```
 * The output includes
   + ca20pred$predict: the kriging estimates for all locations specified at *loc*. 
   + ca20pred$krige.var: the kriging variance for all locations specified at *loc*.
 
 
-Last, we visualise both Kriging estimates and Kriging variances. 
+Last, we visualise both Kriging estimates and Kriging variances. The function to use is *geom_tile* 
 
 ```{r echo=TRUE, results="hold", warning=FALSE}
-color = function(x)rev(heat.colors(x)) 
-image(ca20pred, loc = gr, x.leg = c(4930, 5350)
-      , y.leg = c(4790, 4840), col=color(15))
+ca20_res = data.frame(x = pred_locs[,1], y = pred_locs[,2], 
+                      krige = ca20pred$predict, krige_var = ca20pred$krige.var)
+
+
+library(ggplot2)
+ggplot(ca20_res) + geom_tile(aes(x = x, y = y, fill = krige))
 ```
 
 Kriging Variances
 
 ```{r echo=TRUE, results="hold", warning=FALSE}
-image(ca20pred, loc = gr, val=sqrt(ca20pred$krige.var)
-      , x.leg = c(4930, 5350), y.leg = c(4790, 4840)
-      , col=color(15))
+ggplot(ca20_res) + geom_tile(aes(x = x, y = y, fill = krige_var))
 ```
 
 
@@ -98,17 +98,6 @@ krweights(coords, c(0.5, 0.5), KC)
 ```
 
 
-Convert to SpatialPointsDataFrame
-
-
-```{r echo=TRUE, results="hold", warning=FALSE}
-library(sp)
-gr0 = polygrid(gr, borders = ca20$border, bound = T)
-capred = data.frame(gr0, ypred=ca20pred$predict)
-coordinates(capred) = ~ Var1 + Var2
-class(capred)                            
-```
-We can visualize using all functions related to SpatialPoints. 
 
 
 # Universal Kriging
