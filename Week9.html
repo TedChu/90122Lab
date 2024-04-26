@@ -13,7 +13,7 @@
 
 <title>Week 9: Moran’s I, LISA</title>
 
-<script src="site_libs/header-attrs-2.19/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.26/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -281,6 +281,9 @@ $(document).ready(function () {
 <li>
   <a href="Extra1.html">Extra 1</a>
 </li>
+<li>
+  <a href="Extra2.html">Extra 2</a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         
@@ -344,8 +347,8 @@ SpatialPolygons(DataFrame). Although it is not our focus, we have to
 know some basics since some R packages depend on sp class.</li>
 </ul></li>
 </ul>
-<p>Due to time constrain, I will only talk
-<em>SpatialPolygonsDataFrame</em>.</p>
+<p>Due to time constrain, I will only include
+<em>SpatialPolygonsDataFrame</em> here.</p>
 <p>First, the diagram
 <img src="pics/SpPnDF.png" width="590" style="display: block; margin: auto;" /></p>
 <div id="create-polygon" class="section level2" number="1.1">
@@ -414,23 +417,8 @@ SpatialPolygons(DataFrame) object.</p>
 gmel.sp = as(gmel2, &quot;Spatial&quot;)
 Wqueen = poly2nb(gmel.sp)
 Wrook = poly2nb(gmel.sp, queen=FALSE)
-plot(gmel.sp,border=&quot;grey60&quot;, axes=TRUE)</code></pre>
-<pre><code>## Please note that rgdal will be retired during October 2023,
-## plan transition to sf/stars/terra functions using GDAL and PROJ
-## at your earliest convenience.
-## See https://r-spatial.org/r/2023/05/15/evolution4.html and https://github.com/r-spatial/evolution
-## rgdal: version: 1.6-7, (SVN revision 1203)
-## Geospatial Data Abstraction Library extensions to R successfully loaded
-## Loaded GDAL runtime: GDAL 3.5.2, released 2022/09/02
-## Path to GDAL shared files: C:/Users/tingjinc/AppData/Local/Programs/R/R-4.2.2/library/rgdal/gdal
-## GDAL binary built with GEOS: TRUE 
-## Loaded PROJ runtime: Rel. 8.2.1, January 1st, 2022, [PJ_VERSION: 821]
-## Path to PROJ shared files: C:/Users/tingjinc/AppData/Local/Programs/R/R-4.2.2/library/rgdal/proj
-## PROJ CDN enabled: FALSE
-## Linking to sp version:1.6-1
-## To mute warnings of possible GDAL/OSR exportToProj4() degradation,
-## use options(&quot;rgdal_show_exportToProj4_warnings&quot;=&quot;none&quot;) before loading sp or rgdal.</code></pre>
-<pre class="r"><code>plot(Wqueen, coordinates(gmel.sp), pch=19, cex=0.6, add=TRUE,col=&quot;red&quot;)
+plot(gmel.sp,border=&quot;grey60&quot;, axes=TRUE)
+plot(Wqueen, coordinates(gmel.sp), pch=19, cex=0.6, add=TRUE,col=&quot;red&quot;)
 plot(Wrook, coordinates(gmel.sp), pch=19, cex=0.6, add=TRUE)</code></pre>
 <p><img src="Week9_files/figure-html/unnamed-chunk-7-1.png" width="576" style="display: block; margin: auto;" /></p>
 <ul>

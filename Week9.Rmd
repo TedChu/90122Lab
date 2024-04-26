@@ -19,7 +19,7 @@ This Lab corresponds to Cp 5: 1--5.
   + sp class: SpatialPoints(DataFrame), SpatialLines(DataFrame), SpatialPolygons(DataFrame). Although it is not our focus, we have to know some basics since some R packages depend on sp class. 
 
 
-Due to time constrain, I will only talk *SpatialPolygonsDataFrame*. 
+Due to time constrain, I will only include *SpatialPolygonsDataFrame* here. 
 
 First, the diagram
 ```{r, echo=FALSE, fig.width=8, fig.align="center"}
