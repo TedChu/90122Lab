@@ -525,11 +525,13 @@ change <em>alternative</em> to <em>greater</em>.</p>
 <p>You can also highlight these cities.</p>
 <pre class="r"><code>gmellisa2 = gmellisa[gmellisa$pvalue &lt; 0.05, ]
 ggplot() + geom_sf(data=gmellisa, aes(fill = pvalue)) + 
+  geom_sf(data = gmellisa2, color = &quot;red&quot;, alpha = 0)</code></pre>
+<p><img src="Week9_files/figure-html/unnamed-chunk-12-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p>or</p>
+<pre class="r"><code>gmellisa2 = gmellisa[gmellisa$pvalue &lt; 0.05, ]
+ggplot() + geom_sf(data=gmellisa, aes(fill = pvalue)) + 
   geom_sf(data = gmellisa2, color = &quot;red&quot;, alpha = 0) + 
   geom_sf_label(data = gmellisa2, aes(label = name2))</code></pre>
-<p><img src="Week9_files/figure-html/unnamed-chunk-12-1.png" width="768" style="display: block; margin: auto;" /></p>
-<p>Or</p>
-<pre class="r"><code>ggplot() + geom_sf(data=gmellisa, aes(fill = lisa, color = (pvalue &lt; 0.05)))</code></pre>
 <p><img src="Week9_files/figure-html/unnamed-chunk-13-1.png" width="768" style="display: block; margin: auto;" /></p>
 </div>
 </div>

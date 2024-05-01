@@ -168,11 +168,13 @@ You can also highlight these cities.
 ```{r, echo=TRUE, fig.width=8, fig.height =8, fig.align="center",warning = F}
 gmellisa2 = gmellisa[gmellisa$pvalue < 0.05, ]
 ggplot() + geom_sf(data=gmellisa, aes(fill = pvalue)) + 
-  geom_sf(data = gmellisa2, color = "red", alpha = 0) + 
-  geom_sf_label(data = gmellisa2, aes(label = name2))
+  geom_sf(data = gmellisa2, color = "red", alpha = 0)
 ```
 
-Or
+or 
 ```{r, echo=TRUE, fig.width=8, fig.height =8, fig.align="center",warning = F}
-ggplot() + geom_sf(data=gmellisa, aes(fill = lisa, color = (pvalue < 0.05)))
+gmellisa2 = gmellisa[gmellisa$pvalue < 0.05, ]
+ggplot() + geom_sf(data=gmellisa, aes(fill = pvalue)) + 
+  geom_sf(data = gmellisa2, color = "red", alpha = 0) + 
+  geom_sf_label(data = gmellisa2, aes(label = name2))
 ```
