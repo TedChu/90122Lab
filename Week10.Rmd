@@ -82,8 +82,8 @@ mlag = spatialreg::lagsarlm(log(price)~dis+off + inc, data=gmel2,
 
 
 * The output
-  + LR test: Likelihood Ratio Test in Slide 20 of Cp6.
-  + Wald: Wald Test in Slide 20 of Cp6.
+  + LR test: Likelihood Ratio Test in Slide 18 of Cp5B.
+  + Wald: Wald Test in Slide 18 of Cp5B.
 
 ```{r, echo=TRUE, fig.width=6, fig.align="center", hold=TRUE}
 # Just like lm output. distance and income are significant, while offense is not.
