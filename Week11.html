@@ -13,7 +13,7 @@
 
 <title>Week 11: Visulization of Spatio-Temporal Data (Optional)</title>
 
-<script src="site_libs/header-attrs-2.19/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.26/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -281,6 +281,9 @@ $(document).ready(function () {
 <li>
   <a href="Extra1.html">Extra 1</a>
 </li>
+<li>
+  <a href="Extra2.html">Extra 2</a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         
@@ -315,8 +318,8 @@ class="toc-section-number">3</span> Time-Series Plots</a></li>
 <div id="introduction" class="section level1" number="1">
 <h1><span class="header-section-number">1</span> Introduction</h1>
 <ul>
-<li>In Lab 11, we will follow Lab 2.2 of <em>Spatio-Temporal Statistics
-with R</em>. You can download the electronic pdf through <a
+<li>In Lab 11, we follow Lab 2.2 of <em>Spatio-Temporal Statistics with
+R</em>. You can download the electronic pdf through <a
 href="https://spacetimewithr.org/"
 class="uri">https://spacetimewithr.org/</a>.
 <ul>
@@ -389,13 +392,13 @@ NOAA_plot</code></pre>
 UIDs_sub &lt;- sample(UIDs, 10)                # sample 10 IDs
 Tmax_sub &lt;- filter(Tmax, id %in% UIDs_sub)  # subset data
 head(Tmax_sub)</code></pre>
-<pre><code>##   julian year month day   id  z proc  lat       lon       date t
-## 1 728050 1993     5   1 3889 83 Tmax 37.6 -83.31667 1993-05-01 1
-## 2 728051 1993     5   2 3889 77 Tmax 37.6 -83.31667 1993-05-02 2
-## 3 728052 1993     5   3 3889 70 Tmax 37.6 -83.31667 1993-05-03 3
-## 4 728053 1993     5   4 3889 74 Tmax 37.6 -83.31667 1993-05-04 4
-## 5 728054 1993     5   5 3889 78 Tmax 37.6 -83.31667 1993-05-05 5
-## 6 728055 1993     5   6 3889 82 Tmax 37.6 -83.31667 1993-05-06 6</code></pre>
+<pre><code>##   julian year month day   id  z proc      lat       lon       date t
+## 1 728050 1993     5   1 3919 61 Tmax 38.81667 -97.56667 1993-05-01 1
+## 2 728051 1993     5   2 3919 51 Tmax 38.81667 -97.56667 1993-05-02 2
+## 3 728052 1993     5   3 3919 68 Tmax 38.81667 -97.56667 1993-05-03 3
+## 4 728053 1993     5   4 3919 79 Tmax 38.81667 -97.56667 1993-05-04 4
+## 5 728054 1993     5   5 3919 80 Tmax 38.81667 -97.56667 1993-05-05 5
+## 6 728055 1993     5   6 3919 76 Tmax 38.81667 -97.56667 1993-05-06 6</code></pre>
 <p>Next, time-series is plotted.</p>
 <pre class="r"><code>## ------------------------------------------------------------------------
 TmaxTS &lt;- ggplot(Tmax_sub) +
