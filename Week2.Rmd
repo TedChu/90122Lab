@@ -199,6 +199,26 @@ ggplot(data = melb_sel[idx, ], aes(x = date, y = counts)) + geom_line() +
 ```
 
 
+Also for H = 9
+```{r, echo=TRUE, fig.width=8, fig.align="center"}
+H = 9
+idx = 2209:(2208 + H)
+
+tmp3 = forecast(fit3, h = H)
+tmp4 = forecast(fit4, h = H)
+tmp5 = forecast(fit5, h = H)
+#tmp6 = forecast(fit6, h = H)
+MSE3 = mean((tmp3$.mean - melb_sel$counts[idx])^2)
+MSE4 = mean((tmp4$.mean - melb_sel$counts[idx])^2)
+MSE5 = mean((tmp5$.mean - melb_sel$counts[idx])^2)
+#MSE6 = mean((tmp6$.mean - melb_sel$counts[idx])^2)
+c(MSE3, MSE4, MSE5)
+melb_sel$counts[idx]
+tmp4$.mean
+```
+
+
+
 # Automatic Procedure
 ```{r, echo=TRUE, fig.align="center"}
 fitX <- melb_sel[1:2208, ] %>% 
@@ -208,6 +228,5 @@ fitY <- melb_sel[1:2208, ] %>%
   model(ARIMA(counts ~ pdq(,0,) + PDQ(0,1,0, period = 168)))
 report(fitY)
 ```
-
 
 

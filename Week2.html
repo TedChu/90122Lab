@@ -597,7 +597,7 @@ MSE4 = mean((tmp4$.mean - melb_sel$counts[idx])^2)
 MSE5 = mean((tmp5$.mean - melb_sel$counts[idx])^2)
 #MSE6 = mean((tmp6$.mean - melb_sel$counts[idx])^2)
 c(MSE3, MSE4, MSE5)</code></pre>
-<pre><code>## [1] 1.32308207 0.05927944 0.08740256</code></pre>
+<pre><code>## [1] 1.32308207 0.05927945 0.08740256</code></pre>
 <p>The plots</p>
 <pre class="r"><code>melb_sel$tf3 = NA
 melb_sel$tf4 = NA
@@ -613,6 +613,26 @@ ggplot(data = melb_sel[idx, ], aes(x = date, y = counts)) + geom_line() +
   geom_line(aes(x = date, y = tf3, color = &quot;Model 3: no diff&quot;)) + 
   scale_color_manual(name = &quot;colour&quot;, values = c(&quot;Model 1/4: diff + auto&quot; = &quot;red&quot;, &quot;Model 2/5: diff&quot; = &quot;green&quot;, &quot;Model 3: no diff&quot; = &quot;blue&quot;))</code></pre>
 <p><img src="Week2_files/figure-html/unnamed-chunk-16-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p>Also for H = 9</p>
+<pre class="r"><code>H = 9
+idx = 2209:(2208 + H)
+
+tmp3 = forecast(fit3, h = H)
+tmp4 = forecast(fit4, h = H)
+tmp5 = forecast(fit5, h = H)
+#tmp6 = forecast(fit6, h = H)
+MSE3 = mean((tmp3$.mean - melb_sel$counts[idx])^2)
+MSE4 = mean((tmp4$.mean - melb_sel$counts[idx])^2)
+MSE5 = mean((tmp5$.mean - melb_sel$counts[idx])^2)
+#MSE6 = mean((tmp6$.mean - melb_sel$counts[idx])^2)
+c(MSE3, MSE4, MSE5)</code></pre>
+<pre><code>## [1] 0.06510162 0.05137324 0.06741480</code></pre>
+<pre class="r"><code>melb_sel$counts[idx]</code></pre>
+<pre><code>## [1] 6.828712 6.463029 5.852202 5.820083 5.036953 4.682131 4.828314 4.812184
+## [9] 5.488938</code></pre>
+<pre class="r"><code>tmp4$.mean</code></pre>
+<pre><code>## [1] 7.021772 6.699546 6.123637 5.650102 4.974128 4.733842 4.369324 4.823901
+## [9] 5.267248</code></pre>
 </div>
 <div id="automatic-procedure" class="section level1" number="5">
 <h1><span class="header-section-number">5</span> Automatic
