@@ -19,7 +19,7 @@ It is a general framework for data visualisation, and in this class, we will use
 * Please study Chapter 9 of the book *R for Data Science* (https://r4ds.hadley.nz/). 
   + 9.1 --- 9.4: required
   + 9.5 --- 9.6: optional
-  + 9.7: I will talk about it later
+  + 9.7: I will talk about this in Week 6 lab
 
 
 * ~
