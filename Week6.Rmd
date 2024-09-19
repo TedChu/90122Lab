@@ -185,4 +185,14 @@ ggplot() + geom_sf(data = BSub, color = "gray") +
   geom_sf(data = highway, aes(color = as.factor(CLASS_CODE)), lwd = 1.5)  
 ```
 
+# Summary
+
+There are two ways to draw maps: geom_polygons and geom_sf. They requires different types of data: geom_sf requires sf class, geom_polygons requires data frame (with proper preparation). 
+
+My preferred approach is geom_sf. To convert map data to sf, use following codes
+```{r, echo=TRUE, fig.width=7, fig.align="center", message = FALSE}
+nz_sf = sf::st_as_sf(maps::map("nz", plot = FALSE, fill = TRUE))
+
+ggplot() + geom_sf(data = nz_sf)
+```
 
