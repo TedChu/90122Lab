@@ -47,7 +47,7 @@ First, we fit the model $$Z(\mathbf{s}) = \mu + U(\mathbf{s}) + \nu(\mathbf{s}).
 ```{r echo=TRUE, results='hide', message=FALSE, warning=FALSE, hold=TRUE}
 library(geoR)
 data(ca20)
-fit = likfit(ca20, ini = c(100, 60), trend = "cte")
+fit = likfit(ca20, ini = c(100, 120), trend = "cte")
 ```
 
 Secod, we setup the Ordinary Kriging. 
@@ -136,3 +136,7 @@ KC2 = krige.control(type.krige = "ok", obj.model=fit2,
 ca20pred2 = krige.conv(ca20, loc = gr, krige = KC2)
 ```
 In universal kriging, we need to know $x(\mathbf s_0)$. In the above code, I randomly generated $x(\mathbf s_0)$ from *graltitude = rnorm(10908,mean=5.5)*. In practice, you shall know $x(\mathbf s_0)$ in advance. 
+
+# Exercise
+
+You can also directly using Kriging formulas from slides to calculate the Kriging estimator and the Kriging variance. If you have time, try to calculate them using the simple Kriging for the location $(5300, 5000)$. 

@@ -13,7 +13,7 @@
 
 <title>Week 8: Geostatistics–Kriging</title>
 
-<script src="site_libs/header-attrs-2.26/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -246,6 +246,9 @@ $(document).ready(function () {
   <a href="index.html">Home</a>
 </li>
 <li>
+  <a href="Week1.html">Week 1</a>
+</li>
+<li>
   <a href="Week2.html">Week 2</a>
 </li>
 <li>
@@ -318,6 +321,8 @@ id="toc-universal-kriging-covariates"><span
 class="toc-section-number">3.2</span> Universal Kriging:
 covariates</a></li>
 </ul></li>
+<li><a href="#exercise" id="toc-exercise"><span
+class="toc-section-number">4</span> Exercise</a></li>
 </ul>
 </div>
 
@@ -363,7 +368,7 @@ class="math inline">\(\mu(\mathbf{s})\)</span> is a constant (<span
 class="math inline">\(\mu(\mathbf{s})=\mu\)</span>).</p>
 <pre class="r"><code>library(geoR)
 data(ca20)
-fit = likfit(ca20, ini = c(100, 60), trend = &quot;cte&quot;)</code></pre>
+fit = likfit(ca20, ini = c(100, 120), trend = &quot;cte&quot;)</code></pre>
 <p>Secod, we setup the Ordinary Kriging.</p>
 <pre class="r"><code>pred_locs = expand.grid(x = seq(5300, 5800, 10), y = seq(5000,5600, 10))   # new locations s_0 created
 head(pred_locs)     ## Here are the first six locations</code></pre>
@@ -449,6 +454,13 @@ randomly generated <span class="math inline">\(x(\mathbf s_0)\)</span>
 from <em>graltitude = rnorm(10908,mean=5.5)</em>. In practice, you shall
 know <span class="math inline">\(x(\mathbf s_0)\)</span> in advance.</p>
 </div>
+</div>
+<div id="exercise" class="section level1" number="4">
+<h1><span class="header-section-number">4</span> Exercise</h1>
+<p>You can also directly using Kriging formulas from slides to calculate
+the Kriging estimator and the Kriging variance. If you have time, try to
+calculate them using the simple Kriging for the location <span
+class="math inline">\((5300, 5000)\)</span>.</p>
 </div>
 
 
