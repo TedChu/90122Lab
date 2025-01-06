@@ -32,8 +32,6 @@ plot(data1, pch=46, cex =3)
   + Question: What is the expected number of events?
 
 
-
-
 ## Quadrat test
 
 Here, we will use R package *spatstat*
@@ -80,11 +78,10 @@ What do you conclude from the above plot?
 
 
 
-
 ## Create IPP
 
 ```{r echo=TRUE, results="hold"}
-# inhomogeneous Poisson process in unit square
+# Inhomogeneous Poisson process in unit square
 # with intensity lambda(x,y) = min(10 * exp(3*x), 100), where $s = (x, y)^T$
 lamb = function(x,y) { 10 * exp( 3 * x)}
 ipp = rpoispp(lambda=lamb, lmax=100) 

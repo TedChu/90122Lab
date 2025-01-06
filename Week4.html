@@ -246,6 +246,9 @@ $(document).ready(function () {
   <a href="index.html">Home</a>
 </li>
 <li>
+  <a href="Week1.html">Week 1</a>
+</li>
+<li>
   <a href="Week2.html">Week 2</a>
 </li>
 <li>
@@ -366,7 +369,7 @@ generated in the domain D = [0,2]*[0,2].</li>
 ##  Chi-squared test of CSR using quadrat counts
 ## 
 ## data:  data1
-## X2 = 9.3481, df = 15, p-value = 0.2827
+## X2 = 18.169, df = 15, p-value = 0.5078
 ## alternative hypothesis: two.sided
 ## 
 ## Quadrats: 4 by 4 grid of tiles</code></pre>
@@ -426,7 +429,7 @@ class="math inline">\(h\)</span> in our slides.)</li>
 Models</h1>
 <div id="create-ipp" class="section level2" number="2.1">
 <h2><span class="header-section-number">2.1</span> Create IPP</h2>
-<pre class="r"><code># inhomogeneous Poisson process in unit square
+<pre class="r"><code># Inhomogeneous Poisson process in unit square
 # with intensity lambda(x,y) = min(10 * exp(3*x), 100), where $s = (x, y)^T$
 lamb = function(x,y) { 10 * exp( 3 * x)}
 ipp = rpoispp(lambda=lamb, lmax=100) 
