@@ -11,10 +11,6 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 
-
-This Lab corresponds to Cp 4: 9
-
-
 # Introduction
 
 * In this Lab, we will learn two key functions

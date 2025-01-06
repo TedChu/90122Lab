@@ -11,12 +11,6 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 
-
-
-This Lab corresponds to Cp 4: 1--8. 
-
-
-
 # Soil Data & Semivariogram
 
 

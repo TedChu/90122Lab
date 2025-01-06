@@ -246,6 +246,9 @@ $(document).ready(function () {
   <a href="index.html">Home</a>
 </li>
 <li>
+  <a href="Week1.html">Week 1</a>
+</li>
+<li>
   <a href="Week2.html">Week 2</a>
 </li>
 <li>
@@ -392,13 +395,13 @@ NOAA_plot</code></pre>
 UIDs_sub &lt;- sample(UIDs, 10)                # sample 10 IDs
 Tmax_sub &lt;- filter(Tmax, id %in% UIDs_sub)  # subset data
 head(Tmax_sub)</code></pre>
-<pre><code>##   julian year month day   id  z proc      lat       lon       date t
-## 1 728050 1993     5   1 3919 61 Tmax 38.81667 -97.56667 1993-05-01 1
-## 2 728051 1993     5   2 3919 51 Tmax 38.81667 -97.56667 1993-05-02 2
-## 3 728052 1993     5   3 3919 68 Tmax 38.81667 -97.56667 1993-05-03 3
-## 4 728053 1993     5   4 3919 79 Tmax 38.81667 -97.56667 1993-05-04 4
-## 5 728054 1993     5   5 3919 80 Tmax 38.81667 -97.56667 1993-05-05 5
-## 6 728055 1993     5   6 3919 76 Tmax 38.81667 -97.56667 1993-05-06 6</code></pre>
+<pre><code>##   julian year month day    id  z proc   lat       lon       date t
+## 1 728050 1993     5   1 13873 79 Tmax 33.95 -83.31667 1993-05-01 1
+## 2 728051 1993     5   2 13873 77 Tmax 33.95 -83.31667 1993-05-02 2
+## 3 728052 1993     5   3 13873 69 Tmax 33.95 -83.31667 1993-05-03 3
+## 4 728053 1993     5   4 13873 81 Tmax 33.95 -83.31667 1993-05-04 4
+## 5 728054 1993     5   5 13873 83 Tmax 33.95 -83.31667 1993-05-05 5
+## 6 728055 1993     5   6 13873 86 Tmax 33.95 -83.31667 1993-05-06 6</code></pre>
 <p>Next, time-series is plotted.</p>
 <pre class="r"><code>## ------------------------------------------------------------------------
 TmaxTS &lt;- ggplot(Tmax_sub) +
