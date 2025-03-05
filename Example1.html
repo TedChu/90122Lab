@@ -13,7 +13,7 @@
 
 <title>Geostatistical Data Example: Yearly Precipitation Anomaly Data</title>
 
-<script src="site_libs/header-attrs-2.19/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.26/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -246,6 +246,9 @@ $(document).ready(function () {
   <a href="index.html">Home</a>
 </li>
 <li>
+  <a href="Week1.html">Week 1</a>
+</li>
+<li>
   <a href="Week2.html">Week 2</a>
 </li>
 <li>
@@ -280,6 +283,9 @@ $(document).ready(function () {
 </li>
 <li>
   <a href="Extra1.html">Extra 1</a>
+</li>
+<li>
+  <a href="Extra2.html">Extra 2</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -476,7 +482,7 @@ funciton to minimize, that is, the message is the same as the message
 from the <em>optim</em> function)</p>
 <pre class="r"><code>m1$info.minimisation.function</code></pre>
 <pre><code>## $par
-## [1] 152.6097182   0.1641731
+## [1] 152.6097186   0.1641731
 ## 
 ## $value
 ## [1] 644.579
@@ -537,7 +543,7 @@ model</em>.</p>
 <li>The <span class="math inline">\(\mu\)</span> part
 <ul>
 <li>in the summary table, it is denoted as *. In our example, <span
-class="math inline">\(\hat \mu = -0.2176\)</span>.</li>
+class="math inline">\(\hat{\mu} = -0.2176\)</span>.</li>
 <li>It can also obtained by <em>m1$beta</em></li>
 <li>The estimated asymptotic variance (matrix) is
 <em>m1$beta.var</em></li>
@@ -574,7 +580,7 @@ m1$sigmasq
 m1$phi
 # nugget
 m1$nugget</code></pre>
-<pre><code>## [1]   0.7136275 152.6097182
+<pre><code>## [1]   0.7136275 152.6097186
 ## [1] 0.7136275
 ## [1] 152.6097
 ## [1] 0.1171584</code></pre>

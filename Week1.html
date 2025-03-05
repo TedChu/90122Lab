@@ -356,10 +356,16 @@ only the columns that fit on one screen.”</p>
 </div>
 <div id="section" class="section level1" number="2">
 <h1><span class="header-section-number">2</span> 3.1.3</h1>
-<p>From the book: * it’s worth stating what they have in common: + 1 The
-first argument is always a data frame. + 2 The subsequent arguments
-typically describe which columns to operate on using the variable names
-(without quotes). + 3 The output is always a new data frame.</p>
+<p>From the book:</p>
+<ul>
+<li>it’s worth stating what they have in common:
+<ul>
+<li>1 The first argument is always a data frame.</li>
+<li>2 The subsequent arguments typically describe which columns to
+operate on using the variable names (without quotes).</li>
+<li>3 The output is always a new data frame.</li>
+</ul></li>
+</ul>
 <pre class="r"><code>flights |&gt;
   filter(dest == &quot;IAH&quot;) |&gt; 
   group_by(year, month, day) |&gt; 

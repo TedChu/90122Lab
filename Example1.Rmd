@@ -135,7 +135,7 @@ summary(m1)
 ```
 
 * The $\mu$ part
-  + in the summary table, it is denoted as *\beta*. In our example, $\hat \mu = -0.2176$. 
+  + in the summary table, it is denoted as *\beta*. In our example, $\hat{\mu} = -0.2176$. 
   + It can also obtained by *m1$beta*
   + The estimated asymptotic variance (matrix) is *m1$beta.var*
   + A confidence interval or hypothesis testing can be conducted. 
