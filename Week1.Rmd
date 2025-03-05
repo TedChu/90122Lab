@@ -54,11 +54,21 @@ flights |>
 # Other parts
 
 
-3.2 Rows: filter, arrange, distinct, count
+* 3.2 Rows: 
+  + filter: allows you to keep rows based on the values of the columns
+  + arrange: changes the order of the rows based on the value of the columns
+  + distinct: finds all the unique rows in a dataset
 
-3.3 Columns: mutate, select, rename, relocate
 
-3.5 Groups: group_by, summarize
+* 3.3 Columns: 
+  + mutate: add new columns that are calculated from the existing columns
+  + select: select columns based on the names of the columns
+  + rename:
+  + relocate: 
+
+* 3.5 Groups: 
+  + group_by: divide your dataset into groups meaningful for your analysis
+  + summarize
 
 
 # Optional
