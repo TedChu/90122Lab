@@ -229,3 +229,6 @@ report(fitY)
 ```
 
 
+# Exercise
+
+Fit Model 4 with the intercept, see whether the forecasting performance improves. 
