@@ -108,7 +108,7 @@ report(fit3)
 ACF is over the thereshold at multiple lags
 ```{r, echo=TRUE, fig.width=8, fig.align="center"}
 fit3 %>% gg_tsresiduals()
-augment(fit3) %>% features(.innov, ljung_box, lag = 10, dof = 3)
+augment(fit3) %>% features(.innov, ljung_box, lag = 10, dof = 5)
 ```
 * Model 1 appears to be the best, although there are still some problems. Here is my personal opinion
   + In the real-world dataset, the result is often not as good as the example in the book (e.g. Central African Republic exports in Cp 9.7)
