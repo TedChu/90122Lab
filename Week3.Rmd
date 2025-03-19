@@ -50,10 +50,10 @@ ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) +
 
 # Others
 
-9.2 ggplot, aes
+* Starting Points
+  + 9.2 ggplot, aes
+  + 9.3 geom_point, geom_line (geom_abline), color
 
-9.3 geom_point, geom_line, color, fill, alpha
-
-9.4 facet\_wrap, facet\_grid
-
-9.5 geom\_bar
+* More Advanced
+  + 9.4 facet\_wrap, facet\_grid
+  + 9.5 geom\_bar
