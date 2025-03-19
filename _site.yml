@@ -30,7 +30,6 @@ navbar:
       href: Example1.html 
     - text: "Solutions"
       href: Solutions.html
-    - text: "Extra 2"
     - text: "Extra 1"
       href: Extra1.html
     - text: "Extra 2"
