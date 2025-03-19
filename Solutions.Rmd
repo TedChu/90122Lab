@@ -1,0 +1,43 @@
+---
+title: "Solutions"
+---
+
+<div style="margin-bottom:50px;">
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+</div>
+
+
+# Week 3
+
+## Visualize the daily pattern of *mel_sel* data. 
+
+```{r, echo=TRUE, fig.width=8, fig.align="center", message = FALSE}
+library(lubridate)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+```{r, echo=TRUE, fig.width=8, fig.align="center", message = FALSE}
+load("datasets/melb_sel.Rdata")
+head(melb_sel)
+
+mel_d_avg = melb_sel |> mutate(wday = wday(date, label = TRUE), hour = hour(date)) |> group_by(hour) |>
+  summarise(avg_counts = mean(counts)) 
+  
+ggplot(mel_d_avg, aes(x = hour, y = avg_counts)) + geom_line()
+```
+
+## (Optional) If you want to visulize the weekly pattern. 
+
+```{r, echo=TRUE, fig.width=8, fig.align="center", message = FALSE}
+melb_w_avg = melb_sel |> mutate(wday = wday(date, label = TRUE), hour = hour(date)) |> 
+  group_by(wday, hour) |> summarise(avg_counts = mean(counts))
+melb_w_avg$mdayh = melb_sel$date[1:168]
+melb_w_avg |> 
+  ggplot(aes(x = mdayh, y = avg_counts)) + geom_line() + 
+  scale_x_datetime(date_labels = "%a %H:%M:%S", date_breaks = "1 day")
+```

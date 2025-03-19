@@ -57,3 +57,7 @@ ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) +
 * More Advanced
   + 9.4 facet\_wrap, facet\_grid
   + 9.5 geom\_bar
+  
+# Exercise
+
+Visualize the daily pattern of *mel_sel* data. 

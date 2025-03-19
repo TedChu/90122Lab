@@ -27,7 +27,10 @@ navbar:
     - text: "Week 11"
       href: Week11.html
     - text: "Example 1"
-      href: Example1.html   
+      href: Example1.html 
+    - text: "Solutions"
+      href: Solutions.html
+    - text: "Extra 2"
     - text: "Extra 1"
       href: Extra1.html
     - text: "Extra 2"
