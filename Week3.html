@@ -352,12 +352,12 @@ class="uri">https://github.com/rstudio/cheatsheets/blob/main/data-visualization-
 <pre class="r"><code>library(tidyverse)</code></pre>
 <p>An Example</p>
 <pre class="r"><code>f = lm(hwy~displ, data = mpg)
-ggplot(data = mpg) + 
-  geom_point(mapping = aes(x = displ, y = hwy))</code></pre>
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+  geom_point()</code></pre>
 <p><img src="Week3_files/figure-html/unnamed-chunk-2-1.png" width="768" style="display: block; margin: auto;" /></p>
 <p>Add one more layer (the line)</p>
-<pre class="r"><code>ggplot(data = mpg) + 
-  geom_point(mapping = aes(x = displ, y = hwy)) +
+<pre class="r"><code>ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+  geom_point(color = &quot;blue&quot;) +
   geom_abline(slope = f$coef[2], intercept = f$coef[1])</code></pre>
 <p><img src="Week3_files/figure-html/unnamed-chunk-3-1.png" width="768" style="display: block; margin: auto;" /></p>
 </div>

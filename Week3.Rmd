@@ -36,15 +36,15 @@ library(tidyverse)
 An Example
 ```{r, echo=TRUE, fig.width=8, fig.align="center", results = 'hold'}
 f = lm(hwy~displ, data = mpg)
-ggplot(data = mpg) + 
-  geom_point(mapping = aes(x = displ, y = hwy))
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+  geom_point()
 ```
 
 
 Add one more layer (the line)
 ```{r, echo=TRUE, fig.width=8, fig.align="center", results = 'hold'}
-ggplot(data = mpg) + 
-  geom_point(mapping = aes(x = displ, y = hwy)) +
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+  geom_point(color = "blue") +
   geom_abline(slope = f$coef[2], intercept = f$coef[1])
 ```
 
