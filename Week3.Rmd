@@ -48,6 +48,14 @@ ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) +
   geom_abline(slope = f$coef[2], intercept = f$coef[1])
 ```
 
+with different colors
+```{r, echo=TRUE, fig.width=8, fig.align="center", results = 'hold'}
+mpg$cyl = factor(mpg$cyl)
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+  geom_point(aes(color = cyl, shape = cyl)) +
+  geom_abline(slope = f$coef[2], intercept = f$coef[1])
+```
+
 # Others
 
 * Starting Points

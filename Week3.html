@@ -365,6 +365,12 @@ ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) +
   geom_point(color = &quot;blue&quot;) +
   geom_abline(slope = f$coef[2], intercept = f$coef[1])</code></pre>
 <p><img src="Week3_files/figure-html/unnamed-chunk-3-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p>with different colors</p>
+<pre class="r"><code>mpg$cyl = factor(mpg$cyl)
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+  geom_point(aes(color = cyl, shape = cyl)) +
+  geom_abline(slope = f$coef[2], intercept = f$coef[1])</code></pre>
+<p><img src="Week3_files/figure-html/unnamed-chunk-4-1.png" width="768" style="display: block; margin: auto;" /></p>
 </div>
 <div id="others" class="section level1" number="3">
 <h1><span class="header-section-number">3</span> Others</h1>
