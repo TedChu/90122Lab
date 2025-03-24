@@ -41,3 +41,33 @@ melb_w_avg |>
   ggplot(aes(x = mdayh, y = avg_counts)) + geom_line() + 
   scale_x_datetime(date_labels = "%a %H:%M:%S", date_breaks = "1 day")
 ```
+
+# Week 4
+
+
+Question: What is the expected number of events?
+
+Answer: 
+\[\lambda \nu(D) = 100\times 4 = 400. \]
+
+
+
+Question: What do you conclude from the above plot?
+
+Answer: We fail to reject the null hypothesis since the estimated G function is inside the envelope. 
+
+
+Question: Can you test *rNS* data whether it follow clustered point pattern?
+
+```{r echo=TRUE, results="hold"}
+library(spatstat)
+set.seed(2025)
+nclust <- function(x0, y0, radius, n) {
+          return(runifdisc(n, radius, centre=c(x0, y0)))
+            }
+rNS = rNeymanScott(kappa=10, expand=0.1, 
+                   rcluster = nclust, radius=0.1, n=10)
+r=seq(0,1, by=0.005)
+Gtest=envelope(rNS,fun=Gest, r=r, nrank=5, nsim=200)
+plot(Gtest)
+```

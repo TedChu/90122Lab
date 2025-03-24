@@ -282,6 +282,9 @@ $(document).ready(function () {
   <a href="Example1.html">Example 1</a>
 </li>
 <li>
+  <a href="Solutions.html">Solutions</a>
+</li>
+<li>
   <a href="Extra1.html">Extra 1</a>
 </li>
 <li>
@@ -331,9 +334,9 @@ clustered data pattern</a></li>
 id="toc-create-matern-i-and-matern-ii-regular-data-pattern"><span
 class="toc-section-number">2.3</span> Create Matern I and Matern II:
 regular data pattern</a></li>
-<li><a href="#further-study" id="toc-further-study"><span
-class="toc-section-number">2.4</span> Further Study</a></li>
 </ul></li>
+<li><a href="#exercise" id="toc-exercise"><span
+class="toc-section-number">3</span> Exercise</a></li>
 </ul>
 </div>
 
@@ -357,9 +360,9 @@ plot(data1, pch=46, cex =3)                           </code></pre>
 of points</span></li>
 <li>win=owin(c(0,2),c(0,2)): spatial point process data will be
 generated in the domain D = [0,2]*[0,2].</li>
-<li>Question: What is the expected number of events?</li>
 </ul></li>
 </ul>
+<p>Question: What is the expected number of events?</p>
 </div>
 <div id="quadrat-test" class="section level2" number="1.2">
 <h2><span class="header-section-number">1.2</span> Quadrat test</h2>
@@ -369,7 +372,7 @@ generated in the domain D = [0,2]*[0,2].</li>
 ##  Chi-squared test of CSR using quadrat counts
 ## 
 ## data:  data1
-## X2 = 18.169, df = 15, p-value = 0.5078
+## X2 = 10.615, df = 15, p-value = 0.4413
 ## alternative hypothesis: two.sided
 ## 
 ## Quadrats: 4 by 4 grid of tiles</code></pre>
@@ -421,7 +424,7 @@ class="math inline">\(h\)</span> in our slides.)</li>
 </ul>
 <pre class="r"><code>plot(Gtest)</code></pre>
 <p><img src="Week4_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
-<p>What do you conclude from the above plot?</p>
+<p>Question: What do you conclude from the above plot?</p>
 </div>
 </div>
 <div id="spatial-point-models" class="section level1" number="2">
@@ -445,11 +448,12 @@ class="math inline">\(10\exp(3x)=201\)</span>. However, since <em>lmax =
 class="section level2" number="2.2">
 <h2><span class="header-section-number">2.2</span> Create Neyman-Scott
 Process: clustered data pattern</h2>
-<pre class="r"><code>nclust &lt;- function(x0, y0, radius, n) {
+<pre class="r"><code>set.seed(2025)
+nclust &lt;- function(x0, y0, radius, n) {
           return(runifdisc(n, radius, centre=c(x0, y0)))
             }
-rNS = rNeymanScott(kappa=10, expand=0.2, 
-                   rcluster = nclust, radius=0.2, n=5)
+rNS = rNeymanScott(kappa=10, expand=0.1, 
+                   rcluster = nclust, radius=0.1, n=10)
 plot(rNS, pch=46, cex =3)</code></pre>
 <p><img src="Week4_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 <ul>
@@ -470,9 +474,9 @@ here runifdisc function is used.</li>
 <li>Generate a random point pattern containing <span
 class="math inline">\(n\)</span> independent uniform random points in a
 circular disc.</li>
-<li>n: Number of offspring. Here, n=5 – in step <span
+<li>n: Number of offspring. Here, n=10 – in step <span
 class="math inline">\((ii^*)\)</span>.</li>
-<li>radius: Radius of the circle. radius = 0.2</li>
+<li>radius: Radius of the circle. radius = 0.1</li>
 <li>center: Coordinates of the center of the circle (that is, the
 location of the parent).</li>
 </ul></li>
@@ -495,11 +499,12 @@ class="math inline">\(\lambda\)</span> in our slides).</li>
 in our slides)</li>
 </ul>
 </div>
-<div id="further-study" class="section level2" number="2.4">
-<h2><span class="header-section-number">2.4</span> Further Study</h2>
-<p>If you have time, can you test <em>rNS</em> data whether it follow
-clustered point pattern?</p>
 </div>
+<div id="exercise" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> Exercise</h1>
+<p>Two questions above.</p>
+<p>Question: Can you test <em>rNS</em> data whether it follow clustered
+point pattern?</p>
 </div>
 
 

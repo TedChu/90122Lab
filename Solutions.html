@@ -284,7 +284,6 @@ $(document).ready(function () {
 <li>
   <a href="Solutions.html">Solutions</a>
 </li>
-<li class="dropdown-header">Extra 2</li>
 <li>
   <a href="Extra1.html">Extra 1</a>
 </li>
@@ -321,6 +320,8 @@ id="toc-optional-if-you-want-to-visulize-the-weekly-pattern."><span
 class="toc-section-number">1.2</span> (Optional) If you want to visulize
 the weekly pattern.</a></li>
 </ul></li>
+<li><a href="#week-4" id="toc-week-4"><span
+class="toc-section-number">2</span> Week 4</a></li>
 </ul>
 </div>
 
@@ -366,6 +367,59 @@ melb_w_avg |&gt;
   scale_x_datetime(date_labels = &quot;%a %H:%M:%S&quot;, date_breaks = &quot;1 day&quot;)</code></pre>
 <p><img src="Solutions_files/figure-html/unnamed-chunk-3-1.png" width="768" style="display: block; margin: auto;" /></p>
 </div>
+</div>
+<div id="week-4" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> Week 4</h1>
+<p>Question: What is the expected number of events?</p>
+<p>Answer: <span class="math display">\[\lambda \nu(D) = 100\times 4 =
+400. \]</span></p>
+<p>Question: What do you conclude from the above plot?</p>
+<p>Answer: We fail to reject the null hypothesis since the estimated G
+function is inside the envelope.</p>
+<p>Question: Can you test <em>rNS</em> data whether it follow clustered
+point pattern?</p>
+<pre class="r"><code>library(spatstat)</code></pre>
+<pre><code>## Loading required package: spatstat.data</code></pre>
+<pre><code>## Loading required package: spatstat.geom</code></pre>
+<pre><code>## spatstat.geom 3.2-9</code></pre>
+<pre><code>## Loading required package: spatstat.random</code></pre>
+<pre><code>## spatstat.random 3.2-3</code></pre>
+<pre><code>## Loading required package: spatstat.explore</code></pre>
+<pre><code>## Loading required package: nlme</code></pre>
+<pre><code>## 
+## Attaching package: &#39;nlme&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:dplyr&#39;:
+## 
+##     collapse</code></pre>
+<pre><code>## spatstat.explore 3.2-6</code></pre>
+<pre><code>## Loading required package: spatstat.model</code></pre>
+<pre><code>## Loading required package: rpart</code></pre>
+<pre><code>## spatstat.model 3.2-10</code></pre>
+<pre><code>## Loading required package: spatstat.linnet</code></pre>
+<pre><code>## spatstat.linnet 3.1-4</code></pre>
+<pre><code>## 
+## spatstat 3.0-7 
+## For an introduction to spatstat, type &#39;beginner&#39;</code></pre>
+<pre class="r"><code>set.seed(2025)
+nclust &lt;- function(x0, y0, radius, n) {
+          return(runifdisc(n, radius, centre=c(x0, y0)))
+            }
+rNS = rNeymanScott(kappa=10, expand=0.1, 
+                   rcluster = nclust, radius=0.1, n=10)
+r=seq(0,1, by=0.005)
+Gtest=envelope(rNS,fun=Gest, r=r, nrank=5, nsim=200)
+plot(Gtest)</code></pre>
+<p><img src="Solutions_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<pre><code>## Generating 200 simulations of CSR  ...
+## 1, 2, 3, 4.6.8.10.12.14.16.18.20.22.24.26.28.30.32.34
+## .36.38.40.42.44.46.48.50.52.54.56.58.60.62.64.66.68.70.72.74
+## .76.78.80.82.84.86.88.90.92.94.96.98.100.102.104.106.108.110.112.114
+## .116.118.120.122.124.126.128.130.132.134.136.138.140.142.144.146.148.150.152.154
+## .156.158.160.162.164.166.168.170.172.174.176.178.180.182.184.186.188.190.192.194
+## .196.198.
+## 200.
+## 
+## Done.</code></pre>
 </div>
 
 

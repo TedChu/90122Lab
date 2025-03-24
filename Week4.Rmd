@@ -29,7 +29,8 @@ plot(data1, pch=46, cex =3)
 * Argument: 
   + lambda=100: intensity function, <span style="color: red;">NOT number of points</span>
   + win=owin(c(0,2),c(0,2)): spatial point process data will be generated in the domain D = [0,2]*[0,2].
-  + Question: What is the expected number of events?
+  
+Question: What is the expected number of events?
 
 
 ## Quadrat test
@@ -69,7 +70,7 @@ Gtest=envelope(data1,fun=Gest, r=r, nrank=5, nsim=200)
 plot(Gtest)
 ```
 
-What do you conclude from the above plot?
+Question: What do you conclude from the above plot?
 
 
 
@@ -95,11 +96,12 @@ Here, *lmax* specifies the largest possible intensity. For example, when $x=1$, 
 ## Create Neyman-Scott Process: clustered data pattern
 
 ```{r echo=TRUE, results="hold"}
+set.seed(2025)
 nclust <- function(x0, y0, radius, n) {
           return(runifdisc(n, radius, centre=c(x0, y0)))
             }
-rNS = rNeymanScott(kappa=10, expand=0.2, 
-                   rcluster = nclust, radius=0.2, n=5)
+rNS = rNeymanScott(kappa=10, expand=0.1, 
+                   rcluster = nclust, radius=0.1, n=10)
 plot(rNS, pch=46, cex =3)
 ```
 
@@ -112,8 +114,8 @@ plot(rNS, pch=46, cex =3)
 
 * About runifdisc function: runifdisc(n, radius)
   + Generate a random point pattern containing $n$ independent uniform random points in a circular disc.
-  + n: Number of offspring. Here, n=5 -- in step $(ii^*)$. 
-  + radius: Radius of the circle. radius = 0.2 
+  + n: Number of offspring. Here, n=10 -- in step $(ii^*)$. 
+  + radius: Radius of the circle. radius = 0.1 
   + center: Coordinates of the center of the circle (that is, the location of the parent).  
   
 ## Create Matern I and Matern II: regular data pattern
@@ -129,6 +131,8 @@ plot(matII, main="", pch=46, cex =3)
 * r: Inhibition distance. ($\delta$ in our slides)
 
 
-## Further Study
+# Exercise
 
-If you have time, can you test *rNS* data whether it follow clustered point pattern?
+Two questions above.
+
+Question: Can you test *rNS* data whether it follow clustered point pattern?
