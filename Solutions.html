@@ -408,7 +408,7 @@ rNS = rNeymanScott(kappa=10, expand=0.1,
                    rcluster = nclust, radius=0.1, n=10)
 r=seq(0,1, by=0.005)
 Gtest=envelope(rNS,fun=Gest, r=r, nrank=5, nsim=200)
-plot(Gtest)</code></pre>
+plot(Gtest, xlim = c(0,0.1))</code></pre>
 <p><img src="Solutions_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
 <pre><code>## Generating 200 simulations of CSR  ...
 ## 1, 2, 3, 4.6.8.10.12.14.16.18.20.22.24.26.28.30.32.34
@@ -420,6 +420,17 @@ plot(Gtest)</code></pre>
 ## 200.
 ## 
 ## Done.</code></pre>
+<pre class="r"><code>quadrat.test(rNS, nx = 4, ny= 4, alternative = &quot;clustered&quot;, method = &quot;Chisq&quot;)</code></pre>
+<pre><code>## 
+##  Chi-squared test of CSR using quadrat counts
+## 
+## data:  rNS
+## X2 = 134.67, df = 15, p-value &lt; 2.2e-16
+## alternative hypothesis: clustered
+## 
+## Quadrats: 4 by 4 grid of tiles</code></pre>
+<p>Both methods conclude <em>rNS</em> data follow a clustered point
+pattern.</p>
 </div>
 
 

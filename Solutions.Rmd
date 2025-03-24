@@ -69,5 +69,12 @@ rNS = rNeymanScott(kappa=10, expand=0.1,
                    rcluster = nclust, radius=0.1, n=10)
 r=seq(0,1, by=0.005)
 Gtest=envelope(rNS,fun=Gest, r=r, nrank=5, nsim=200)
-plot(Gtest)
+plot(Gtest, xlim = c(0,0.1))
 ```
+
+
+```{r echo=TRUE, results="hold"}
+quadrat.test(rNS, nx = 4, ny= 4, alternative = "clustered", method = "Chisq")
+```
+
+Both methods conclude *rNS* data follow a clustered point pattern. 
