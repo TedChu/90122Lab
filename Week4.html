@@ -372,7 +372,7 @@ generated in the domain D = [0,2]*[0,2].</li>
 ##  Chi-squared test of CSR using quadrat counts
 ## 
 ## data:  data1
-## X2 = 10.615, df = 15, p-value = 0.4413
+## X2 = 7.8333, df = 15, p-value = 0.1394
 ## alternative hypothesis: two.sided
 ## 
 ## Quadrats: 4 by 4 grid of tiles</code></pre>
@@ -409,12 +409,12 @@ Gtest=envelope(data1,fun=Gest, r=r, nrank=5, nsim=200)</code></pre>
 <li>Argument:
 <ul>
 <li>nsim: the number of simulated datasets</li>
-<li>nrank: similar to deciding the significant level
+<li>nrank: similar to deciding the significance level
 <ul>
 <li>Note that (5+5)/200 = 0.05, and therefore, it is a similar to test
-at <span style="color: red;">“significant level”</span> = 0.05</li>
+at <span style="color: red;">“significance level”</span> = 0.05</li>
 <li>That is, if you want to ensure <span
-class="math inline">\(\alpha\)</span> (significant level), you need to
+class="math inline">\(\alpha\)</span> (significance level), you need to
 set <span class="math inline">\((2nrank)/nsim = \alpha\)</span>.</li>
 </ul></li>
 <li>fun: Gest</li>
@@ -486,10 +486,12 @@ location of the parent).</li>
 class="section level2" number="2.3">
 <h2><span class="header-section-number">2.3</span> Create Matern I and
 Matern II: regular data pattern</h2>
-<pre class="r"><code>matI = rMaternI(kappa = 10, r = 0.1)
-matII = rMaternII(kappa = 10, r = 0.1)
-par(mfrow=c(1,2))
+<pre class="r"><code>par(mfrow=c(1,2))
+set.seed(2025)
+matI = rMaternI(kappa = 10, r = 0.1)
 plot(matI, main=&quot;&quot;, pch=46, cex =3)
+set.seed(2025)
+matII = rMaternII(kappa = 10, r = 0.1)
 plot(matII, main=&quot;&quot;, pch=46, cex =3)</code></pre>
 <p><img src="Week4_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
 <ul>
