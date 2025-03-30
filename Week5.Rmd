@@ -29,8 +29,6 @@ Here, *sf* (simple feature) is a type of data class. First, we use package *sf* 
 
 ```{r, echo=TRUE, fig.width=6, fig.align="center", message = FALSE}
 library(sf)
-#setwd("~/Dropbox/2_MAST90122/90122LabGit")
-#setwd("C:/Users/tingjinc/Dropbox/2_MAST90122/90122LabGit")
 gmel = st_read(dsn = "datasets/Mel/Aus-Melbourne02.shp", "Aus-Melbourne02")
 ```
 
