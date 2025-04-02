@@ -119,6 +119,9 @@ temdata = subset(gmel, select = c("name", "name2"))
 ## Join two objects
 gmel2 = left_join(temdata, LGAsub, by = "name2")
 
+# Or you can write
+# gmel2 = gmel |> select(c("name", "name2")) |> left_join(LGAsub, by = "name2")
+
 
 # Save the datasets
 save(gmel2, file = "datasets/gmel2.Rdata")   
