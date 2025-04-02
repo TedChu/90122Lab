@@ -81,9 +81,10 @@ LGA information based on 2015 survey are available in *LGAData.csv*. It includes
 
 
 ```{r, echo=TRUE, fig.width=6, fig.align="center"}
+library(dplyr)
 LGAData = read.csv("datasets/LGAData.csv")
-LGAsub = subset(LGAData, select = c("LGA.Name","Median.house.price", "Distance.to.Melbourne", "Total.offences.per.1.000.population", "Median.household.income"))
-colnames(LGAsub) = c("name","price", "dis", "off", "inc")
+LGAsub = LGAData |> tibble() |> select(name = LGA.Name, price = Median.house.price, dis = Distance.to.Melbourne, off = Total.offences.per.1.000.population, inc = Median.household.income)
+LGAsub
 ```
 
 We want to combine the data in *LGAsub* and *gmel* together. However, the use different names. For example, in *LGAsub*, it says "City of Banyule", while it says "Banyule (C)" in *gmel*. We want to add a new variable *name2*, and for the above LGA, it will be named "Banyule".  Therefore, *LGAsub* and *gmel* will be matched and joined. 
@@ -116,7 +117,6 @@ The datasets can be joined using the function *left_join* in package *dplyr*.
 temdata = subset(gmel, select = c("name", "name2"))
 
 ## Join two objects
-library(dplyr)
 gmel2 = left_join(temdata, LGAsub, by = "name2")
 
 
