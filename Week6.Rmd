@@ -10,75 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 </div>
 
 
-# Introduction
-* In this Lab, we will learn to draw some maps. 
 
-
-
-
-
-# USA map: geom_polygon
-R package *maps* and *mapdata* provide some maps. We will use them for the USA map
-```{r, echo=TRUE, fig.width=6, fig.align="center", warning = F, message = F}
-library(ggplot2)
-library(sf)
-library(maps)
-library(mapdata)
-library(sp)
-usa <- map_data("usa")
-dim(usa)
-head(usa)
-tail(usa)
-```
-
-First, we plot usa map
-
-```{r, echo=TRUE, fig.width=10, fig.align="center"}
-library(gridExtra)
-gg0 = ggplot() + geom_polygon(data = usa, aes(x=long, y = lat, group = group)) + 
-  coord_quickmap()
-gg1 <- ggplot() + 
-  geom_polygon(data = usa, aes(x=long, y = lat, group = group), fill = "violet", color = "blue") + 
-  coord_quickmap()
-labs <- data.frame(
-  long = c(-122.064873, -122.306417),
-  lat = c(36.951968, 47.644855),
-  names = c("SWFSC-FED", "NWFSC"),
-  stringsAsFactors = FALSE
-)  
-gg2 = gg1 + 
-  geom_point(data = labs, aes(x = long, y = lat), color = "yellow", size = 2)
-
-grid.arrange(gg0, gg1, gg2, nrow = 1)
-```
-
-* Key points
-  + "group = group" is essential, you can try code without the group argument. 
-  + coord_quickmap(): one degree longitude is not the same distance as one degree latitude. For the latitude at 40, it is about $1/cos(2\pi/9) \approx 1.3$ of that of the longitude. coord_quickmap() can fix this automatically, see Chpater 9.7 of RDS book (https://r4ds.hadley.nz/layers#coordinate-systems). 
-  + the two dots represents two cities. 
-
-
-
-
-
-
-## US state
-```{r, echo=TRUE, fig.width=10, fig.align="center", warning = F}
-### Draw plots for all USA States
-states <- map_data("state")
-ggplot(data = states) + 
-  geom_polygon(aes(x = long, y = lat, fill = region, group = group), color = "white") + 
-  coord_quickmap() + guides(fill=FALSE) 
-
-### Draw a subset of USA states
-### Use function subset to select states. 
-west_coast <- subset(states, region %in% c("california", "oregon", "washington"))
-ggplot(data = west_coast) + 
-  geom_polygon(aes(x = long, y = lat, group = group), fill = "palegreen", color = "red") + 
-  coord_quickmap()
-```
-
-Can you tell the difference between *color* and *fill* argument? 
 
 
 
@@ -89,6 +21,7 @@ Can you tell the difference between *color* and *fill* argument?
 
 All datasets are read into as *sf* objects
 ```{r, echo=TRUE, fig.width=6, fig.align="center", message = F}
+library(ggplot2)
 library(sf)
 VICLGA = st_read(dsn = "datasets/VICLGA/VIC_LOCALITY_POLYGON_shp.shp", "VIC_LOCALITY_POLYGON_shp")
 VICSub = st_read(dsn="datasets/VICSub/VIC_LOCALITY_POLYGON_shp.shp", "VIC_LOCALITY_POLYGON_shp")
@@ -185,14 +118,14 @@ ggplot() + geom_sf(data = BSub, color = "gray") +
   geom_sf(data = highway, aes(color = as.factor(CLASS_CODE)), lwd = 1.5)  
 ```
 
-# Summary
+# R package *maps* and *mapdata*
 
-There are two ways to draw maps: geom_polygons and geom_sf. They requires different types of data: geom_sf requires sf class, geom_polygons requires data frame (with proper preparation). 
-
-My preferred approach is geom_sf. To convert map data to sf, use following codes
+R package *maps* and *mapdata* provide some maps. They are not in *sf* format. To convert map data to sf, use following codes
 ```{r, echo=TRUE, fig.width=7, fig.align="center", message = FALSE}
-nz_sf = sf::st_as_sf(maps::map("nz", plot = FALSE, fill = TRUE))
+state_sf = sf::st_as_sf(maps::map("state", plot = FALSE, fill = TRUE))
 
-ggplot() + geom_sf(data = nz_sf)
+ggplot() + geom_sf(data = state_sf)
 ```
+
+If you want to plot directly using *geom_polygon*, see Extra3. 
 

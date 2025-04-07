@@ -34,6 +34,8 @@ navbar:
       href: Extra1.html
     - text: "Extra 2"
       href: Extra2.html
+    - text: "Extra 3"
+      href: Extra3.html
 output_dir: "."
 output:
   html_document:
