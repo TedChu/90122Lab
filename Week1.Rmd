@@ -70,9 +70,6 @@ flights |>
   + group_by: divide your dataset into groups meaningful for your analysis
   + summarize
 
-Cheat Sheet
-
-https://www.rstudio.com/wp-content%2Fuploads%2F2015%2F02%2Fdata-wrangling-cheatsheet.pdf%2F
 
 # Optional
 
