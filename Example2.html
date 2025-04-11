@@ -320,10 +320,8 @@ class="toc-section-number">1</span> Dataset</a></li>
 <li><a href="#visualisation" id="toc-visualisation"><span
 class="toc-section-number">2</span> Visualisation</a>
 <ul>
-<li><a href="#spatial-dependence-for-price"
-id="toc-spatial-dependence-for-price"><span
-class="toc-section-number">2.1</span> Spatial Dependence for
-price</a></li>
+<li><a href="#spatial-dependence" id="toc-spatial-dependence"><span
+class="toc-section-number">2.1</span> Spatial Dependence</a></li>
 </ul></li>
 <li><a href="#modelling" id="toc-modelling"><span
 class="toc-section-number">3</span> Modelling</a>
@@ -407,10 +405,9 @@ there is a spatial dependence for both variables.</p>
 <p><img src="Example2_files/figure-html/unnamed-chunk-6-1.png" width="768" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>ggplot() + geom_sf(data = used, aes(fill = tax))</code></pre>
 <p><img src="Example2_files/figure-html/unnamed-chunk-6-2.png" width="768" style="display: block; margin: auto;" /></p>
-<div id="spatial-dependence-for-price" class="section level2"
-number="2.1">
-<h2><span class="header-section-number">2.1</span> Spatial Dependence
-for price</h2>
+<div id="spatial-dependence" class="section level2" number="2.1">
+<h2><span class="header-section-number">2.1</span> Spatial
+Dependence</h2>
 <pre class="r"><code>moran.test(used$price, nb2listw(usa48.nb))</code></pre>
 <pre><code>## 
 ##  Moran I test under randomisation
