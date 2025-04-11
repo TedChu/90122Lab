@@ -1,0 +1,110 @@
+---
+title: 'Spatial Lag Data Example: Used Car Data'
+---
+
+<div style="margin-bottom:50px;">
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+</div>
+
+\newcommand{\bm}{\mathbf}
+
+# Dataset
+
+```{r, echo=TRUE, fig.width=8, fig.align="center", message = FALSE, warning = F}
+library(ggplot2)
+library(sf)
+library(maps)
+library(dplyr)
+library(spData)
+library(spdep)
+library(spatialreg)
+```
+
+
+* We want to study the relationship between price of used cars and the taxes charged across 48 states in 1960
+  + tax.charges: taxes and delivery charges for 1955-9 new cars
+  + price.1960: 1960 used car prices by state
+
+
+```{r, echo=TRUE, fig.width=8, fig.align="center", results = 'hold'}
+data(used.cars)
+head(used.cars)
+```
+
+
+
+
+
+# Visualisation
+
+First, we read into the us states maps and convert it the *sf* object.
+```{r, echo=TRUE, fig.width=8, fig.align="center", results = 'hold'}
+state_sf = sf::st_as_sf(maps::map("state", plot = FALSE, fill = TRUE))
+```
+
+
+Note that the state names in *used_cars* are abbreviation while full names in *state\_sf*. 
+We want to combine these datasets together by names, and used *state.csv* which includes both abbreviation and full names of all states. 
+
+```{r, echo=TRUE, fig.width=8, fig.align="center"}
+abb = read.csv("datasets/states.csv")
+abb = abb |> mutate(state_lower = tolower(State))
+used.cars$Abbreviation = rownames(used.cars)
+
+head(abb)
+head(state_sf)
+```
+
+```{r, echo=TRUE, fig.width=8, fig.align="center", results = 'hold'}
+used = state_sf |> rename(state_lower = ID) |> left_join(abb, by = "state_lower") |> right_join(used.cars, by = "Abbreviation") |> rename(price = price.1960, tax = tax.charges)
+```
+
+Next, we visualise the price variable and tax variable. We can see there is a spatial dependence for both variables. 
+
+```{r, echo=TRUE, fig.width=8, fig.align="center"}
+ggplot() + geom_sf(data = used, aes(fill = price))
+ggplot() + geom_sf(data = used, aes(fill = tax))
+```
+
+## Spatial Dependence for price
+
+```{r, echo=TRUE, fig.width=8, fig.align="center"}
+moran.test(used$price, nb2listw(usa48.nb))
+moran.plot(used$price, nb2listw(usa48.nb),
+           labels=used$Abbreviation)
+```
+
+# Modelling 
+
+## OLS
+
+If we fit a linear model, we can see the resulting residuals are still spatially correlaed. 
+```{r, echo=TRUE, fig.width=8, fig.align="center"}
+mod_ls <- lm(price ~ tax, data=used)
+summary(mod_ls)
+
+used$res = mod_ls$residuals
+ggplot() + geom_sf(data = used, aes(fill = res))
+```
+
+## Spatial Lag Model
+
+
+
+
+```{r, echo=TRUE, fig.width=8, fig.align="center"}
+mod_lag <- lagsarlm(price ~ tax, data=used,
+                   nb2listw(usa48.nb))
+summary(mod_lag)
+```
+
+
+
+
+```{r, echo=TRUE, fig.width=8, fig.align="center"}
+used$lagres = mod_lag$residuals
+ggplot() + geom_sf(data = used, aes(fill = lagres))
+```
