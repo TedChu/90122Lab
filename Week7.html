@@ -338,6 +338,8 @@ class="toc-section-number">3</span> Geodata format</a>
 <li><a href="#create-geodata" id="toc-create-geodata"><span
 class="toc-section-number">3.1</span> Create geodata</a></li>
 </ul></li>
+<li><a href="#other-models" id="toc-other-models"><span
+class="toc-section-number">4</span> Other Models</a></li>
 </ul>
 </div>
 
@@ -645,6 +647,50 @@ data(camg)     # data.frame format
 geocamg = as.geodata(camg, data.col=5, covar.col=c(3,6), 
                      covar.names = c(&quot;elevation&quot;, &quot;mg20&quot;))    </code></pre>
 </div>
+</div>
+<div id="other-models" class="section level1" number="4">
+<h1><span class="header-section-number">4</span> Other Models</h1>
+<ul>
+<li>For Model 2: <span class="math display">\[
+Z(\mathbf{s}_i)=\mu+U(\mathbf{s}_i)+\nu(\mathbf{s}_i)
+%\sum_{j=1}^p \beta_j d_j(x)+S(x)+Z(x) \]</span>
+<ul>
+<li>Constant mean: <span class="math inline">\(\mu\)</span></li>
+<li>Covariance function: matern class with kappa = 1.5</li>
+</ul></li>
+</ul>
+<p>Some key codes</p>
+<pre class="r"><code>## MLE: constant trend + matern class with kappa = 1.5
+#plot(variog(dfgeodata, option=&quot;bin&quot;, max.dist=900), 
+#     xlab = &quot;h&quot;, ylab = &quot;variogram&quot;)
+#lines.variomodel(seq(0, 900, l = 100), 
+#                 cov.pars = c(0.8, 150),           
+#                 cov.model = &quot;mat&quot;, kap = 1.5, nug = 0.1)
+
+
+#m2 = likfit(dfgeodata, ini = c(0.8, 150), nug = 0.1, cov.model = &quot;mat&quot;, kap = 1.5)
+#m2$info.minimisation.function$convergence
+#summary(m2)</code></pre>
+<ul>
+<li>For Model 3: <span class="math display">\[
+Z(\mathbf{s}_i)=\beta_0+x_1(\mathbf{s}_i)\beta_1+\nu(\mathbf{s}_i)
+%\sum_{j=1}^p \beta_j d_j(x)+S(x)+Z(x) \]</span>
+<ul>
+<li>Linear trend: <span class="math inline">\(x_1\)</span> is the
+elevation</li>
+<li>Covariance function: exponential</li>
+</ul></li>
+</ul>
+<p>The model is fitted using the REML method.</p>
+<p>Some key codes</p>
+<pre class="r"><code>## The variogram, note ``trend = ~elev&quot;
+#plot(variog(dfgeodata, option=&quot;bin&quot;, max.dist=900, trend = ~elev), 
+#     xlab = &quot;h&quot;, ylab = &quot;variogram&quot;)
+#lines.variomodel(seq(0, 900, l = 100), 
+#                 cov.pars = c(0.8, 200),           
+#                 cov.model = &quot;mat&quot;, kap = 0.5, nug = 0.1)
+
+#m3 = likfit(dfgeodata, ini = c(0.8, 200), nug = 0.1, trend = ~ elev, lik.method = &quot;REML&quot;)</code></pre>
 </div>
 
 

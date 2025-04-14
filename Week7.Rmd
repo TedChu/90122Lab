@@ -203,3 +203,48 @@ data(camg)     # data.frame format
 geocamg = as.geodata(camg, data.col=5, covar.col=c(3,6), 
                      covar.names = c("elevation", "mg20"))    
 ```
+
+
+# Other Models
+
+* For Model 2: $$
+Z(\mathbf{s}_i)=\mu+U(\bm{s}_i)+\nu(\bm{s}_i)
+%\sum_{j=1}^p \beta_j d_j(x)+S(x)+Z(x) $$
+  + Constant mean: $\mu$
+  + Covariance function: matern class with kappa = 1.5 
+
+
+Some key codes
+```{r echo=TRUE, message=FALSE, warning=FALSE, results="hold"}
+## MLE: constant trend + matern class with kappa = 1.5
+#plot(variog(dfgeodata, option="bin", max.dist=900), 
+#     xlab = "h", ylab = "variogram")
+#lines.variomodel(seq(0, 900, l = 100), 
+#                 cov.pars = c(0.8, 150),           
+#                 cov.model = "mat", kap = 1.5, nug = 0.1)
+
+
+#m2 = likfit(dfgeodata, ini = c(0.8, 150), nug = 0.1, cov.model = "mat", kap = 1.5)
+#m2$info.minimisation.function$convergence
+#summary(m2)
+```
+
+* For Model 3: $$
+Z(\mathbf{s}_i)=\beta_0+x_1(\mathbf{s}_i)\beta_1+\nu(\bm{s}_i)
+%\sum_{j=1}^p \beta_j d_j(x)+S(x)+Z(x) $$
+  + Linear trend: $x_1$ is the elevation
+  + Covariance function: exponential
+
+The model is fitted using the REML method. 
+
+Some key codes
+```{r echo=TRUE, message=FALSE, warning=FALSE, results="hold"}
+## The variogram, note ``trend = ~elev"
+#plot(variog(dfgeodata, option="bin", max.dist=900, trend = ~elev), 
+#     xlab = "h", ylab = "variogram")
+#lines.variomodel(seq(0, 900, l = 100), 
+#                 cov.pars = c(0.8, 200),           
+#                 cov.model = "mat", kap = 0.5, nug = 0.1)
+
+#m3 = likfit(dfgeodata, ini = c(0.8, 200), nug = 0.1, trend = ~ elev, lik.method = "REML")
+```
