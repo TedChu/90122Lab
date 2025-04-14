@@ -1,5 +1,5 @@
 ---
-title: 'Week 7: Geostatistics--Estimation'
+title: 'Week 7: Geostatistics--Part I'
 ---
 
 <div style="margin-bottom:50px;">
@@ -9,77 +9,149 @@ knitr::opts_chunk$set(echo = TRUE)
 
 </div>
 
+\newcommand{\bm}{\mathbf}
 
 
-# Soil Data & Semivariogram
+# Dataset
 
-
-## Soil Example
-
-$Z(\mathbf{s})$: the calcium content in soil at $\mathbf{s}$. 
-```{r echo=TRUE, message=FALSE, warning=FALSE}
+```{r, echo=TRUE, fig.width=8, fig.align="center", message = FALSE, warning = F}
+library(sp)
+library(ggplot2)
+library(maps)
+library(mapdata)
 library(geoR)
-data(ca20)
-points(ca20,cex.min = 0.2, cex.max = 1.5, pch = 21)
+```
+
+* Visualisation
+  + 936 weather stations across Great Plains that are north of 40 degrees latitude
+  + z: yearly precipitation anomaly  in 1962
+
+
+```{r, echo=TRUE, fig.width=8, fig.align="center", results = 'hold'}
+dfgeo = readRDS("datasets/dfgeo.rds")
+states <- map_data("state")
+plain <- subset(states, region %in% c("nebraska", "kansas", "colorado","wyoming", 
+                                      "south dakota", "north dakota", "montana",
+                                      "iowa", "minnesota", "missouri"))
+gg2 = ggplot(data = plain) + 
+  geom_polygon(aes(x = long, y = lat, group = group), fill = NA, color = "black") + 
+  coord_fixed(1.4)
+gg2 + geom_point(data = dfgeo, aes(x = long, y = lat, color = z), size = 1)
 ```
 
 
+* About the distance 
+  + 1 degree in latitude = 111 km
+  + 1 degree longitude at 45 degree latitude  $\approx$ 79 km
+  + If you want a more accurate distance than the above approximation, you need to use the function *rdist.earth*. 
 
-
-## Semivariogram
-```{r echo=TRUE, message=FALSE, warning=FALSE, hold=TRUE}
-plot(variog(ca20, option="bin", max.dist=510), 
-     xlab = "h", ylab = "gamma(h)")
+```{r, echo=TRUE, fig.width=8, fig.align="center"}
+dfgeo$x = dfgeo$long * 79
+dfgeo$y = dfgeo$lat * 111
 ```
 
-Here, the function *variog* is used to calculate the semivariogram in our slides. 
+The dataset is divided into two part, where *dfgeo_train* is used for modelling, and *dfgeo_test* is for kriging. 
+```{r, echo=TRUE, fig.width=8, fig.align="center"}
+idx = seq(1, length(dfgeo$x), 5)
+dfgeo_test = dfgeo[idx, ]
+dfgeo_train = dfgeo[-idx,]
+```
 
+# Model 1
 
-* Function: variog
-  + argument
+* For Model 1: $$
+Z(\mathbf{s}_i)=\mu+U(\bm{s}_i)+\nu(\bm{s}_i)
+%\sum_{j=1}^p \beta_j d_j(x)+S(x)+Z(x) $$
+  + Constant mean: $\mu$
+  + Covariance function: exponential 
+
+## Variogram and Initial Value for MLE
+
+* The function *variog* is used to calculate the semivariogram in our slides. 
   + option: "bin"
   + max.dist: maximum distance for the semivariogram
   
+The package *geoR* requires geodata object, see Section Geodata format for more details. 
 
-
-# MLE
-
-
-## MLE: Initial Value
-
-<span style="color: red;">"Eye-fit"</span>
-
-```{r echo=TRUE, results='hide', message=FALSE, warning=FALSE, hold=TRUE}
-plot(variog(ca20, option="bin", max.dist=510), 
-     xlab = "h", ylab = "gamma(h)")
-lines.variomodel(seq(0, 510, l = 100), 
-                 cov.pars = c(100, 120),           
-                 cov.model = "mat", kap = 0.5, nug = 30)
+```{r, echo=TRUE, fig.width=8, fig.align="center"}
+dfgeodata =  as.geodata(dfgeo_train, coords.col=5:6, data.col=4, covar.col = 1:3)
+plot(variog(dfgeodata, option="bin", max.dist=900), 
+     xlab = "h", ylab = "variogram")
 ```
 
-Based on the plot, the initial value $(\sigma^2, \phi, \tau^2) = (100, 120, 30)$.
+For the initial value, you first need to decide what type of covariance function you want to use. Here, we use the exponential covariance function (i.e., the matern class with $\kappa = 0.5$.)
 
-
-## MLE: Function
-```{r echo=TRUE, results='hide', message=FALSE, warning=FALSE, hold=TRUE}
-# trend - constant mean
-m1 = likfit(ca20, ini = c(100, 120), nug = 30)
+For the exponential covariance function, we choose the initial value $(\sigma^2, \phi, \tau^2) = (0.8, 200, 0.1)$. Since the line roughly follow the circles (the semivariograms), $(\sigma^2, \phi, \tau^2) = (0.8, 200, 0.1)$ is an appropriate  initial value. 
+```{r, echo=TRUE, fig.width=8, fig.align="center"}
+plot(variog(dfgeodata, option="bin", max.dist=900), 
+     xlab = "h", ylab = "variogram")
+lines.variomodel(seq(0, 900, l = 100), 
+                 cov.pars = c(0.8, 200),           
+                 cov.model = "mat", kap = 0.5, nug = 0.1)
 ```
 
-```{r echo=TRUE, message=FALSE, warning=FALSE, hold=TRUE}
-# trend - constant mean
+
+## Model Specification
+
+* The likfit function is used for MLE and REML for the geostatistical model. To understand how the covariance function is specified, you first need to know the *default* setting. 
+  + cov.model= "matern": matern class
+  + kappa = 0.5
+  + fix.kappa = TRUE: the kappa parameter is fixed at kappa = 0.5
+  
+* Therefore, if you do not write anything in the function, the default covariance function is the exponential covariance function, as shown in Model 1. 
+
+\midskip
+
+* Next, whether to estimate the nugget effect $\tau^2$. The default setting is 
+  + fix.nugget = FALSE: the nugget effect is estimated. If you want to fix the nugget effect, you need to write *fix.nugget = TRUE*. 
+* Therefore, 
+  + nug = 0.1: the nugget effect is estimated, and the initial value is 0.1, as shown in Model 1. 
+  + fix.nugget = FALSE, nug = 0.1: the same as the above.
+  + fix.nugget = TRUE, nug = 0.1: the nugget effect is fixed (NOT estimated) and the value is fixed at 0.1. 
+
+  
+## Model Fitting
+
+
+
+```{r, echo=TRUE, fig.width=8, fig.align="center"}
+## MLE: constant trend + exponential covariance function. 
+m1 = likfit(dfgeodata, ini = c(0.8, 200), nug = 0.1)
+```
+
+First, check the convergence message, that is, $convergence = 0 indicates a successful convergence.  (The likfit uses the *optim* funciton to minimize, that is, the message is the same as the message from the *optim* function)
+```{r, echo=TRUE, fig.width=8, fig.align="center"}
+m1$info.minimisation.function
+```
+
+Second, whether the model improves over the linear model. At the bottom of the summary table, there are two rows: *Maximised Likelihood* (for the spatial model) and *non spatial model*.  
+
+
+
+## The Results
+
+Summary table includes most of information. 
+```{r, echo=TRUE, fig.width=8, fig.align="center"}
 summary(m1)
 ```
 
-* Results of output
-  + Spatial-dependence parameter estiamtes: $(\sigma^2, \phi, \tau^2)$ 
-  + no standard error is provided.
-  + cov.pars: $(\sigma^2, \phi)$ 
-  + nugget: $\tau^2$
-  + kappa
+* The $\mu$ part
+  + in the summary table, it is denoted as *\beta*. In our example, $\hat{\mu} = -0.2176$. 
+  + It can also obtained by *m1$beta*
+  + The estimated asymptotic variance (matrix) is *m1$beta.var*
+  + A confidence interval or hypothesis testing can be conducted. 
+  + For example, $H_0 = 1$ versus $H_1 \neq 1$. The test statistic = *(m1\$beta - 1)/sqrt(m1\$beta.var)* (approximately)$\sim$ N(0,1). 
+```{r echo=TRUE, message=FALSE, warning=FALSE, results="hold"}
+m1$beta
+# the estimated covariance matrix of beta. 
+m1$beta.var
+# test statistic for the example
+(m1$beta - 1)/sqrt(m1$beta.var)
+```
 
-
-The output of MLE
+* The $\bm\theta$ part
+  + The estimate can be found in the summary table or via the codes below. 
+  + The estimated asymptotic covariance matrix can be calculated using the formula in our slides, but it is not available through the *likfit* function.
 ```{r echo=TRUE, message=FALSE, warning=FALSE, results="hold"}
 # cov.pars
 m1$cov.pars
@@ -90,65 +162,21 @@ m1$phi
 # nugget
 m1$nugget
 ```
+ 
 
-
-* <span style="color: red;">The arguments of function</span> *likfit*
-  + argument
-  + cov.model: "exp" (default), more options see cov.pars
-  + Fixed or Estimated: fix.nugget = FALSE, fix.kappa = TRUE, kappa =0.5
-  + Initial value: ini.cov.pars, nugget 
-
-\vspace{5pt}
-
-* Remarks: we have 4 parameters: nugget $\tau^2$, partial sill $\sigma^2$, range parameter $\phi$, smooth parameter $\kappa$ ( $\nu$ in our slide. )
-  + Function allow us either to pre-specify (fix) or estimate it
-  + Most of the time, $\kappa$ is fixed.
-  
-  
-Here are some exmaple: 
-
-* Example 1: no specification.  "likfit(ca20, ini = c(100, 200), nug = 50)"
-  + Exp model ($\kappa$ = 0.5 fixed). 
-  + To estimate: $\tau^2$, $\sigma^2$, $\phi$
-  
-\vspace{5pt}
-
-* Example 2: no specification.  "likfit(ca20, ini = c(100, 200), nug = 50, fix.nugget=TRUE)"
-  + Fixed: $\kappa$ = 0.5, nugget $\tau^2 = 50$
-  + To estiamte: $\sigma^2$, $\phi$
-
-
-Many other informatons can be obtained. 
+* Other information
 ```{r echo=TRUE, message=FALSE, warning=FALSE, results="hold"}
-# the estimated covariance matrix of beta. 
-m1$beta.var
 # AIC of the model
 AIC(m1)
 # and others...
 m1$practicalRange
 logLik(m1)
 ```
-You can also study possible covariance functions by reading details (accessed by typing "?cov.spatial")
   
-## Spatial Trend
 
-### Two ways
-  + Specify directly in function like "likfit": `fit = likfit(ca20, ini = c(100, 60), trend = ~altitude)`
-  + Specify it through function "trend.spatial": See below
+## Covariance Functions
 
-\vspace{5pt}
-
-* Usage: only to specify, not computing involved in this function.
-  + `trend.spatial(trend, geodata)`
-
-\vspace{5pt}
-
-* Argument *trend*
-  + trend = "cte": constant mean
-  + trend = ~altitude: $\mu(s)=\beta_0+\beta_1 altitude$
-  + Other options: "1st", "2nd", see help files for more details
-
-
+You can also study possible covariance functions by reading details (accessed by typing "?cov.spatial")
 
 
 

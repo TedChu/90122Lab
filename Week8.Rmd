@@ -35,6 +35,30 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 
+## Spatial Trend
+
+### Two ways
+  + Specify directly in function like "likfit": `fit = likfit(ca20, ini = c(100, 60), trend = ~altitude)`
+
+  
+
+  + Specify it through function "trend.spatial": See below
+
+\vspace{5pt}
+
+* Usage: only to specify, not computing involved in this function.
+  + `trend.spatial(trend, geodata)`
+
+\vspace{5pt}
+
+* Argument *trend*
+  + trend = "cte": constant mean
+  + trend = ~altitude: $\mu(s)=\beta_0+\beta_1 altitude$
+  + Other options: "1st", "2nd", see help files for more details
+
+
+
+
 
 # Ordinary Kriging
 

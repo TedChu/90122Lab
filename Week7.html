@@ -11,7 +11,7 @@
 
 
 
-<title>Week 7: Geostatistics–Estimation</title>
+<title>Week 7: Geostatistics–Part I</title>
 
 <script src="site_libs/header-attrs-2.26/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -282,10 +282,19 @@ $(document).ready(function () {
   <a href="Example1.html">Example 1</a>
 </li>
 <li>
+  <a href="Example2.html">Example 2</a>
+</li>
+<li>
+  <a href="Solutions.html">Solutions</a>
+</li>
+<li>
   <a href="Extra1.html">Extra 1</a>
 </li>
 <li>
   <a href="Extra2.html">Extra 2</a>
+</li>
+<li>
+  <a href="Extra3.html">Extra 3</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -299,34 +308,29 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Week 7: Geostatistics–Estimation</h1>
+<h1 class="title toc-ignore">Week 7: Geostatistics–Part I</h1>
 
 </div>
 
 <div id="TOC">
 <ul>
-<li><a href="#soil-data-semivariogram"
-id="toc-soil-data-semivariogram"><span
-class="toc-section-number">1</span> Soil Data &amp; Semivariogram</a>
+<li><a href="#dataset" id="toc-dataset"><span
+class="toc-section-number">1</span> Dataset</a></li>
+<li><a href="#model-1" id="toc-model-1"><span
+class="toc-section-number">2</span> Model 1</a>
 <ul>
-<li><a href="#soil-example" id="toc-soil-example"><span
-class="toc-section-number">1.1</span> Soil Example</a></li>
-<li><a href="#semivariogram" id="toc-semivariogram"><span
-class="toc-section-number">1.2</span> Semivariogram</a></li>
-</ul></li>
-<li><a href="#mle" id="toc-mle"><span
-class="toc-section-number">2</span> MLE</a>
-<ul>
-<li><a href="#mle-initial-value" id="toc-mle-initial-value"><span
-class="toc-section-number">2.1</span> MLE: Initial Value</a></li>
-<li><a href="#mle-function" id="toc-mle-function"><span
-class="toc-section-number">2.2</span> MLE: Function</a></li>
-<li><a href="#spatial-trend" id="toc-spatial-trend"><span
-class="toc-section-number">2.3</span> Spatial Trend</a>
-<ul>
-<li><a href="#two-ways" id="toc-two-ways"><span
-class="toc-section-number">2.3.1</span> Two ways</a></li>
-</ul></li>
+<li><a href="#variogram-and-initial-value-for-mle"
+id="toc-variogram-and-initial-value-for-mle"><span
+class="toc-section-number">2.1</span> Variogram and Initial Value for
+MLE</a></li>
+<li><a href="#model-specification" id="toc-model-specification"><span
+class="toc-section-number">2.2</span> Model Specification</a></li>
+<li><a href="#model-fitting" id="toc-model-fitting"><span
+class="toc-section-number">2.3</span> Model Fitting</a></li>
+<li><a href="#the-results" id="toc-the-results"><span
+class="toc-section-number">2.4</span> The Results</a></li>
+<li><a href="#covariance-functions" id="toc-covariance-functions"><span
+class="toc-section-number">2.5</span> Covariance Functions</a></li>
 </ul></li>
 <li><a href="#geodata-format" id="toc-geodata-format"><span
 class="toc-section-number">3</span> Geodata format</a>
@@ -340,104 +344,240 @@ class="toc-section-number">3.1</span> Create geodata</a></li>
 <div style="margin-bottom:50px;">
 
 </div>
-<div id="soil-data-semivariogram" class="section level1" number="1">
-<h1><span class="header-section-number">1</span> Soil Data &amp;
-Semivariogram</h1>
-<div id="soil-example" class="section level2" number="1.1">
-<h2><span class="header-section-number">1.1</span> Soil Example</h2>
-<p><span class="math inline">\(Z(\mathbf{s})\)</span>: the calcium
-content in soil at <span class="math inline">\(\mathbf{s}\)</span>.</p>
-<pre class="r"><code>library(geoR)
-data(ca20)
-points(ca20,cex.min = 0.2, cex.max = 1.5, pch = 21)</code></pre>
-<p><img src="Week7_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<div id="dataset" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> Dataset</h1>
+<pre class="r"><code>library(sp)
+library(ggplot2)
+library(maps)
+library(mapdata)
+library(geoR)</code></pre>
+<ul>
+<li>Visualisation
+<ul>
+<li>936 weather stations across Great Plains that are north of 40
+degrees latitude</li>
+<li>z: yearly precipitation anomaly in 1962</li>
+</ul></li>
+</ul>
+<pre class="r"><code>dfgeo = readRDS(&quot;datasets/dfgeo.rds&quot;)
+states &lt;- map_data(&quot;state&quot;)
+plain &lt;- subset(states, region %in% c(&quot;nebraska&quot;, &quot;kansas&quot;, &quot;colorado&quot;,&quot;wyoming&quot;, 
+                                      &quot;south dakota&quot;, &quot;north dakota&quot;, &quot;montana&quot;,
+                                      &quot;iowa&quot;, &quot;minnesota&quot;, &quot;missouri&quot;))
+gg2 = ggplot(data = plain) + 
+  geom_polygon(aes(x = long, y = lat, group = group), fill = NA, color = &quot;black&quot;) + 
+  coord_fixed(1.4)
+gg2 + geom_point(data = dfgeo, aes(x = long, y = lat, color = z), size = 1)</code></pre>
+<p><img src="Week7_files/figure-html/unnamed-chunk-2-1.png" width="768" style="display: block; margin: auto;" /></p>
+<ul>
+<li>About the distance
+<ul>
+<li>1 degree in latitude = 111 km</li>
+<li>1 degree longitude at 45 degree latitude <span
+class="math inline">\(\approx\)</span> 79 km</li>
+<li>If you want a more accurate distance than the above approximation,
+you need to use the function <em>rdist.earth</em>.</li>
+</ul></li>
+</ul>
+<pre class="r"><code>dfgeo$x = dfgeo$long * 79
+dfgeo$y = dfgeo$lat * 111</code></pre>
+<p>The dataset is divided into two part, where <em>dfgeo_train</em> is
+used for modelling, and <em>dfgeo_test</em> is for kriging.</p>
+<pre class="r"><code>idx = seq(1, length(dfgeo$x), 5)
+dfgeo_test = dfgeo[idx, ]
+dfgeo_train = dfgeo[-idx,]</code></pre>
 </div>
-<div id="semivariogram" class="section level2" number="1.2">
-<h2><span class="header-section-number">1.2</span> Semivariogram</h2>
-<pre class="r"><code>plot(variog(ca20, option=&quot;bin&quot;, max.dist=510), 
-     xlab = &quot;h&quot;, ylab = &quot;gamma(h)&quot;)</code></pre>
-<pre><code>## variog: computing omnidirectional variogram</code></pre>
-<p><img src="Week7_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
-<p>Here, the function <em>variog</em> is used to calculate the
-semivariogram in our slides.</p>
+<div id="model-1" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> Model 1</h1>
 <ul>
-<li>Function: variog
+<li>For Model 1: <span class="math display">\[
+Z(\mathbf{s}_i)=\mu+U(\mathbf{s}_i)+\nu(\mathbf{s}_i)
+%\sum_{j=1}^p \beta_j d_j(x)+S(x)+Z(x) \]</span>
 <ul>
-<li>argument</li>
+<li>Constant mean: <span class="math inline">\(\mu\)</span></li>
+<li>Covariance function: exponential</li>
+</ul></li>
+</ul>
+<div id="variogram-and-initial-value-for-mle" class="section level2"
+number="2.1">
+<h2><span class="header-section-number">2.1</span> Variogram and Initial
+Value for MLE</h2>
+<ul>
+<li>The function <em>variog</em> is used to calculate the semivariogram
+in our slides.
+<ul>
 <li>option: “bin”</li>
 <li>max.dist: maximum distance for the semivariogram</li>
 </ul></li>
 </ul>
+<p>The package <em>geoR</em> requires geodata object, see Section
+Geodata format for more details.</p>
+<pre class="r"><code>dfgeodata =  as.geodata(dfgeo_train, coords.col=5:6, data.col=4, covar.col = 1:3)
+plot(variog(dfgeodata, option=&quot;bin&quot;, max.dist=900), 
+     xlab = &quot;h&quot;, ylab = &quot;variogram&quot;)</code></pre>
+<pre><code>## variog: computing omnidirectional variogram</code></pre>
+<p><img src="Week7_files/figure-html/unnamed-chunk-5-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p>For the initial value, you first need to decide what type of
+covariance function you want to use. Here, we use the exponential
+covariance function (i.e., the matern class with <span
+class="math inline">\(\kappa = 0.5\)</span>.)</p>
+<p>For the exponential covariance function, we choose the initial value
+<span class="math inline">\((\sigma^2, \phi, \tau^2) = (0.8, 200,
+0.1)\)</span>. Since the line roughly follow the circles (the
+semivariograms), <span class="math inline">\((\sigma^2, \phi, \tau^2) =
+(0.8, 200, 0.1)\)</span> is an appropriate initial value.</p>
+<pre class="r"><code>plot(variog(dfgeodata, option=&quot;bin&quot;, max.dist=900), 
+     xlab = &quot;h&quot;, ylab = &quot;variogram&quot;)</code></pre>
+<pre><code>## variog: computing omnidirectional variogram</code></pre>
+<pre class="r"><code>lines.variomodel(seq(0, 900, l = 100), 
+                 cov.pars = c(0.8, 200),           
+                 cov.model = &quot;mat&quot;, kap = 0.5, nug = 0.1)</code></pre>
+<p><img src="Week7_files/figure-html/unnamed-chunk-6-1.png" width="768" style="display: block; margin: auto;" /></p>
 </div>
+<div id="model-specification" class="section level2" number="2.2">
+<h2><span class="header-section-number">2.2</span> Model
+Specification</h2>
+<ul>
+<li>The likfit function is used for MLE and REML for the geostatistical
+model. To understand how the covariance function is specified, you first
+need to know the <em>default</em> setting.
+<ul>
+<li>cov.model= “matern”: matern class</li>
+<li>kappa = 0.5</li>
+<li>fix.kappa = TRUE: the kappa parameter is fixed at kappa = 0.5</li>
+</ul></li>
+<li>Therefore, if you do not write anything in the function, the default
+covariance function is the exponential covariance function, as shown in
+Model 1.</li>
+</ul>
+<ul>
+<li>Next, whether to estimate the nugget effect <span
+class="math inline">\(\tau^2\)</span>. The default setting is
+<ul>
+<li>fix.nugget = FALSE: the nugget effect is estimated. If you want to
+fix the nugget effect, you need to write <em>fix.nugget =
+TRUE</em>.</li>
+</ul></li>
+<li>Therefore,
+<ul>
+<li>nug = 0.1: the nugget effect is estimated, and the initial value is
+0.1, as shown in Model 1.</li>
+<li>fix.nugget = FALSE, nug = 0.1: the same as the above.</li>
+<li>fix.nugget = TRUE, nug = 0.1: the nugget effect is fixed (NOT
+estimated) and the value is fixed at 0.1.</li>
+</ul></li>
+</ul>
 </div>
-<div id="mle" class="section level1" number="2">
-<h1><span class="header-section-number">2</span> MLE</h1>
-<div id="mle-initial-value" class="section level2" number="2.1">
-<h2><span class="header-section-number">2.1</span> MLE: Initial
-Value</h2>
-<p><span style="color: red;">“Eye-fit”</span></p>
-<pre class="r"><code>plot(variog(ca20, option=&quot;bin&quot;, max.dist=510), 
-     xlab = &quot;h&quot;, ylab = &quot;gamma(h)&quot;)
-lines.variomodel(seq(0, 510, l = 100), 
-                 cov.pars = c(100, 120),           
-                 cov.model = &quot;mat&quot;, kap = 0.5, nug = 30)</code></pre>
-<p><img src="Week7_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
-<p>Based on the plot, the initial value <span
-class="math inline">\((\sigma^2, \phi, \tau^2) = (100, 120,
-30)\)</span>.</p>
+<div id="model-fitting" class="section level2" number="2.3">
+<h2><span class="header-section-number">2.3</span> Model Fitting</h2>
+<pre class="r"><code>## MLE: constant trend + exponential covariance function. 
+m1 = likfit(dfgeodata, ini = c(0.8, 200), nug = 0.1)</code></pre>
+<pre><code>## ---------------------------------------------------------------
+## likfit: likelihood maximisation using the function optim.
+## likfit: Use control() to pass additional
+##          arguments for the maximisation function.
+##         For further details see documentation for optim.
+## likfit: It is highly advisable to run this function several
+##         times with different initial values for the parameters.
+## likfit: WARNING: This step can be time demanding!
+## ---------------------------------------------------------------
+## likfit: end of numerical maximisation.</code></pre>
+<p>First, check the convergence message, that is, $convergence = 0
+indicates a successful convergence. (The likfit uses the <em>optim</em>
+funciton to minimize, that is, the message is the same as the message
+from the <em>optim</em> function)</p>
+<pre class="r"><code>m1$info.minimisation.function</code></pre>
+<pre><code>## $par
+## [1] 152.6097186   0.1641731
+## 
+## $value
+## [1] 644.579
+## 
+## $counts
+## function gradient 
+##       24       24 
+## 
+## $convergence
+## [1] 0
+## 
+## $message
+## [1] &quot;CONVERGENCE: REL_REDUCTION_OF_F &lt;= FACTR*EPSMCH&quot;</code></pre>
+<p>Second, whether the model improves over the linear model. At the
+bottom of the summary table, there are two rows: <em>Maximised
+Likelihood</em> (for the spatial model) and <em>non spatial
+model</em>.</p>
 </div>
-<div id="mle-function" class="section level2" number="2.2">
-<h2><span class="header-section-number">2.2</span> MLE: Function</h2>
-<pre class="r"><code># trend - constant mean
-m1 = likfit(ca20, ini = c(100, 120), nug = 30)</code></pre>
-<pre class="r"><code># trend - constant mean
-summary(m1)</code></pre>
+<div id="the-results" class="section level2" number="2.4">
+<h2><span class="header-section-number">2.4</span> The Results</h2>
+<p>Summary table includes most of information.</p>
+<pre class="r"><code>summary(m1)</code></pre>
 <pre><code>## Summary of the parameter estimation
 ## -----------------------------------
 ## Estimation method: maximum likelihood 
 ## 
 ## Parameters of the mean component (trend):
 ##    beta 
-## 50.0668 
+## -0.2176 
 ## 
 ## Parameters of the spatial component:
 ##    correlation function: exponential
-##       (estimated) variance parameter sigmasq (partial sill) =  135.2
-##       (estimated) cor. fct. parameter phi (range parameter)  =  159.5
+##       (estimated) variance parameter sigmasq (partial sill) =  0.7136
+##       (estimated) cor. fct. parameter phi (range parameter)  =  152.6
 ##    anisotropy parameters:
 ##       (fixed) anisotropy angle = 0  ( 0 degrees )
 ##       (fixed) anisotropy ratio = 1
 ## 
 ## Parameter of the error component:
-##       (estimated) nugget =  16.77
+##       (estimated) nugget =  0.1172
 ## 
 ## Transformation parameter:
 ##       (fixed) Box-Cox parameter = 1 (no transformation)
 ## 
-## Practical Range with cor=0.05 for asymptotic range: 477.7842
+## Practical Range with cor=0.05 for asymptotic range: 457.1779
 ## 
 ## Maximised Likelihood:
 ##    log.L n.params      AIC      BIC 
-## &quot;-632.6&quot;      &quot;4&quot;   &quot;1273&quot;   &quot;1286&quot; 
+## &quot;-644.6&quot;      &quot;4&quot;   &quot;1297&quot;   &quot;1316&quot; 
 ## 
 ## non spatial model:
 ##    log.L n.params      AIC      BIC 
-## &quot;-680.2&quot;      &quot;2&quot;   &quot;1364&quot;   &quot;1371&quot; 
+##   &quot;-968&quot;      &quot;2&quot;   &quot;1940&quot;   &quot;1949&quot; 
 ## 
 ## Call:
-## likfit(geodata = ca20, ini.cov.pars = c(100, 120), nugget = 30)</code></pre>
+## likfit(geodata = dfgeodata, ini.cov.pars = c(0.8, 200), nugget = 0.1)</code></pre>
 <ul>
-<li>Results of output
+<li>The <span class="math inline">\(\mu\)</span> part
 <ul>
-<li>Spatial-dependence parameter estiamtes: <span
-class="math inline">\((\sigma^2, \phi, \tau^2)\)</span></li>
-<li>no standard error is provided.</li>
-<li>cov.pars: <span class="math inline">\((\sigma^2, \phi)\)</span></li>
-<li>nugget: <span class="math inline">\(\tau^2\)</span></li>
-<li>kappa</li>
+<li>in the summary table, it is denoted as *. In our example, <span
+class="math inline">\(\hat{\mu} = -0.2176\)</span>.</li>
+<li>It can also obtained by <em>m1$beta</em></li>
+<li>The estimated asymptotic variance (matrix) is
+<em>m1$beta.var</em></li>
+<li>A confidence interval or hypothesis testing can be conducted.</li>
+<li>For example, <span class="math inline">\(H_0 = 1\)</span> versus
+<span class="math inline">\(H_1 \neq 1\)</span>. The test statistic =
+<em>(m1$beta - 1)/sqrt(m1$beta.var)</em> (approximately)<span
+class="math inline">\(\sim\)</span> N(0,1).</li>
 </ul></li>
 </ul>
-<p>The output of MLE</p>
+<pre class="r"><code>m1$beta
+# the estimated covariance matrix of beta. 
+m1$beta.var
+# test statistic for the example
+(m1$beta - 1)/sqrt(m1$beta.var)</code></pre>
+<pre><code>## [1] -0.2175513
+## [1] 0.04546281
+## [1] -5.710303</code></pre>
+<ul>
+<li>The <span class="math inline">\(\mathbf\theta\)</span> part
+<ul>
+<li>The estimate can be found in the summary table or via the codes
+below.</li>
+<li>The estimated asymptotic covariance matrix can be calculated using
+the formula in our slides, but it is not available through the
+<em>likfit</em> function.</li>
+</ul></li>
+</ul>
 <pre class="r"><code># cov.pars
 m1$cov.pars
 # partial sill 
@@ -446,96 +586,27 @@ m1$sigmasq
 m1$phi
 # nugget
 m1$nugget</code></pre>
-<pre><code>## [1] 135.1726 159.4883
-## [1] 135.1726
-## [1] 159.4883
-## [1] 16.76523</code></pre>
+<pre><code>## [1]   0.7136275 152.6097186
+## [1] 0.7136275
+## [1] 152.6097
+## [1] 0.1171584</code></pre>
 <ul>
-<li><span style="color: red;">The arguments of function</span>
-<em>likfit</em>
-<ul>
-<li>argument</li>
-<li>cov.model: “exp” (default), more options see cov.pars</li>
-<li>Fixed or Estimated: fix.nugget = FALSE, fix.kappa = TRUE, kappa
-=0.5</li>
-<li>Initial value: ini.cov.pars, nugget</li>
-</ul></li>
+<li>Other information</li>
 </ul>
-<ul>
-<li>Remarks: we have 4 parameters: nugget <span
-class="math inline">\(\tau^2\)</span>, partial sill <span
-class="math inline">\(\sigma^2\)</span>, range parameter <span
-class="math inline">\(\phi\)</span>, smooth parameter <span
-class="math inline">\(\kappa\)</span> ( <span
-class="math inline">\(\nu\)</span> in our slide. )
-<ul>
-<li>Function allow us either to pre-specify (fix) or estimate it</li>
-<li>Most of the time, <span class="math inline">\(\kappa\)</span> is
-fixed.</li>
-</ul></li>
-</ul>
-<p>Here are some exmaple:</p>
-<ul>
-<li>Example 1: no specification. “likfit(ca20, ini = c(100, 200), nug =
-50)”
-<ul>
-<li>Exp model (<span class="math inline">\(\kappa\)</span> = 0.5
-fixed).</li>
-<li>To estimate: <span class="math inline">\(\tau^2\)</span>, <span
-class="math inline">\(\sigma^2\)</span>, <span
-class="math inline">\(\phi\)</span></li>
-</ul></li>
-</ul>
-<ul>
-<li>Example 2: no specification. “likfit(ca20, ini = c(100, 200), nug =
-50, fix.nugget=TRUE)”
-<ul>
-<li>Fixed: <span class="math inline">\(\kappa\)</span> = 0.5, nugget
-<span class="math inline">\(\tau^2 = 50\)</span></li>
-<li>To estiamte: <span class="math inline">\(\sigma^2\)</span>, <span
-class="math inline">\(\phi\)</span></li>
-</ul></li>
-</ul>
-<p>Many other informatons can be obtained.</p>
-<pre class="r"><code># the estimated covariance matrix of beta. 
-m1$beta.var
-# AIC of the model
+<pre class="r"><code># AIC of the model
 AIC(m1)
 # and others...
 m1$practicalRange
 logLik(m1)</code></pre>
-<pre><code>## [1] 16.54567
-## [1] 1273.191
-## [1] 477.7842
-## &#39;log Lik.&#39; -632.5953 (df=4)</code></pre>
+<pre><code>## [1] 1297.158
+## [1] 457.1779
+## &#39;log Lik.&#39; -644.579 (df=4)</code></pre>
+</div>
+<div id="covariance-functions" class="section level2" number="2.5">
+<h2><span class="header-section-number">2.5</span> Covariance
+Functions</h2>
 <p>You can also study possible covariance functions by reading details
 (accessed by typing “?cov.spatial”)</p>
-</div>
-<div id="spatial-trend" class="section level2" number="2.3">
-<h2><span class="header-section-number">2.3</span> Spatial Trend</h2>
-<div id="two-ways" class="section level3" number="2.3.1">
-<h3><span class="header-section-number">2.3.1</span> Two ways</h3>
-<ul>
-<li>Specify directly in function like “likfit”:
-<code>fit = likfit(ca20, ini = c(100, 60), trend = ~altitude)</code></li>
-<li>Specify it through function “trend.spatial”: See below</li>
-</ul>
-<ul>
-<li>Usage: only to specify, not computing involved in this function.
-<ul>
-<li><code>trend.spatial(trend, geodata)</code></li>
-</ul></li>
-</ul>
-<ul>
-<li>Argument <em>trend</em>
-<ul>
-<li>trend = “cte”: constant mean</li>
-<li>trend = ~altitude: <span
-class="math inline">\(\mu(s)=\beta_0+\beta_1 altitude\)</span></li>
-<li>Other options: “1st”, “2nd”, see help files for more details</li>
-</ul></li>
-</ul>
-</div>
 </div>
 </div>
 <div id="geodata-format" class="section level1" number="3">
