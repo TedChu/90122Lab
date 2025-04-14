@@ -220,7 +220,7 @@ Some key codes
 
 # Kriging
 
-There are two key functions for the kriging
+* There are two key functions for the kriging
   + krige.control: specify the parameter for kriging, no computing involved.
   + krige.conv: to compute 
 
