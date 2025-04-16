@@ -207,13 +207,22 @@ The model is fitted using the REML method.
 Some key codes
 ```{r echo=TRUE, message=FALSE, warning=FALSE, results="hold"}
 ## The variogram, note ``trend = ~elev"
-#plot(variog(dfgeodata, option="bin", max.dist=900, trend = ~elev), 
-#     xlab = "h", ylab = "variogram")
-#lines.variomodel(seq(0, 900, l = 100), 
-#                 cov.pars = c(0.8, 200),           
-#                 cov.model = "mat", kap = 0.5, nug = 0.1)
+plot(variog(dfgeodata, option="bin", max.dist=900, trend = ~elev), 
+     xlab = "h", ylab = "variogram")
+lines.variomodel(seq(0, 900, l = 100), 
+                 cov.pars = c(0.8, 200),           
+                 cov.model = "mat", kap = 0.5, nug = 0.1)
+```
 
-#m3 = likfit(dfgeodata, ini = c(0.8, 200), nug = 0.1, trend = ~ elev, lik.method = "REML")
+```{r echo=TRUE, message=FALSE, warning=FALSE, results="hold"}
+m3 = likfit(dfgeodata, ini = c(0.8, 200), nug = 0.1, trend = ~ elev, lik.method = "REML")
+summary(m3)
+```
+
+
+Asymptotic variance of $\bm{\beta}$
+```{r echo=TRUE, message=FALSE, warning=FALSE, results="hold"}
+m3$beta.var
 ```
 
 

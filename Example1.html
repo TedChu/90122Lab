@@ -642,13 +642,66 @@ elevation</li>
 <p>The model is fitted using the REML method.</p>
 <p>Some key codes</p>
 <pre class="r"><code>## The variogram, note ``trend = ~elev&quot;
-#plot(variog(dfgeodata, option=&quot;bin&quot;, max.dist=900, trend = ~elev), 
-#     xlab = &quot;h&quot;, ylab = &quot;variogram&quot;)
-#lines.variomodel(seq(0, 900, l = 100), 
-#                 cov.pars = c(0.8, 200),           
-#                 cov.model = &quot;mat&quot;, kap = 0.5, nug = 0.1)
-
-#m3 = likfit(dfgeodata, ini = c(0.8, 200), nug = 0.1, trend = ~ elev, lik.method = &quot;REML&quot;)</code></pre>
+plot(variog(dfgeodata, option=&quot;bin&quot;, max.dist=900, trend = ~elev), 
+     xlab = &quot;h&quot;, ylab = &quot;variogram&quot;)
+lines.variomodel(seq(0, 900, l = 100), 
+                 cov.pars = c(0.8, 200),           
+                 cov.model = &quot;mat&quot;, kap = 0.5, nug = 0.1)</code></pre>
+<p><img src="Example1_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<pre><code>## variog: computing omnidirectional variogram</code></pre>
+<pre class="r"><code>m3 = likfit(dfgeodata, ini = c(0.8, 200), nug = 0.1, trend = ~ elev, lik.method = &quot;REML&quot;)
+summary(m3)</code></pre>
+<pre><code>## ---------------------------------------------------------------
+## likfit: likelihood maximisation using the function optim.
+## likfit: Use control() to pass additional
+##          arguments for the maximisation function.
+##         For further details see documentation for optim.
+## likfit: It is highly advisable to run this function several
+##         times with different initial values for the parameters.
+## likfit: WARNING: This step can be time demanding!
+## ---------------------------------------------------------------
+## likfit: end of numerical maximisation.
+## Summary of the parameter estimation
+## -----------------------------------
+## Estimation method: restricted maximum likelihood 
+## 
+## Parameters of the mean component (trend):
+##   beta0   beta1 
+## -0.1025 -0.0003 
+## 
+## Parameters of the spatial component:
+##    correlation function: exponential
+##       (estimated) variance parameter sigmasq (partial sill) =  0.8754
+##       (estimated) cor. fct. parameter phi (range parameter)  =  200
+##    anisotropy parameters:
+##       (fixed) anisotropy angle = 0  ( 0 degrees )
+##       (fixed) anisotropy ratio = 1
+## 
+## Parameter of the error component:
+##       (estimated) nugget =  0.1227
+## 
+## Transformation parameter:
+##       (fixed) Box-Cox parameter = 1 (no transformation)
+## 
+## Practical Range with cor=0.05 for asymptotic range: 599.1464
+## 
+## Maximised Likelihood:
+##    log.L n.params      AIC      BIC 
+## &quot;-639.6&quot;      &quot;5&quot;   &quot;1289&quot;   &quot;1312&quot; 
+## 
+## non spatial model:
+##    log.L n.params      AIC      BIC 
+## &quot;-960.9&quot;      &quot;3&quot;   &quot;1928&quot;   &quot;1942&quot; 
+## 
+## Call:
+## likfit(geodata = dfgeodata, trend = ~elev, ini.cov.pars = c(0.8, 
+##     200), nugget = 0.1, lik.method = &quot;REML&quot;)</code></pre>
+<p>Asymptotic variance of <span
+class="math inline">\(\mathbf{\beta}\)</span></p>
+<pre class="r"><code>m3$beta.var</code></pre>
+<pre><code>##               V1            V2
+## V1  1.252390e-01 -5.861928e-05
+## V2 -5.861928e-05  7.677583e-08</code></pre>
 </div>
 <div id="kriging" class="section level1" number="4">
 <h1><span class="header-section-number">4</span> Kriging</h1>
