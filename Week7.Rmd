@@ -140,7 +140,7 @@ summary(m1)
   + It can also obtained by *m1$beta*
   + The estimated asymptotic variance (matrix) is *m1$beta.var*
   + A confidence interval or hypothesis testing can be conducted. 
-  + For example, $H_0 = 1$ versus $H_1 \neq 1$. The test statistic = *(m1\$beta - 1)/sqrt(m1\$beta.var)* (approximately)$\sim$ N(0,1). 
+  + For example, $H_0: \mu = 1$ versus $H_1: \mu \neq 1$. The test statistic = *(m1\$beta - 1)/sqrt(m1\$beta.var)* (approximately)$\sim$ N(0,1). 
 ```{r echo=TRUE, message=FALSE, warning=FALSE, results="hold"}
 m1$beta
 # the estimated covariance matrix of beta. 
@@ -230,7 +230,7 @@ Some key codes
 ```
 
 * For Model 3: $$
-Z(\mathbf{s}_i)=\beta_0+x_1(\mathbf{s}_i)\beta_1+\nu(\bm{s}_i)
+Z(\mathbf{s}_i)=\beta_0+x_1(\mathbf{s}_i)\beta_1+U(\bm{s}_i)+\nu(\bm{s}_i)
 %\sum_{j=1}^p \beta_j d_j(x)+S(x)+Z(x) $$
   + Linear trend: $x_1$ is the elevation
   + Covariance function: exponential

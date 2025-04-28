@@ -197,7 +197,7 @@ Some key codes
 ```
 
 * For Model 3: $$
-Z(\mathbf{s}_i)=\beta_0+x_1(\mathbf{s}_i)\beta_1+\nu(\bm{s}_i)
+Z(\mathbf{s}_i)=\beta_0+x_1(\mathbf{s}_i)\beta_1+U(\bm{s}_i) + \nu(\bm{s}_i)
 %\sum_{j=1}^p \beta_j d_j(x)+S(x)+Z(x) $$
   + Linear trend: $x_1$ is the elevation
   + Covariance function: exponential

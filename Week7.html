@@ -556,10 +556,10 @@ class="math inline">\(\hat{\mu} = -0.2176\)</span>.</li>
 <li>The estimated asymptotic variance (matrix) is
 <em>m1$beta.var</em></li>
 <li>A confidence interval or hypothesis testing can be conducted.</li>
-<li>For example, <span class="math inline">\(H_0 = 1\)</span> versus
-<span class="math inline">\(H_1 \neq 1\)</span>. The test statistic =
-<em>(m1$beta - 1)/sqrt(m1$beta.var)</em> (approximately)<span
-class="math inline">\(\sim\)</span> N(0,1).</li>
+<li>For example, <span class="math inline">\(H_0: \mu = 1\)</span>
+versus <span class="math inline">\(H_1: \mu \neq 1\)</span>. The test
+statistic = <em>(m1$beta - 1)/sqrt(m1$beta.var)</em>
+(approximately)<span class="math inline">\(\sim\)</span> N(0,1).</li>
 </ul></li>
 </ul>
 <pre class="r"><code>m1$beta
@@ -673,7 +673,7 @@ Z(\mathbf{s}_i)=\mu+U(\mathbf{s}_i)+\nu(\mathbf{s}_i)
 #summary(m2)</code></pre>
 <ul>
 <li>For Model 3: <span class="math display">\[
-Z(\mathbf{s}_i)=\beta_0+x_1(\mathbf{s}_i)\beta_1+\nu(\mathbf{s}_i)
+Z(\mathbf{s}_i)=\beta_0+x_1(\mathbf{s}_i)\beta_1+U(\mathbf{s}_i)+\nu(\mathbf{s}_i)
 %\sum_{j=1}^p \beta_j d_j(x)+S(x)+Z(x) \]</span>
 <ul>
 <li>Linear trend: <span class="math inline">\(x_1\)</span> is the
