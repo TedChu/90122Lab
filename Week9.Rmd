@@ -105,7 +105,7 @@ Can you see the difference between *queen* rule and *rook* rule?
 
 
 ## Moran's I test
-A Moran's I test is performed on the variable *price*. More information about Moran's I codes can be found in Cp1C -- 8. 
+A Moran's I test is performed on the variable *price*. 
 
 
 ```{r, echo=TRUE, fig.align="center"}
