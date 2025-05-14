@@ -61,7 +61,10 @@ centre = st_coordinates(centre_tmp)
 n = dim(gmel2)[1]
 dist_mat = as.matrix(dist(centre, diag = TRUE, upper = TRUE))
 matW = 1/dist_mat
-W1 = mat2listw(matW)
+diag(matW) = 0
+W1 = mat2listw(matW, style = "W")
+## If you want to see the weight matrix after the row standardise, 
+## listw2mat(W1)
 ```
 
 
@@ -73,20 +76,15 @@ Before 2020, the function lagsarlm is in the package *spdep*. Now it is moved to
 
 
 ```{r, echo=TRUE, fig.width=6, fig.align="center"}
-## This is a demonstration on how to use function "lagsarlm"
-## Not really about how to analyze melbourne housing in depth. 
 mlag = spatialreg::lagsarlm(log(price)~dis+off + inc, data=gmel2, 
                 listw=colw) 
 
 ```
 
 
-* The output
-  + LR test: Likelihood Ratio Test in Slide 18 of Cp5B.
-  + Wald: Wald Test in Slide 18 of Cp5B.
+
 
 ```{r, echo=TRUE, fig.width=6, fig.align="center", hold=TRUE}
-# Just like lm output. distance and income are significant, while offense is not.
 summary(mlag)
 ```
 
