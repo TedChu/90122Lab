@@ -76,12 +76,12 @@ Tmax_1sf = st_as_sf(Tmax_1, coords = c("lon", "lat"), crs = st_crs(4326))
 ```
 
 Next, visualise the data using *geom\_sf*
-```{r, echo=TRUE, fig.width=6, fig.align="center", message = FALSE}
+
+```{r, echo=TRUE, fig.width=8, fig.align="center", message = FALSE}
 ggplot() + geom_sf(data = state_sf) + 
   geom_sf(data = Tmax_1sf, aes(color = z)) + 
   coord_sf(xlim = c(-105, -75), ylim = c(25, 50)) + 
-  scale_colour_gradientn(name = "degF",                    # attach color scale
-                         colours = terrain.colors(10)) + 
+  scale_colour_gradientn(name = "degF", colours = terrain.colors(10)) + 
   facet_grid(~date)
 ```
 

@@ -409,10 +409,9 @@ Tmax_1sf = st_as_sf(Tmax_1, coords = c(&quot;lon&quot;, &quot;lat&quot;), crs = 
 <pre class="r"><code>ggplot() + geom_sf(data = state_sf) + 
   geom_sf(data = Tmax_1sf, aes(color = z)) + 
   coord_sf(xlim = c(-105, -75), ylim = c(25, 50)) + 
-  scale_colour_gradientn(name = &quot;degF&quot;,                    # attach color scale
-                         colours = terrain.colors(10)) + 
+  scale_colour_gradientn(name = &quot;degF&quot;, colours = terrain.colors(10)) + 
   facet_grid(~date)</code></pre>
-<p><img src="Week11_files/figure-html/unnamed-chunk-4-1.png" width="576" style="display: block; margin: auto;" /></p>
+<p><img src="Week11_files/figure-html/unnamed-chunk-4-1.png" width="768" style="display: block; margin: auto;" /></p>
 </div>
 <div id="time-series-plots" class="section level1" number="3">
 <h1><span class="header-section-number">3</span> Time-Series Plots</h1>
@@ -421,13 +420,13 @@ Tmax_1sf = st_as_sf(Tmax_1, coords = c(&quot;lon&quot;, &quot;lat&quot;), crs = 
 UIDs_sub &lt;- sample(UIDs, 10)                # sample 10 IDs
 Tmax_sub &lt;- filter(Tmax, id %in% UIDs_sub)  # subset data
 head(Tmax_sub)</code></pre>
-<pre><code>##   julian year month day   id  z proc  lat    lon       date t
-## 1 728050 1993     5   1 3813 80 Tmax 32.7 -83.65 1993-05-01 1
-## 2 728051 1993     5   2 3813 80 Tmax 32.7 -83.65 1993-05-02 2
-## 3 728052 1993     5   3 3813 77 Tmax 32.7 -83.65 1993-05-03 3
-## 4 728053 1993     5   4 3813 85 Tmax 32.7 -83.65 1993-05-04 4
-## 5 728054 1993     5   5 3813 86 Tmax 32.7 -83.65 1993-05-05 5
-## 6 728055 1993     5   6 3813 90 Tmax 32.7 -83.65 1993-05-06 6</code></pre>
+<pre><code>##   julian year month day    id  z proc      lat       lon       date t
+## 1 728050 1993     5   1 13963 72 Tmax 34.73333 -92.23333 1993-05-01 1
+## 2 728051 1993     5   2 13963 75 Tmax 34.73333 -92.23333 1993-05-02 2
+## 3 728052 1993     5   3 13963 67 Tmax 34.73333 -92.23333 1993-05-03 3
+## 4 728053 1993     5   4 13963 82 Tmax 34.73333 -92.23333 1993-05-04 4
+## 5 728054 1993     5   5 13963 84 Tmax 34.73333 -92.23333 1993-05-05 5
+## 6 728055 1993     5   6 13963 85 Tmax 34.73333 -92.23333 1993-05-06 6</code></pre>
 <p>Next, time-series is plotted.</p>
 <pre class="r"><code>## ------------------------------------------------------------------------
 TmaxTS &lt;- ggplot(Tmax_sub) +
