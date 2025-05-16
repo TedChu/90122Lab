@@ -415,6 +415,7 @@ Tmax_1sf = st_as_sf(Tmax_1, coords = c(&quot;lon&quot;, &quot;lat&quot;), crs = 
 
 NOAA_plot2</code></pre>
 <p><img src="Week11_files/figure-html/unnamed-chunk-4-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p>Here is</p>
 </div>
 <div id="time-series-plots" class="section level1" number="3">
 <h1><span class="header-section-number">3</span> Time-Series Plots</h1>
@@ -423,13 +424,13 @@ NOAA_plot2</code></pre>
 UIDs_sub &lt;- sample(UIDs, 10)                # sample 10 IDs
 Tmax_sub &lt;- filter(Tmax, id %in% UIDs_sub)  # subset data
 head(Tmax_sub)</code></pre>
-<pre><code>##   julian year month day   id  z proc      lat       lon       date t
-## 1 728050 1993     5   1 3940 82 Tmax 32.31667 -90.08334 1993-05-01 1
-## 2 728051 1993     5   2 3940 76 Tmax 32.31667 -90.08334 1993-05-02 2
-## 3 728052 1993     5   3 3940 77 Tmax 32.31667 -90.08334 1993-05-03 3
-## 4 728053 1993     5   4 3940 83 Tmax 32.31667 -90.08334 1993-05-04 4
-## 5 728054 1993     5   5 3940 90 Tmax 32.31667 -90.08334 1993-05-05 5
-## 6 728055 1993     5   6 3940 90 Tmax 32.31667 -90.08334 1993-05-06 6</code></pre>
+<pre><code>##   julian year month day   id  z proc  lat       lon       date t
+## 1 728050 1993     5   1 3856 74 Tmax 34.7 -86.58334 1993-05-01 1
+## 2 728051 1993     5   2 3856 72 Tmax 34.7 -86.58334 1993-05-02 2
+## 3 728052 1993     5   3 3856 67 Tmax 34.7 -86.58334 1993-05-03 3
+## 4 728053 1993     5   4 3856 73 Tmax 34.7 -86.58334 1993-05-04 4
+## 5 728054 1993     5   5 3856 84 Tmax 34.7 -86.58334 1993-05-05 5
+## 6 728055 1993     5   6 3856 87 Tmax 34.7 -86.58334 1993-05-06 6</code></pre>
 <p>Next, time-series is plotted.</p>
 <pre class="r"><code>## ------------------------------------------------------------------------
 TmaxTS &lt;- ggplot(Tmax_sub) +

@@ -88,6 +88,9 @@ NOAA_plot2 = ggplot() + geom_sf(data = state_sf) +
 NOAA_plot2
 ```
 
+
+Here is 
+
 # Time-Series Plots
 
 First, we randomly select 10 station for visualization. 
