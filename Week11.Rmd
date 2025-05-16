@@ -42,7 +42,7 @@ head(Tmax)
   + facet_grid(~date): for each date (1, 15 and 30), produce a plot. 
   
 
-```{r, echo=TRUE, fig.width=6, fig.align="center", message = FALSE}
+```{r, echo=TRUE, fig.width=8, fig.align="center", message = FALSE}
 Tmax_1 = Tmax %>% filter(t %in% c(1, 15, 30))  # extract data
 
 # Spatial Plots
@@ -78,11 +78,14 @@ Tmax_1sf = st_as_sf(Tmax_1, coords = c("lon", "lat"), crs = st_crs(4326))
 Next, visualise the data using *geom\_sf*
 
 ```{r, echo=TRUE, fig.width=8, fig.align="center", message = FALSE}
-ggplot() + geom_sf(data = state_sf) + 
+NOAA_plot2 = ggplot() + geom_sf(data = state_sf) + 
   geom_sf(data = Tmax_1sf, aes(color = z)) + 
   coord_sf(xlim = c(-105, -75), ylim = c(25, 50)) + 
   scale_colour_gradientn(name = "degF", colours = terrain.colors(10)) + 
   facet_grid(~date)
+
+
+NOAA_plot2
 ```
 
 # Time-Series Plots
@@ -98,7 +101,7 @@ head(Tmax_sub)
 
 Next, time-series is plotted. 
 
-```{r, echo=TRUE, fig.width=6, fig.align="center", message = FALSE}
+```{r, echo=TRUE, fig.width=8, fig.align="center", message = FALSE}
 ## ------------------------------------------------------------------------
 TmaxTS <- ggplot(Tmax_sub) +
     geom_line(aes(x = t, y = z)) +          # line plot of z against t
