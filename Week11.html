@@ -282,10 +282,19 @@ $(document).ready(function () {
   <a href="Example1.html">Example 1</a>
 </li>
 <li>
+  <a href="Example2.html">Example 2</a>
+</li>
+<li>
+  <a href="Solutions.html">Solutions</a>
+</li>
+<li>
   <a href="Extra1.html">Extra 1</a>
 </li>
 <li>
   <a href="Extra2.html">Extra 2</a>
+</li>
+<li>
+  <a href="Extra3.html">Extra 3</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -345,6 +354,7 @@ is, the visulization of spatio-temporal data.</li>
 <pre class="r"><code>library(dplyr)
 library(tidyr)
 library(ggplot2)
+library(sf)
 
 
 load(&quot;datasets/Tmax.Rdata&quot;)
@@ -387,6 +397,22 @@ NOAA_plot &lt;- ggplot(Tmax_1) +                              # plot points
 
 NOAA_plot</code></pre>
 <p><img src="Week11_files/figure-html/unnamed-chunk-2-1.png" width="576" style="display: block; margin: auto;" /></p>
+<p>We can also use <em>sf</em> object from Lab 5 and Lab 6 to achieve
+the same results</p>
+<p>First, transform the data to <em>sf</em> object using the function
+<em>st_as_sf</em>. Here, 4326 is WGS 84, which is the longitude and
+latitude.</p>
+<pre class="r"><code>state_sf = st_as_sf(maps::map(&quot;state&quot;, plot = FALSE, fill = TRUE), 
+                        crs = st_crs(4326))
+Tmax_1sf = st_as_sf(Tmax_1, coords = c(&quot;lon&quot;, &quot;lat&quot;), crs = st_crs(4326))</code></pre>
+<p>Next, visualise the data using <em>geom_sf</em></p>
+<pre class="r"><code>ggplot() + geom_sf(data = state_sf) + 
+  geom_sf(data = Tmax_1sf, aes(color = z)) + 
+  coord_sf(xlim = c(-105, -75), ylim = c(25, 50)) + 
+  scale_colour_gradientn(name = &quot;degF&quot;,                    # attach color scale
+                         colours = terrain.colors(10)) + 
+  facet_grid(~date)</code></pre>
+<p><img src="Week11_files/figure-html/unnamed-chunk-4-1.png" width="576" style="display: block; margin: auto;" /></p>
 </div>
 <div id="time-series-plots" class="section level1" number="3">
 <h1><span class="header-section-number">3</span> Time-Series Plots</h1>
@@ -395,13 +421,13 @@ NOAA_plot</code></pre>
 UIDs_sub &lt;- sample(UIDs, 10)                # sample 10 IDs
 Tmax_sub &lt;- filter(Tmax, id %in% UIDs_sub)  # subset data
 head(Tmax_sub)</code></pre>
-<pre><code>##   julian year month day    id  z proc   lat       lon       date t
-## 1 728050 1993     5   1 13873 79 Tmax 33.95 -83.31667 1993-05-01 1
-## 2 728051 1993     5   2 13873 77 Tmax 33.95 -83.31667 1993-05-02 2
-## 3 728052 1993     5   3 13873 69 Tmax 33.95 -83.31667 1993-05-03 3
-## 4 728053 1993     5   4 13873 81 Tmax 33.95 -83.31667 1993-05-04 4
-## 5 728054 1993     5   5 13873 83 Tmax 33.95 -83.31667 1993-05-05 5
-## 6 728055 1993     5   6 13873 86 Tmax 33.95 -83.31667 1993-05-06 6</code></pre>
+<pre><code>##   julian year month day   id  z proc  lat    lon       date t
+## 1 728050 1993     5   1 3813 80 Tmax 32.7 -83.65 1993-05-01 1
+## 2 728051 1993     5   2 3813 80 Tmax 32.7 -83.65 1993-05-02 2
+## 3 728052 1993     5   3 3813 77 Tmax 32.7 -83.65 1993-05-03 3
+## 4 728053 1993     5   4 3813 85 Tmax 32.7 -83.65 1993-05-04 4
+## 5 728054 1993     5   5 3813 86 Tmax 32.7 -83.65 1993-05-05 5
+## 6 728055 1993     5   6 3813 90 Tmax 32.7 -83.65 1993-05-06 6</code></pre>
 <p>Next, time-series is plotted.</p>
 <pre class="r"><code>## ------------------------------------------------------------------------
 TmaxTS &lt;- ggplot(Tmax_sub) +
@@ -414,7 +440,7 @@ TmaxTS &lt;- ggplot(Tmax_sub) +
 
 
 TmaxTS</code></pre>
-<p><img src="Week11_files/figure-html/unnamed-chunk-4-1.png" width="576" style="display: block; margin: auto;" /></p>
+<p><img src="Week11_files/figure-html/unnamed-chunk-6-1.png" width="576" style="display: block; margin: auto;" /></p>
 </div>
 
 
