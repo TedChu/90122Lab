@@ -65,31 +65,8 @@ NOAA_plot <- ggplot(Tmax_1) +                              # plot points
 NOAA_plot
 ```
 
-We can also use *sf* object from Lab 5 and Lab 6 to achieve the same results
-
-First, transform the data to *sf* object using the function *st\_as\_sf*. Here, 4326 is WGS 84, which is the longitude and latitude. 
-
-```{r, echo=TRUE, fig.width=6, fig.align="center", message = FALSE}
-state_sf = st_as_sf(maps::map("state", plot = FALSE, fill = TRUE), 
-                        crs = st_crs(4326))
-Tmax_1sf = st_as_sf(Tmax_1, coords = c("lon", "lat"), crs = st_crs(4326))
-```
-
-Next, visualise the data using *geom\_sf*
-
-```{r, echo=TRUE, fig.width=8, fig.align="center", message = FALSE}
-NOAA_plot2 = ggplot() + geom_sf(data = state_sf) + 
-  geom_sf(data = Tmax_1sf, aes(color = z)) + 
-  coord_sf(xlim = c(-105, -75), ylim = c(25, 50)) + 
-  scale_colour_gradientn(name = "degF", colours = terrain.colors(10)) + 
-  facet_grid(~date)
 
 
-NOAA_plot2
-```
-
-
-Here is 
 
 # Time-Series Plots
 
@@ -116,6 +93,33 @@ TmaxTS <- ggplot(Tmax_sub) +
 
 
 TmaxTS
+```
+
+
+
+## Spatial Plots
+
+We can also use *sf* object from Lab 5 and Lab 6 to achieve the same results
+
+First, transform the data to *sf* object using the function *st\_as\_sf*. Here, 4326 is WGS 84, which is the longitude and latitude. 
+
+```{r, echo=TRUE, fig.width=6, fig.align="center", message = FALSE}
+state_sf = st_as_sf(maps::map("state", plot = FALSE, fill = TRUE), 
+                        crs = st_crs(4326))
+Tmax_1sf = st_as_sf(Tmax_1, coords = c("lon", "lat"), crs = st_crs(4326))
+```
+
+Next, visualise the data using *geom\_sf*
+
+```{r, echo=TRUE, fig.width=8, fig.align="center", message = FALSE}
+NOAA_plot2 = ggplot() + geom_sf(data = state_sf) + 
+  geom_sf(data = Tmax_1sf, aes(color = z)) + 
+  coord_sf(xlim = c(-105, -75), ylim = c(25, 50)) + 
+  scale_colour_gradientn(name = "degF", colours = terrain.colors(10)) + 
+  facet_grid(~date)
+
+
+NOAA_plot2
 ```
 
 
