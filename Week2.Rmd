@@ -89,6 +89,9 @@ augment(fit1) %>% features(.innov, ljung_box, lag = 10, dof = 3)
 fit2 <- melb_sel[170:2208, ] %>% 
   model(ARIMA(diff_week ~ pdq(0,0,3) + PDQ(0,0,0)))
 report(fit2)
+# Try
+#fit2 <- melb_sel[170:2208, ] %>% 
+#  model(ARIMA(diff_week ~ 1 + pdq(0,0,3) + PDQ(0,0,0)))
 ```
 
 ACF is over the thereshold at multiple lags

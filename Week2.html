@@ -13,7 +13,7 @@
 
 <title>Week 2: CBD Pedestrian Example for ARIMA Models</title>
 
-<script src="site_libs/header-attrs-2.18/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.26/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -470,6 +470,9 @@ report(fit2)</code></pre>
 ## 
 ## sigma^2 estimated as 0.03765:  log likelihood=451.06
 ## AIC=-894.11   AICc=-894.09   BIC=-871.63</code></pre>
+<pre class="r"><code># Try
+#fit2 &lt;- melb_sel[170:2208, ] %&gt;% 
+#  model(ARIMA(diff_week ~ 1 + pdq(0,0,3) + PDQ(0,0,0)))</code></pre>
 <p>ACF is over the thereshold at multiple lags</p>
 <pre class="r"><code>fit2 %&gt;% gg_tsresiduals()</code></pre>
 <p><img src="Week2_files/figure-html/unnamed-chunk-8-1.png" width="768" style="display: block; margin: auto;" /></p>
