@@ -22,9 +22,6 @@ It is a general framework for data visualisation, and in this class, we will use
   + 9.7: I will talk about this in Week 6 lab
 
 
-* ~
-  + Cheat Sheet: https://github.com/rstudio/cheatsheets/blob/main/data-visualization-2.1.pdf
-
 
 
 # Layers
