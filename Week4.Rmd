@@ -44,7 +44,7 @@ quadrat.test(data1, nx = 4, ny= 4, alternative = "two.sided", method = "Chisq")
   + pp: the dataset must be a "ppp" class. 
   + <span style="color: red;">nx=4, ny =4</span>: number of block on x-axis and y-axis. Here, we have 4*4=16 blocks. 
   + alternative: alternative hypothesis. You can choose one of "two.sided", "regular", "clustered".
-  + method: the method used to compute p-value. "Chisq" (analytical way), "MonteCarlo"
+  + method: the method used to compute p-value. "Chisq" (the method mentioned in this class)
   
 Since p-value is bigger than 0.05, we fail to reject $H_0$.
 
