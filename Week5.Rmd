@@ -80,8 +80,11 @@ LGA information based on 2015 survey are available in *LGAData.csv*. It includes
   + inc: median household income weekly
 
 
-```{r, echo=TRUE, fig.width=6, fig.align="center"}
+```{r, echo=TRUE, fig.width=6, fig.align="center", message = FALSE}
 library(dplyr)
+```
+
+```{r, echo=TRUE, fig.width=6, fig.align="center"}
 LGAData = read.csv("datasets/LGAData.csv")
 LGAsub = LGAData |> tibble() |> select(name = LGA.Name, price = Median.house.price, dis = Distance.to.Melbourne, off = Total.offences.per.1.000.population, inc = Median.household.income)
 LGAsub
