@@ -22,7 +22,7 @@ Here, *sf* (simple feature) is a type of data class. First, we use package *sf* 
   + .dbf:	  storing attribute data
 
 * The shapefile here is named *Aus-Melbourne02*, which records information from all LGA in Greater Melbourne. 
-  + All datasets can be downloaded at https://github.com/TedChu/90122Lab/tree/master/datasets. 
+  + All datasets can be downloaded at https://github.com/TedChu/90122Lab/tree/master/datasets or in Files -- datasets (LMS)
   + First, set the working directory through *setwd*. Remember you need to use forward-slash (/) or double slash (\\\\), but NOT backslash (\\).
   + I will not recommend you to have space between your folder titles. That is, to write *setwd("..../90122Lab")*, Not *setwd("..../90122 Lab")*
   + Depending on where you store your files, you need to adjust directories in *setwd* and *dsn*. 
