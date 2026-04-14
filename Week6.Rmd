@@ -11,11 +11,6 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 
-
-
-
-
-
 # Victoria maps: geom_sf
 
 
@@ -48,7 +43,7 @@ Second, we want to obtain all suburbs in City of Banyule. Note that we already h
 
 * One useful funciton in *st_intersection* in package *sf*
   + st_intersection(x, y)
-  + this function returns a geographic subset of an object *x* as specified by an Extent object *y*
+  + this function returns a geographic subset of an object *x* as specified by an extent object *y*
 
 ```{r, echo=TRUE, fig.width=6, fig.align="center", message = FALSE, warning = F}
 library(raster)
@@ -65,7 +60,7 @@ tmp$VIC_LOCA_2
 
 The object *tmp* includes suburbs which is not in City of Banyule, such as Balwyn North. Here is a list of all suburbs in City of Banyule (https://en.wikipedia.org/wiki/City_of_Banyule). The reason for this is likely due to the different resolution and accuracy of shapefiles (VICSub and VICLGA).   
 
-Therefore, I will remove all the suburbs with a very small area (Here, the unit is square meter, and 10000 is small by a suburb standard.)  
+Therefore, I will remove all the suburbs with a very small area (Here, the unit is square meter, and 10000 is small by suburb standards.)  
 
 ```{r, echo=TRUE, fig.width=6, fig.align="center", message = FALSE}
 ## Obtain all suburbs in City of Banyule (including part of suburb)
@@ -75,7 +70,7 @@ mapView(BSub)
 save(BSub, file = "datasets/BSub.Rdata")   
 ```
 
-There are more shapefiles in *PlanMel* Folder, which outlines some future plan in greater Melbourne regions and can be downloaded from https://www.planmelbourne.vic.gov.au/maps/spatial-data.
+
 
 There are major activity centres. According to the goverment, *These are places that provide a suburban focal point for services, employment, housing, public transport and social interaction. They have different attributes and provide different functions, with some serving larger subregional catchments. Plan Melbourne identifies 121 existing and future Major Activity Centres across Melbourne.*
 
@@ -96,7 +91,6 @@ ggplot() + geom_sf(data = BSub, aes(fill = VIC_LOCA_2)) +
   geom_sf(data = Bcen, size = 4) + theme(legend.position="none")
 ```
 
-For geom_sf, the latitude and longitude is automatically addressed, and *coord_quickmap* is not needed
 
 
 
