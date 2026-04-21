@@ -1,5 +1,5 @@
 ---
-title: 'Week 7: Geostatistics -- Estimation'
+title: "Week 7: Geostatistics -- Estimation"
 ---
 
 <div style="margin-bottom:50px;">
@@ -108,6 +108,7 @@ lines.variomodel(seq(0, 900, l = 100),
   + nug = 0.1: the nugget effect is estimated, and the initial value is 0.1, as shown in Model 1. 
   + fix.nugget = FALSE, nug = 0.1: the same as the above.
   + fix.nugget = TRUE, nug = 0.1: the nugget effect is fixed (NOT estimated) and the value is fixed at 0.1. 
+
 
   
 ## Model Fitting
@@ -248,3 +249,8 @@ Some key codes
 
 #m3 = likfit(dfgeodata, ini = c(0.8, 200), nug = 0.1, trend = ~ elev, lik.method = "REML")
 ```
+
+# Exercise
+
+Fit the model using Matern class. 
+
