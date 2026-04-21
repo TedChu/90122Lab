@@ -282,6 +282,9 @@ $(document).ready(function () {
   <a href="Example1.html">Example 1</a>
 </li>
 <li>
+  <a href="Example2.html">Example 2</a>
+</li>
+<li>
   <a href="Solutions.html">Solutions</a>
 </li>
 <li>
@@ -289,6 +292,9 @@ $(document).ready(function () {
 </li>
 <li>
   <a href="Extra2.html">Extra 2</a>
+</li>
+<li>
+  <a href="Extra3.html">Extra 3</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -322,6 +328,8 @@ the weekly pattern.</a></li>
 </ul></li>
 <li><a href="#week-4" id="toc-week-4"><span
 class="toc-section-number">2</span> Week 4</a></li>
+<li><a href="#week-8" id="toc-week-8"><span
+class="toc-section-number">3</span> Week 8</a></li>
 </ul>
 </div>
 
@@ -431,6 +439,81 @@ plot(Gtest, xlim = c(0,0.1))</code></pre>
 ## Quadrats: 4 by 4 grid of tiles</code></pre>
 <p>Both methods conclude <em>rNS</em> data follow a clustered point
 pattern.</p>
+</div>
+<div id="week-8" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> Week 8</h1>
+<pre class="r"><code>library(geoR)</code></pre>
+<pre><code>## --------------------------------------------------------------
+##  Analysis of Geostatistical Data
+##  For an Introduction to geoR go to http://www.leg.ufpr.br/geoR
+##  geoR version 1.9-4 (built on 2024-02-14) is now loaded
+## --------------------------------------------------------------</code></pre>
+<pre class="r"><code>dfgeo = readRDS(&quot;datasets/dfgeo.rds&quot;)
+dfgeo$x = dfgeo$long * 79
+dfgeo$y = dfgeo$lat * 111
+
+idx = seq(1, length(dfgeo$x), 5)
+dfgeo_test = dfgeo[idx, ]
+dfgeo_train = dfgeo[-idx,]
+
+dfgeodata =  as.geodata(dfgeo_train, coords.col=5:6, data.col=4, covar.col = 1:3)
+
+
+plot(variog(dfgeodata, option=&quot;bin&quot;, max.dist=900), 
+     xlab = &quot;h&quot;, ylab = &quot;variogram&quot;)</code></pre>
+<pre><code>## variog: computing omnidirectional variogram</code></pre>
+<pre class="r"><code>lines.variomodel(seq(0, 900, l = 100), 
+                 cov.pars = c(0.8, 200),           
+                 cov.model = &quot;mat&quot;, kap = 0.6, nug = 0.1)</code></pre>
+<p><img src="Solutions_files/figure-html/unnamed-chunk-6-1.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>m4 = likfit(dfgeodata, ini = c(0.8, 200), nug = 0.1, cov.model = &quot;matern&quot;, fix.kappa = FALSE, kappa = 0.6)</code></pre>
+<pre><code>## ---------------------------------------------------------------
+## likfit: likelihood maximisation using the function optim.
+## likfit: Use control() to pass additional
+##          arguments for the maximisation function.
+##         For further details see documentation for optim.
+## likfit: It is highly advisable to run this function several
+##         times with different initial values for the parameters.
+## likfit: WARNING: This step can be time demanding!
+## ---------------------------------------------------------------
+## likfit: end of numerical maximisation.</code></pre>
+<pre class="r"><code>summary(m4)</code></pre>
+<pre><code>## Summary of the parameter estimation
+## -----------------------------------
+## Estimation method: maximum likelihood 
+## 
+## Parameters of the mean component (trend):
+##    beta 
+## -0.2354 
+## 
+## Parameters of the spatial component:
+##    correlation function: matern
+##       (estimated) variance parameter sigmasq (partial sill) =  0.7465
+##       (estimated) cor. fct. parameter phi (range parameter)  =  200
+##       (estimated) extra parameter kappa = 0.3045
+##    anisotropy parameters:
+##       (fixed) anisotropy angle = 0  ( 0 degrees )
+##       (fixed) anisotropy ratio = 1
+## 
+## Parameter of the error component:
+##       (estimated) nugget =  0.0275
+## 
+## Transformation parameter:
+##       (fixed) Box-Cox parameter = 1 (no transformation)
+## 
+## Practical Range with cor=0.05 for asymptotic range: 484.5776
+## 
+## Maximised Likelihood:
+##    log.L n.params      AIC      BIC 
+## &quot;-643.1&quot;      &quot;5&quot;   &quot;1296&quot;   &quot;1319&quot; 
+## 
+## non spatial model:
+##    log.L n.params      AIC      BIC 
+##   &quot;-968&quot;      &quot;2&quot;   &quot;1940&quot;   &quot;1949&quot; 
+## 
+## Call:
+## likfit(geodata = dfgeodata, ini.cov.pars = c(0.8, 200), nugget = 0.1, 
+##     fix.kappa = FALSE, kappa = 0.6, cov.model = &quot;matern&quot;)</code></pre>
 </div>
 
 

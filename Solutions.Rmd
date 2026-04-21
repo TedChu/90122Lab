@@ -78,3 +78,31 @@ quadrat.test(rNS, nx = 4, ny= 4, alternative = "clustered", method = "Chisq")
 ```
 
 Both methods conclude *rNS* data follow a clustered point pattern. 
+
+
+# Week 8
+
+```{r, echo=TRUE, fig.width=8, fig.align="center"}
+library(geoR)
+dfgeo = readRDS("datasets/dfgeo.rds")
+dfgeo$x = dfgeo$long * 79
+dfgeo$y = dfgeo$lat * 111
+
+idx = seq(1, length(dfgeo$x), 5)
+dfgeo_test = dfgeo[idx, ]
+dfgeo_train = dfgeo[-idx,]
+
+dfgeodata =  as.geodata(dfgeo_train, coords.col=5:6, data.col=4, covar.col = 1:3)
+
+
+plot(variog(dfgeodata, option="bin", max.dist=900), 
+     xlab = "h", ylab = "variogram")
+lines.variomodel(seq(0, 900, l = 100), 
+                 cov.pars = c(0.8, 200),           
+                 cov.model = "mat", kap = 0.6, nug = 0.1)
+```
+
+```{r, echo=TRUE, fig.width=8, fig.align="center"}
+m4 = likfit(dfgeodata, ini = c(0.8, 200), nug = 0.1, cov.model = "matern", fix.kappa = FALSE, kappa = 0.6)
+summary(m4)
+```
