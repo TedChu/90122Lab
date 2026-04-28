@@ -14,14 +14,14 @@ knitr::opts_chunk$set(echo = TRUE)
 # Introduction
 
 * In this Lab, we will learn two key functions
-  + krige.control: specify the parameter for kriging, no computing involved.
+  + krige.control: specify parameters for kriging, no computing involved.
   + krige.conv: to compute 
 
 \vspace{5pt}
 
 * Usage
   + krige.control(type.krige = "ok", obj.model = NULL)
-  + Type of krige: "sk", "ok" (default)
+  + Type of kriging: "sk", "ok" (default)
   + obj.model: typically an output of *likefit*
 
 \vspace{5pt}
@@ -84,7 +84,10 @@ ggplot(ca20_res) + geom_tile(aes(x = x, y = y, fill = krige))
 Kriging Variances
 
 ```{r echo=TRUE, results="hold", warning=FALSE}
-ggplot(ca20_res) + geom_tile(aes(x = x, y = y, fill = krige_var))
+p1 = ggplot(ca20_res) + geom_tile(aes(x = x, y = y, fill = krige_var))
+
+p1
+
 ```
 
 
@@ -139,4 +142,14 @@ KC = krige.control(ty = "ok", cov.model = "mat",
                    cov.pars = c(1, 0.1))    # model parameter
 # Weights
 krweights(coords, c(0.5, 0.5), KC)                              
+```
+
+# Exercise
+
+The observed locatins are plotted over the kriging variance. Do you see any pattern?
+
+```{r echo=TRUE, results="hold", warning=FALSE}
+obs_locations = data.frame(ca20$coords)
+
+p1 + geom_point(data = obs_locations, aes(x = east, y = north, col = "red")) + xlim(5300, 5800) + ylim(5000,5600)
 ```

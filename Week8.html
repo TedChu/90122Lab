@@ -332,6 +332,8 @@ covariates</a></li>
 </ul></li>
 <li><a href="#kriging-weights" id="toc-kriging-weights"><span
 class="toc-section-number">4</span> Kriging weights</a></li>
+<li><a href="#exercise" id="toc-exercise"><span
+class="toc-section-number">5</span> Exercise</a></li>
 </ul>
 </div>
 
@@ -343,7 +345,7 @@ class="toc-section-number">4</span> Kriging weights</a></li>
 <ul>
 <li>In this Lab, we will learn two key functions
 <ul>
-<li>krige.control: specify the parameter for kriging, no computing
+<li>krige.control: specify parameters for kriging, no computing
 involved.</li>
 <li>krige.conv: to compute</li>
 </ul></li>
@@ -352,7 +354,7 @@ involved.</li>
 <li>Usage
 <ul>
 <li>krige.control(type.krige = “ok”, obj.model = NULL)</li>
-<li>Type of krige: “sk”, “ok” (default)</li>
+<li>Type of kriging: “sk”, “ok” (default)</li>
 <li>obj.model: typically an output of <em>likefit</em></li>
 </ul></li>
 </ul>
@@ -412,7 +414,9 @@ library(ggplot2)
 ggplot(ca20_res) + geom_tile(aes(x = x, y = y, fill = krige))</code></pre>
 <p><img src="Week8_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 <p>Kriging Variances</p>
-<pre class="r"><code>ggplot(ca20_res) + geom_tile(aes(x = x, y = y, fill = krige_var))</code></pre>
+<pre class="r"><code>p1 = ggplot(ca20_res) + geom_tile(aes(x = x, y = y, fill = krige_var))
+
+p1</code></pre>
 <p><img src="Week8_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 </div>
 <div id="universal-kriging" class="section level1" number="3">
@@ -465,6 +469,15 @@ KC = krige.control(ty = &quot;ok&quot;, cov.model = &quot;mat&quot;,
 # Weights
 krweights(coords, c(0.5, 0.5), KC)                              </code></pre>
 <pre><code>## [1] 0.1935404 0.2301559 0.2125838 0.3637199</code></pre>
+</div>
+<div id="exercise" class="section level1" number="5">
+<h1><span class="header-section-number">5</span> Exercise</h1>
+<p>The observed locatins are plotted over the kriging variance. Do you
+see any pattern?</p>
+<pre class="r"><code>obs_locations = data.frame(ca20$coords)
+
+p1 + geom_point(data = obs_locations, aes(x = east, y = north, col = &quot;red&quot;)) + xlim(5300, 5800) + ylim(5000,5600)</code></pre>
+<p><img src="Week8_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
 </div>
 
 
