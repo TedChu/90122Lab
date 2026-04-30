@@ -13,7 +13,7 @@
 
 <title>Spatial Lag Data Example: Used Car Data</title>
 
-<script src="site_libs/header-attrs-2.18/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.26/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -423,6 +423,9 @@ Dependence</h2>
 <pre class="r"><code>moran.plot(used$price, nb2listw(usa48.nb),
            labels=used$Abbreviation)</code></pre>
 <p><img src="Example2_files/figure-html/unnamed-chunk-7-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p>In Moran’s plot, the x-axis is <span class="math inline">\(\mathbf{Z}
+= (Z(\mathbf s_1),\ldots, Z(\mathbf s_n)\)</span>, the y-axis is <span
+class="math inline">\(W \mathbf{Z}\)</span>.</p>
 </div>
 </div>
 <div id="modelling" class="section level1" number="3">

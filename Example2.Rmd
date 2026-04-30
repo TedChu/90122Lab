@@ -77,6 +77,8 @@ moran.plot(used$price, nb2listw(usa48.nb),
            labels=used$Abbreviation)
 ```
 
+In Moran's plot, the x-axis is $\bm{Z} = (Z(\bm s_1),\ldots, Z(\bm s_n)$, the y-axis is $W \bm{Z}$. 
+
 # Modelling 
 
 ## OLS
