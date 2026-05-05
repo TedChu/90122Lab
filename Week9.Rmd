@@ -76,7 +76,7 @@ The argument "row.names = row.names(SpP)" is needed.
 # Moran's I
 ## Create Weight Matrix
 
-The dataset is *gmel2*, and it can be downloaded at https://github.com/TedChu/90122Lab/tree/master/datasets.
+The dataset is *gmel2*
 ```{r, echo=TRUE, fig.width=10, fig.align="center", message = FALSE}
 library(spdep)
 load("datasets/gmel2.Rdata")
@@ -119,7 +119,7 @@ Since the p-value < 0.05, we conclude that there is spatial autocorrelation for 
 * Comments
   + The function requires *listw* form for spatial weight matrix
   + Argument *alternative*
-    + What will you do if the alternative test is "There is positive spatial autocorrelation".
+    + What will you do if the alternative test is "There is positive spatial autocorrelation"?
   + The above test is *Moran I test under randomisation*. 
     + What does this mean?
     + If you want to take analytical approach mentioned in lectures, what should you do?
