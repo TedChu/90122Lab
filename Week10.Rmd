@@ -118,4 +118,6 @@ vcov(mlag)
 
 
 
+# Exercise
 
+Fit a spatial Durbin model, and write down the fitted model.
