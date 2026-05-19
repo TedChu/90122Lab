@@ -368,41 +368,15 @@ head(Tmax)</code></pre>
 ## 6 728055 1993     5   6 3804 78 Tmax 39.35 -81.43333 1993-05-06 6</code></pre>
 <ul>
 <li>Next, the plot will be produced by package <em>ggplot2</em>. The new
-function here
-<ul>
-<li>geom_path: add US states map. You can replace these US map with
-Australia ones from Week 7 Lab.</li>
-<li>facet_grid(~date): for each date (1, 15 and 30), produce a
-plot.</li>
-</ul></li>
+function here</li>
 </ul>
+<p>We can also use <em>sf</em> object from Lab 5 and Lab 6 to achieve
+the same results. We transform the data to <em>sf</em> object using the
+function <em>st_as_sf</em>. Here, 4326 is WGS 84, which is the longitude
+and latitude.</p>
 <pre class="r"><code>Tmax_1 = Tmax %&gt;% filter(t %in% c(1, 15, 30))  # extract data
 
-# Spatial Plots
-NOAA_plot &lt;- ggplot(Tmax_1) +                              # plot points
-  geom_point(aes(x = lon,y = lat,                          # lon and lat
-                 colour = z),                              # attribute color
-             size = 1.2) +                                 # point size
-  scale_colour_gradientn(name = &quot;degF&quot;,                    # attach color scale
-                        colours = terrain.colors(10)) +            
-  xlab(&quot;Longitude (deg)&quot;) +                                # x-axis label
-  ylab(&quot;Latitude (deg)&quot;) +                                 # y-axis label
-  geom_path(data = map_data(&quot;state&quot;),                      # add US states map
-            aes(x = long, y = lat, group = group)) + 
-  coord_fixed(1.3) + 
-  facet_grid(~date) +                                      # facet by time
-  coord_fixed(xlim = c(-105, -75),
-              ylim = c(25, 50))  +                         # zoom in
-  theme_bw()  
-
-NOAA_plot</code></pre>
-<p><img src="Week11_files/figure-html/unnamed-chunk-2-1.png" width="768" style="display: block; margin: auto;" /></p>
-<p>We can also use <em>sf</em> object from Lab 5 and Lab 6 to achieve
-the same results</p>
-<p>First, transform the data to <em>sf</em> object using the function
-<em>st_as_sf</em>. Here, 4326 is WGS 84, which is the longitude and
-latitude.</p>
-<pre class="r"><code>state_sf = st_as_sf(maps::map(&quot;state&quot;, plot = FALSE, fill = TRUE), 
+state_sf = st_as_sf(maps::map(&quot;state&quot;, plot = FALSE, fill = TRUE), 
                         crs = st_crs(4326))
 Tmax_1sf = st_as_sf(Tmax_1, coords = c(&quot;lon&quot;, &quot;lat&quot;), crs = st_crs(4326))</code></pre>
 <p>Next, visualise the data using <em>geom_sf</em></p>
@@ -414,7 +388,7 @@ Tmax_1sf = st_as_sf(Tmax_1, coords = c(&quot;lon&quot;, &quot;lat&quot;), crs = 
 
 
 NOAA_plot2</code></pre>
-<p><img src="Week11_files/figure-html/unnamed-chunk-4-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p><img src="Week11_files/figure-html/unnamed-chunk-3-1.png" width="768" style="display: block; margin: auto;" /></p>
 </div>
 <div id="time-series-plots" class="section level1" number="3">
 <h1><span class="header-section-number">3</span> Time-Series Plots</h1>
@@ -423,13 +397,13 @@ NOAA_plot2</code></pre>
 UIDs_sub &lt;- sample(UIDs, 10)                # sample 10 IDs
 Tmax_sub &lt;- filter(Tmax, id %in% UIDs_sub)  # subset data
 head(Tmax_sub)</code></pre>
-<pre><code>##   julian year month day   id  z proc      lat       lon       date t
-## 1 728050 1993     5   1 3816 74 Tmax 37.06667 -88.76667 1993-05-01 1
-## 2 728051 1993     5   2 3816 68 Tmax 37.06667 -88.76667 1993-05-02 2
-## 3 728052 1993     5   3 3816 68 Tmax 37.06667 -88.76667 1993-05-03 3
-## 4 728053 1993     5   4 3816 72 Tmax 37.06667 -88.76667 1993-05-04 4
-## 5 728054 1993     5   5 3816 86 Tmax 37.06667 -88.76667 1993-05-05 5
-## 6 728055 1993     5   6 3816 88 Tmax 37.06667 -88.76667 1993-05-06 6</code></pre>
+<pre><code>##   julian year month day   id  z proc  lat    lon       date t
+## 1 728050 1993     5   1 3813 80 Tmax 32.7 -83.65 1993-05-01 1
+## 2 728051 1993     5   2 3813 80 Tmax 32.7 -83.65 1993-05-02 2
+## 3 728052 1993     5   3 3813 77 Tmax 32.7 -83.65 1993-05-03 3
+## 4 728053 1993     5   4 3813 85 Tmax 32.7 -83.65 1993-05-04 4
+## 5 728054 1993     5   5 3813 86 Tmax 32.7 -83.65 1993-05-05 5
+## 6 728055 1993     5   6 3813 90 Tmax 32.7 -83.65 1993-05-06 6</code></pre>
 <p>Next, time-series is plotted.</p>
 <pre class="r"><code>## ------------------------------------------------------------------------
 TmaxTS &lt;- ggplot(Tmax_sub) +
@@ -442,7 +416,7 @@ TmaxTS &lt;- ggplot(Tmax_sub) +
 
 
 TmaxTS</code></pre>
-<p><img src="Week11_files/figure-html/unnamed-chunk-6-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p><img src="Week11_files/figure-html/unnamed-chunk-5-1.png" width="768" style="display: block; margin: auto;" /></p>
 </div>
 
 
