@@ -96,6 +96,11 @@ TmaxTS
 
 # Spatio-Temporal Processess Animation
 
+
+We have the locations of 10572 cases of non-specific gastro-intestinal disease in the county of Hampshire, UK, as reported to NHS Direct. Each location corresponds to the post-coded location of the residential address of the person making the call to NHS Direct. 
+
+The data include all such reported cases between 1 January 2001 and 31 December 2003. The unit of time is 1 day, with day 1 corresponding to 1 January 2001.
+
 ```{r, fig.width = 10, fig.height = 6, out.width = "50%", message = FALSE}
 library(stpp)
 library(splancs)

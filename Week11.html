@@ -293,9 +293,6 @@ $(document).ready(function () {
 <li>
   <a href="Extra2.html">Extra 2</a>
 </li>
-<li>
-  <a href="Extra3.html">Extra 3</a>
-</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         
@@ -401,13 +398,13 @@ NOAA_plot2</code></pre>
 UIDs_sub &lt;- sample(UIDs, 10)                # sample 10 IDs
 Tmax_sub &lt;- filter(Tmax, id %in% UIDs_sub)  # subset data
 head(Tmax_sub)</code></pre>
-<pre><code>##   julian year month day   id  z proc      lat       lon       date t
-## 1 728050 1993     5   1 3810 78 Tmax 35.73333 -81.38333 1993-05-01 1
-## 2 728051 1993     5   2 3810 75 Tmax 35.73333 -81.38333 1993-05-02 2
-## 3 728052 1993     5   3 3810 72 Tmax 35.73333 -81.38333 1993-05-03 3
-## 4 728053 1993     5   4 3810 68 Tmax 35.73333 -81.38333 1993-05-04 4
-## 5 728054 1993     5   5 3810 81 Tmax 35.73333 -81.38333 1993-05-05 5
-## 6 728055 1993     5   6 3810 84 Tmax 35.73333 -81.38333 1993-05-06 6</code></pre>
+<pre><code>##   julian year month day    id  z proc  lat   lon       date t
+## 1 728050 1993     5   1 13967 75 Tmax 35.4 -97.6 1993-05-01 1
+## 2 728051 1993     5   2 13967 56 Tmax 35.4 -97.6 1993-05-02 2
+## 3 728052 1993     5   3 13967 70 Tmax 35.4 -97.6 1993-05-03 3
+## 4 728053 1993     5   4 13967 81 Tmax 35.4 -97.6 1993-05-04 4
+## 5 728054 1993     5   5 13967 74 Tmax 35.4 -97.6 1993-05-05 5
+## 6 728055 1993     5   6 13967 72 Tmax 35.4 -97.6 1993-05-06 6</code></pre>
 <p>Next, time-series is plotted.</p>
 <pre class="r"><code>## ------------------------------------------------------------------------
 TmaxTS &lt;- ggplot(Tmax_sub) +
@@ -426,6 +423,13 @@ TmaxTS</code></pre>
 number="4">
 <h1><span class="header-section-number">4</span> Spatio-Temporal
 Processess Animation</h1>
+<p>We have the locations of 10572 cases of non-specific
+gastro-intestinal disease in the county of Hampshire, UK, as reported to
+NHS Direct. Each location corresponds to the post-coded location of the
+residential address of the person making the call to NHS Direct.</p>
+<p>The data include all such reported cases between 1 January 2001 and
+31 December 2003. The unit of time is 1 day, with day 1 corresponding to
+1 January 2001.</p>
 <pre class="r"><code>library(stpp)</code></pre>
 <pre><code>## Warning in rgl.init(initValue, onlyNULL): X11 error: GLXBadContext</code></pre>
 <pre><code>## Warning: &#39;rgl.init&#39; failed, will use the null device.
