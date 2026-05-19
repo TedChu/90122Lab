@@ -93,3 +93,30 @@ TmaxTS <- ggplot(Tmax_sub) +
 TmaxTS
 ```
 
+
+# Spatio-Temporal Processess Animation
+
+```{r, fig.width = 10, fig.height = 6, out.width = "50%", message = FALSE}
+library(stpp)
+library(splancs)
+```
+
+```{r, fig.width = 8, fig.height = 3}
+data <- read.table("datasets/AEGISS_ixyt.dat", header = TRUE)
+data <- data[order(data$t), ]
+xy <- cbind(data$x, data$y)
+poly <- scan("datasets/AEGISS_poly.dat", what = character())
+poly <- as.numeric(poly)
+poly <- matrix(poly, 120, 2, byrow = TRUE)
+```
+
+
+```{r, fig.width = 8, fig.height = 3}
+quartz() # open a new window and we can see the animation. Use windows() for windows system. 
+xyt_data <- as.3dpoints(data$x[1:1000], 
+                        data$y[1:1000], 
+                        data$t[1:1000])
+stpp::animation(xyt = xyt_data, 
+                s.region = poly, 
+                t.region = xyt_data[,3], runtime = 5)
+```

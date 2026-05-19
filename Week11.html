@@ -321,6 +321,10 @@ class="toc-section-number">1</span> Introduction</a></li>
 class="toc-section-number">2</span> Spatial Plots</a></li>
 <li><a href="#time-series-plots" id="toc-time-series-plots"><span
 class="toc-section-number">3</span> Time-Series Plots</a></li>
+<li><a href="#spatio-temporal-processess-animation"
+id="toc-spatio-temporal-processess-animation"><span
+class="toc-section-number">4</span> Spatio-Temporal Processess
+Animation</a></li>
 </ul>
 </div>
 
@@ -397,13 +401,13 @@ NOAA_plot2</code></pre>
 UIDs_sub &lt;- sample(UIDs, 10)                # sample 10 IDs
 Tmax_sub &lt;- filter(Tmax, id %in% UIDs_sub)  # subset data
 head(Tmax_sub)</code></pre>
-<pre><code>##   julian year month day   id  z proc  lat    lon       date t
-## 1 728050 1993     5   1 3813 80 Tmax 32.7 -83.65 1993-05-01 1
-## 2 728051 1993     5   2 3813 80 Tmax 32.7 -83.65 1993-05-02 2
-## 3 728052 1993     5   3 3813 77 Tmax 32.7 -83.65 1993-05-03 3
-## 4 728053 1993     5   4 3813 85 Tmax 32.7 -83.65 1993-05-04 4
-## 5 728054 1993     5   5 3813 86 Tmax 32.7 -83.65 1993-05-05 5
-## 6 728055 1993     5   6 3813 90 Tmax 32.7 -83.65 1993-05-06 6</code></pre>
+<pre><code>##   julian year month day   id  z proc      lat       lon       date t
+## 1 728050 1993     5   1 3810 78 Tmax 35.73333 -81.38333 1993-05-01 1
+## 2 728051 1993     5   2 3810 75 Tmax 35.73333 -81.38333 1993-05-02 2
+## 3 728052 1993     5   3 3810 72 Tmax 35.73333 -81.38333 1993-05-03 3
+## 4 728053 1993     5   4 3810 68 Tmax 35.73333 -81.38333 1993-05-04 4
+## 5 728054 1993     5   5 3810 81 Tmax 35.73333 -81.38333 1993-05-05 5
+## 6 728055 1993     5   6 3810 84 Tmax 35.73333 -81.38333 1993-05-06 6</code></pre>
 <p>Next, time-series is plotted.</p>
 <pre class="r"><code>## ------------------------------------------------------------------------
 TmaxTS &lt;- ggplot(Tmax_sub) +
@@ -417,6 +421,29 @@ TmaxTS &lt;- ggplot(Tmax_sub) +
 
 TmaxTS</code></pre>
 <p><img src="Week11_files/figure-html/unnamed-chunk-5-1.png" width="768" style="display: block; margin: auto;" /></p>
+</div>
+<div id="spatio-temporal-processess-animation" class="section level1"
+number="4">
+<h1><span class="header-section-number">4</span> Spatio-Temporal
+Processess Animation</h1>
+<pre class="r"><code>library(stpp)</code></pre>
+<pre><code>## Warning in rgl.init(initValue, onlyNULL): X11 error: GLXBadContext</code></pre>
+<pre><code>## Warning: &#39;rgl.init&#39; failed, will use the null device.
+## See &#39;?rgl.useNULL&#39; for ways to avoid this warning.</code></pre>
+<pre class="r"><code>library(splancs)</code></pre>
+<pre class="r"><code>data &lt;- read.table(&quot;datasets/AEGISS_ixyt.dat&quot;, header = TRUE)
+data &lt;- data[order(data$t), ]
+xy &lt;- cbind(data$x, data$y)
+poly &lt;- scan(&quot;datasets/AEGISS_poly.dat&quot;, what = character())
+poly &lt;- as.numeric(poly)
+poly &lt;- matrix(poly, 120, 2, byrow = TRUE)</code></pre>
+<pre class="r"><code>quartz() # open a new window and we can see the animation. Use windows() for windows system. 
+xyt_data &lt;- as.3dpoints(data$x[1:1000], 
+                        data$y[1:1000], 
+                        data$t[1:1000])
+stpp::animation(xyt = xyt_data, 
+                s.region = poly, 
+                t.region = xyt_data[,3], runtime = 5)</code></pre>
 </div>
 
 
